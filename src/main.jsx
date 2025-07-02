@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App.jsx'; // Importa tu componente principal App
-import './index.css'; // Importa tus estilos CSS globales (¡este es el archivo clave para que Tailwind se aplique!)
+import App from './App.jsx';
+import './index.css';
 
-// Crea la raíz de React y renderiza tu aplicación
+// Crear la raíz de React y renderizar la aplicación
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
