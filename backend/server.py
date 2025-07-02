@@ -299,6 +299,56 @@ async def health_check():
         return {"status": "unhealthy", "error": str(e)}
 
 # Rutas de autenticación
+# Rutas de autenticación
+@app.post("/api/auth/register", response_model=Token)
+async def register(user_data: UserCreate):
+    try:
+        # Verificar si el usuario ya existe
+        existing_user = await database.users.find_one({"email": user_data.email})
+        if existing_user:
+            raise HTTPException(status_code=400, detail="El usuario ya existe")
+        
+        # Crear nuevo usuario
+        user_doc = {
+            "_id": str(uuid.uuid4()),
+            "email": user_data.email,
+            "name": user_data.name,
+            "is_premium": False,
+            "created_at": datetime.utcnow(),
+            "subscription_expires": None
+        }
+        
+        # Agregar password solo si se proporciona
+        if user_data.password:
+            user_doc["password"] = get_password_hash(user_data.password)
+        
+        # Agregar google_id solo si se proporciona
+        if user_data.google_id:
+            user_doc["google_id"] = user_data.google_id
+        
+        await database.users.insert_one(user_doc)
+        
+        # Crear token de acceso
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": user_doc["email"]}, expires_delta=access_token_expires
+        )
+        
+        user_response = UserResponse(
+            id=str(user_doc["_id"]),
+            email=user_doc["email"],
+            name=user_doc["name"],
+            is_premium=user_doc.get("is_premium", False),
+            created_at=user_doc["created_at"],
+            subscription_expires=user_doc.get("subscription_expires")
+        )
+        
+        return Token(access_token=access_token, token_type="bearer", user=user_response)
+        
+    except Exception as e:
+        logger.error(f"Error in user registration: {e}")
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
+
 @app.post("/api/auth/google", response_model=Token)
 async def google_auth(auth_request: GoogleAuthRequest):
     try:
