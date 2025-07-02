@@ -1,0 +1,530 @@
+from fastapi import FastAPI, HTTPException, Depends, status, Request, File, UploadFile
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from motor.motor_asyncio import AsyncIOMotorClient
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional, List, Dict, Any
+from datetime import datetime, timedelta
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+import os
+import uuid
+import asyncio
+import json
+import requests
+import openai
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
+import stripe
+from decouple import config
+import logging
+
+# Configuración de logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Configuración de variables de entorno
+SECRET_KEY = config("SECRET_KEY", default="your-secret-key-here")
+ALGORITHM = config("ALGORITHM", default="HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(config("ACCESS_TOKEN_EXPIRE_MINUTES", default=30))
+MONGO_URL = config("MONGO_URL", default="mongodb://localhost:27017/calmamialma")
+GOOGLE_CLIENT_ID = config("GOOGLE_CLIENT_ID", default="")
+GOOGLE_CLIENT_SECRET = config("GOOGLE_CLIENT_SECRET", default="")
+OPENAI_API_KEY = config("OPENAI_API_KEY", default="")
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", default="")
+FRONTEND_URL = config("FRONTEND_URL", default="http://localhost:5173")
+
+# Configuración de servicios externos
+openai.api_key = OPENAI_API_KEY
+stripe.api_key = STRIPE_SECRET_KEY
+
+# Configuración de seguridad
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
+
+# Instancia de FastAPI
+app = FastAPI(
+    title="Calma Mi Alma API",
+    description="API para la plataforma de bienestar Calma Mi Alma",
+    version="1.0.0"
+)
+
+# Configuración de CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[FRONTEND_URL, "http://localhost:3000", "http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Conexión a MongoDB
+client = None
+database = None
+
+# Modelos Pydantic
+class UserBase(BaseModel):
+    email: EmailStr
+    name: str
+
+class UserCreate(UserBase):
+    password: Optional[str] = None
+    google_id: Optional[str] = None
+
+class UserResponse(BaseModel):
+    id: str
+    email: str
+    name: str
+    is_premium: bool = False
+    created_at: datetime
+    subscription_expires: Optional[datetime] = None
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    user: UserResponse
+
+class TarotCard(BaseModel):
+    id: str
+    title: str
+    description: str
+    meaning: str
+    image_url: Optional[str] = None
+
+class TarotReading(BaseModel):
+    id: str
+    user_id: str
+    card: TarotCard
+    reading_date: datetime
+    is_premium: bool = False
+
+class NatalChartRequest(BaseModel):
+    birth_date: str
+    birth_time: str
+    birth_place: str
+    zodiac_sign: str
+
+class NatalChartResponse(BaseModel):
+    id: str
+    user_id: str
+    birth_data: Dict[str, Any]
+    chart_analysis: str
+    created_at: datetime
+
+class HoroscopeRequest(BaseModel):
+    zodiac_sign: str
+
+class HoroscopeResponse(BaseModel):
+    zodiac_sign: str
+    date: datetime
+    daily_horoscope: str
+    is_premium: bool = False
+
+class GoogleAuthRequest(BaseModel):
+    token: str
+
+# Funciones de utilidad
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    
+    user = await database.users.find_one({"email": email})
+    if user is None:
+        raise credentials_exception
+    
+    return UserResponse(
+        id=str(user["_id"]),
+        email=user["email"],
+        name=user["name"],
+        is_premium=user.get("is_premium", False),
+        created_at=user["created_at"],
+        subscription_expires=user.get("subscription_expires")
+    )
+
+async def generate_tarot_reading(card_data: dict, is_premium: bool = False) -> str:
+    """Genera una lectura de tarot usando OpenAI"""
+    try:
+        if not OPENAI_API_KEY:
+            return "Lectura básica de tarot. Configure OPENAI_API_KEY para lecturas personalizadas."
+        
+        prompt = f"""
+        Eres un experto en tarot y espiritualidad. Proporciona una lectura para la carta '{card_data['title']}'.
+        
+        {'Proporciona una lectura PREMIUM detallada con insights profundos, consejos específicos y afirmaciones.' if is_premium else 'Proporciona una lectura básica y general.'}
+        
+        Incluye:
+        - Significado de la carta
+        - Mensaje para hoy
+        {'- Insights específicos y consejos detallados' if is_premium else ''}
+        {'- Afirmación poderosa para el día' if is_premium else ''}
+        
+        Mantén un tono cálido, espiritual y alentador.
+        """
+        
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=300 if is_premium else 150
+        )
+        
+        return response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"Error generating tarot reading: {e}")
+        return f"El universo te envía energías positivas hoy. La carta {card_data['title']} te invita a la reflexión y el crecimiento personal."
+
+async def generate_natal_chart(birth_data: Dict[str, Any]) -> str:
+    """Genera carta astral usando OpenAI"""
+    try:
+        if not OPENAI_API_KEY:
+            return "Carta astral básica. Configure OPENAI_API_KEY para análisis completo."
+        
+        prompt = f"""
+        Como astrólogo experto, crea una carta astral detallada basada en:
+        - Fecha: {birth_data['birth_date']}
+        - Hora: {birth_data['birth_time']}
+        - Lugar: {birth_data['birth_place']}
+        - Signo: {birth_data['zodiac_sign']}
+        
+        Incluye:
+        - Análisis del signo solar, lunar y ascendente
+        - Influencias planetarias principales
+        - Características de personalidad
+        - Fortalezas y desafíos
+        - Consejos para el crecimiento personal
+        
+        Mantén un tono profesional pero accesible.
+        """
+        
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=800
+        )
+        
+        return response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"Error generating natal chart: {e}")
+        return "Tu carta astral revela un alma única con gran potencial. Los astros sugieren un camino de crecimiento y autodescubrimiento."
+
+async def generate_daily_horoscope(zodiac_sign: str) -> str:
+    """Genera horóscopo diario usando OpenAI"""
+    try:
+        if not OPENAI_API_KEY:
+            return f"Horóscopo básico para {zodiac_sign}. Configure OPENAI_API_KEY para predicciones personalizadas."
+        
+        prompt = f"""
+        Como astrólogo profesional, crea un horóscopo diario detallado para {zodiac_sign} para hoy.
+        
+        Incluye:
+        - Energía general del día
+        - Amor y relaciones
+        - Trabajo y finanzas
+        - Salud y bienestar
+        - Consejo del día
+        - Número de la suerte
+        
+        Mantén un tono positivo y alentador.
+        """
+        
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=400
+        )
+        
+        return response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"Error generating horoscope: {e}")
+        return f"Los astros te sonríen hoy, {zodiac_sign}. Es un día propicio para nuevos comienzos y reflexión interior."
+
+# Eventos de inicio y cierre
+@app.on_event("startup")
+async def startup_db_client():
+    global client, database
+    client = AsyncIOMotorClient(MONGO_URL)
+    database = client.get_database("calmamialma")
+    
+    # Crear índices
+    await database.users.create_index("email", unique=True)
+    await database.tarot_readings.create_index([("user_id", 1), ("reading_date", -1)])
+    await database.natal_charts.create_index("user_id")
+    
+    logger.info("Conectado a MongoDB")
+
+@app.on_event("shutdown")
+async def shutdown_db_client():
+    if client:
+        client.close()
+        logger.info("Desconectado de MongoDB")
+
+# Rutas de salud
+@app.get("/")
+async def root():
+    return {"message": "Calma Mi Alma API is running", "version": "1.0.0"}
+
+@app.get("/api/health")
+async def health_check():
+    try:
+        # Verificar conexión a MongoDB
+        await database.command("ping")
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        return {"status": "unhealthy", "error": str(e)}
+
+# Rutas de autenticación
+@app.post("/api/auth/google", response_model=Token)
+async def google_auth(auth_request: GoogleAuthRequest):
+    try:
+        # Verificar token de Google
+        idinfo = id_token.verify_oauth2_token(
+            auth_request.token, google_requests.Request(), GOOGLE_CLIENT_ID
+        )
+        
+        email = idinfo['email']
+        name = idinfo['name']
+        google_id = idinfo['sub']
+        
+        # Buscar o crear usuario
+        user = await database.users.find_one({"email": email})
+        
+        if not user:
+            user_data = {
+                "_id": str(uuid.uuid4()),
+                "email": email,
+                "name": name,
+                "google_id": google_id,
+                "is_premium": False,
+                "created_at": datetime.utcnow(),
+                "subscription_expires": None
+            }
+            await database.users.insert_one(user_data)
+            user = user_data
+        
+        # Crear token de acceso
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": user["email"]}, expires_delta=access_token_expires
+        )
+        
+        user_response = UserResponse(
+            id=str(user["_id"]),
+            email=user["email"],
+            name=user["name"],
+            is_premium=user.get("is_premium", False),
+            created_at=user["created_at"],
+            subscription_expires=user.get("subscription_expires")
+        )
+        
+        return Token(access_token=access_token, token_type="bearer", user=user_response)
+        
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail="Token de Google inválido")
+    except Exception as e:
+        logger.error(f"Error in Google auth: {e}")
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
+
+@app.post("/api/auth/login", response_model=Token)
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    # Buscar usuario por email
+    user = await database.users.find_one({"email": form_data.username})
+    
+    if not user or not verify_password(form_data.password, user.get("password", "")):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Email o contraseña incorrectos",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user["email"]}, expires_delta=access_token_expires
+    )
+    
+    user_response = UserResponse(
+        id=str(user["_id"]),
+        email=user["email"],
+        name=user["name"],
+        is_premium=user.get("is_premium", False),
+        created_at=user["created_at"],
+        subscription_expires=user.get("subscription_expires")
+    )
+    
+    return Token(access_token=access_token, token_type="bearer", user=user_response)
+
+@app.get("/api/auth/me", response_model=UserResponse)
+async def get_current_user_info(current_user: UserResponse = Depends(get_current_user)):
+    return current_user
+
+# Rutas de Tarot
+@app.get("/api/tarot/daily", response_model=TarotReading)
+async def get_daily_tarot(current_user: UserResponse = Depends(get_current_user)):
+    # Verificar si ya tiene una lectura hoy
+    today = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    existing_reading = await database.tarot_readings.find_one({
+        "user_id": current_user.id,
+        "reading_date": {"$gte": today}
+    })
+    
+    if existing_reading:
+        return TarotReading(**existing_reading)
+    
+    # Generar nueva lectura
+    import random
+    tarot_cards = [
+        {"id": "1", "title": "El Loco", "description": "Nuevos comienzos"},
+        {"id": "2", "title": "El Mago", "description": "Manifestación"},
+        {"id": "3", "title": "La Emperatriz", "description": "Abundancia"},
+        {"id": "4", "title": "El Emperador", "description": "Liderazgo"},
+        {"id": "5", "title": "El Hierofante", "description": "Tradición"},
+    ]
+    
+    selected_card = random.choice(tarot_cards)
+    reading_text = await generate_tarot_reading(selected_card, current_user.is_premium)
+    
+    card = TarotCard(
+        id=selected_card["id"],
+        title=selected_card["title"],
+        description=selected_card["description"],
+        meaning=reading_text
+    )
+    
+    reading_data = {
+        "_id": str(uuid.uuid4()),
+        "user_id": current_user.id,
+        "card": card.dict(),
+        "reading_date": datetime.utcnow(),
+        "is_premium": current_user.is_premium
+    }
+    
+    await database.tarot_readings.insert_one(reading_data)
+    
+    return TarotReading(
+        id=reading_data["_id"],
+        user_id=current_user.id,
+        card=card,
+        reading_date=reading_data["reading_date"],
+        is_premium=current_user.is_premium
+    )
+
+# Rutas de Carta Astral (Solo Premium)
+@app.post("/api/natal-chart", response_model=NatalChartResponse)
+async def create_natal_chart(
+    chart_request: NatalChartRequest,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    if not current_user.is_premium:
+        raise HTTPException(
+            status_code=403,
+            detail="La carta astral está disponible solo para usuarios premium"
+        )
+    
+    # Generar análisis de carta astral
+    birth_data = chart_request.dict()
+    chart_analysis = await generate_natal_chart(birth_data)
+    
+    chart_data = {
+        "_id": str(uuid.uuid4()),
+        "user_id": current_user.id,
+        "birth_data": birth_data,
+        "chart_analysis": chart_analysis,
+        "created_at": datetime.utcnow()
+    }
+    
+    await database.natal_charts.insert_one(chart_data)
+    
+    return NatalChartResponse(
+        id=chart_data["_id"],
+        user_id=current_user.id,
+        birth_data=birth_data,
+        chart_analysis=chart_analysis,
+        created_at=chart_data["created_at"]
+    )
+
+# Rutas de Horóscopo
+@app.post("/api/horoscope/daily", response_model=HoroscopeResponse)
+async def get_daily_horoscope_route(
+    horoscope_request: HoroscopeRequest,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    horoscope_text = await generate_daily_horoscope(horoscope_request.zodiac_sign)
+    
+    return HoroscopeResponse(
+        zodiac_sign=horoscope_request.zodiac_sign,
+        date=datetime.utcnow(),
+        daily_horoscope=horoscope_text,
+        is_premium=current_user.is_premium
+    )
+
+# Rutas de Suscripción
+@app.post("/api/subscription/create-payment-intent")
+async def create_payment_intent(current_user: UserResponse = Depends(get_current_user)):
+    try:
+        intent = stripe.PaymentIntent.create(
+            amount=1999,  # $19.99 en centavos
+            currency='usd',
+            metadata={
+                'user_id': current_user.id,
+                'subscription_type': 'premium_monthly'
+            }
+        )
+        
+        return {"client_secret": intent.client_secret}
+    except Exception as e:
+        logger.error(f"Error creating payment intent: {e}")
+        raise HTTPException(status_code=500, detail="Error al crear intención de pago")
+
+@app.post("/api/subscription/upgrade")
+async def upgrade_to_premium(current_user: UserResponse = Depends(get_current_user)):
+    # En un entorno real, esto se haría después de confirmar el pago
+    # Por ahora, simulamos la actualización
+    
+    subscription_expires = datetime.utcnow() + timedelta(days=30)
+    
+    await database.users.update_one(
+        {"_id": current_user.id},
+        {
+            "$set": {
+                "is_premium": True,
+                "subscription_expires": subscription_expires,
+                "upgraded_at": datetime.utcnow()
+            }
+        }
+    )
+    
+    return {"message": "Suscripción actualizada exitosamente", "expires": subscription_expires}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "server:app",
+        host=config("HOST", default="0.0.0.0"),
+        port=int(config("PORT", default=8001)),
+        reload=True
+    )
