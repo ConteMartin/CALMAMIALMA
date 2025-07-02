@@ -432,6 +432,71 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 async def get_current_user_info(current_user: UserResponse = Depends(get_current_user)):
     return current_user
 
+# Ruta para crear usuario de prueba (solo para desarrollo)
+@app.post("/api/auth/create-test-user")
+async def create_test_user():
+    try:
+        # Verificar si ya existe un usuario de prueba
+        existing_user = await database.users.find_one({"email": "test@calmamialma.com"})
+        if existing_user:
+            return {"message": "Usuario de prueba ya existe", "email": "test@calmamialma.com"}
+        
+        # Crear usuario de prueba
+        test_user = {
+            "_id": str(uuid.uuid4()),
+            "email": "test@calmamialma.com",
+            "name": "Usuario de Prueba",
+            "password": get_password_hash("password123"),
+            "is_premium": False,
+            "created_at": datetime.utcnow(),
+            "subscription_expires": None
+        }
+        
+        await database.users.insert_one(test_user)
+        
+        return {
+            "message": "Usuario de prueba creado exitosamente",
+            "email": "test@calmamialma.com",
+            "password": "password123",
+            "note": "Úsalo para probar la aplicación"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error creating test user: {e}")
+        raise HTTPException(status_code=500, detail="Error al crear usuario de prueba")
+
+@app.post("/api/auth/create-premium-user")
+async def create_premium_user():
+    try:
+        # Verificar si ya existe un usuario premium de prueba
+        existing_user = await database.users.find_one({"email": "premium@calmamialma.com"})
+        if existing_user:
+            return {"message": "Usuario premium de prueba ya existe", "email": "premium@calmamialma.com"}
+        
+        # Crear usuario premium de prueba
+        premium_user = {
+            "_id": str(uuid.uuid4()),
+            "email": "premium@calmamialma.com",
+            "name": "Usuario Premium",
+            "password": get_password_hash("premium123"),
+            "is_premium": True,
+            "created_at": datetime.utcnow(),
+            "subscription_expires": datetime.utcnow() + timedelta(days=30)
+        }
+        
+        await database.users.insert_one(premium_user)
+        
+        return {
+            "message": "Usuario premium de prueba creado exitosamente",
+            "email": "premium@calmamialma.com",
+            "password": "premium123",
+            "note": "Úsalo para probar funcionalidades premium"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error creating premium user: {e}")
+        raise HTTPException(status_code=500, detail="Error al crear usuario premium")
+
 # Rutas de Tarot
 @app.get("/api/tarot/daily", response_model=TarotReading)
 async def get_daily_tarot(current_user: UserResponse = Depends(get_current_user)):
