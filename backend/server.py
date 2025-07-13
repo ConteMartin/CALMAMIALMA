@@ -1077,7 +1077,7 @@ async def get_daily_tarot(current_user: UserResponse = Depends(get_current_user)
                 is_premium=existing_reading["is_premium"]
             )
     else:
-        # Gratuita: 1 lectura cada 3 días
+        # Gratuita: 1 lectura cada 3 días - Solo UNA carta permitida
         three_days_ago = now - timedelta(days=3)
         recent_reading = await database.tarot_readings.find_one({
             "user_id": current_user.id,
@@ -1085,15 +1085,14 @@ async def get_daily_tarot(current_user: UserResponse = Depends(get_current_user)
         })
         
         if recent_reading:
-            # Calcular tiempo restante para la próxima lectura
-            next_reading_date = recent_reading["reading_date"] + timedelta(days=3)
-            hours_remaining = (next_reading_date - now).total_seconds() / 3600
-            
-            if hours_remaining > 0:
-                raise HTTPException(
-                    status_code=403,
-                    detail=f"Debes esperar {int(hours_remaining)} horas más para tu próxima lectura. Actualiza a Premium para lecturas diarias."
-                )
+            # Retornar la lectura existente si está dentro del período de 3 días
+            return TarotReading(
+                id=recent_reading["_id"],
+                user_id=recent_reading["user_id"],
+                card=TarotCard(**recent_reading["card"]),
+                reading_date=recent_reading["reading_date"],
+                is_premium=recent_reading["is_premium"]
+            )
     
     # Generar nueva lectura
     import random
