@@ -212,6 +212,45 @@ const AppContent = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Cargar datos cuando el usuario está autenticado
+  useEffect(() => {
+    if (isLoggedIn()) {
+      loadVideos();
+      loadCourses();
+      loadBlogPosts();
+    }
+  }, [isLoggedIn]);
+
+  // Función para cargar videos
+  const loadVideos = async () => {
+    try {
+      const videosData = await apiService.getVideos();
+      setVideos(videosData);
+    } catch (error) {
+      console.error('Error loading videos:', error);
+    }
+  };
+
+  // Función para cargar cursos
+  const loadCourses = async () => {
+    try {
+      const coursesData = await apiService.getCourses();
+      setCourses(coursesData);
+    } catch (error) {
+      console.error('Error loading courses:', error);
+    }
+  };
+
+  // Función para cargar posts del blog
+  const loadBlogPosts = async () => {
+    try {
+      const postsData = await apiService.getBlogPosts();
+      setBlogPosts(postsData);
+    } catch (error) {
+      console.error('Error loading blog posts:', error);
+    }
+  };
+
   // Función para abrir un modal
   const openModal = (setter) => {
     setter(true);
