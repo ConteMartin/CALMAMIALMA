@@ -470,6 +470,252 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     
     return Token(access_token=access_token, token_type="bearer", user=user_response)
 
+# Rutas de Videos
+@app.get("/api/videos", response_model=List[VideoResponse])
+async def get_videos(current_user: UserResponse = Depends(get_current_user)):
+    # Videos de ejemplo organizados por categorías
+    videos_data = [
+        # COMUNIDAD - Accesible para todos
+        {
+            "id": "1",
+            "title": "Introducción a la Meditación",
+            "description": "Descubre los fundamentos de la meditación y cómo comenzar tu práctica diaria",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "category": "COMUNIDAD",
+            "thumbnail_url": "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+            "duration": "15:32",
+            "is_premium": False
+        },
+        {
+            "id": "2",
+            "title": "Técnicas de Relajación",
+            "description": "Aprende técnicas simples para relajarte en cualquier momento del día",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "category": "COMUNIDAD",
+            "thumbnail_url": "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+            "duration": "12:45",
+            "is_premium": False
+        },
+        # MEDITACION - Solo Premium
+        {
+            "id": "3",
+            "title": "Meditación para Principiantes",
+            "description": "Una guía completa para comenzar tu práctica de meditación",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "category": "MEDITACION",
+            "thumbnail_url": "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+            "duration": "20:15",
+            "is_premium": True
+        },
+        {
+            "id": "4",
+            "title": "Meditación Mindfulness",
+            "description": "Desarrolla la atención plena con esta práctica guiada",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "category": "MEDITACION",
+            "thumbnail_url": "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+            "duration": "25:30",
+            "is_premium": True
+        },
+        # YOGA - Solo Premium
+        {
+            "id": "5",
+            "title": "Yoga Matutino",
+            "description": "Secuencia de yoga para energizar tu mañana",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "category": "YOGA",
+            "thumbnail_url": "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+            "duration": "30:00",
+            "is_premium": True
+        },
+        {
+            "id": "6",
+            "title": "Yoga para Relajación",
+            "description": "Posturas suaves para relajar cuerpo y mente",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "category": "YOGA",
+            "thumbnail_url": "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+            "duration": "35:20",
+            "is_premium": True
+        }
+    ]
+    
+    videos = []
+    for video_data in videos_data:
+        # Si es contenido premium y el usuario no es premium, ocultar URL
+        if video_data["is_premium"] and not current_user.is_premium:
+            video_data["youtube_url"] = ""
+        
+        videos.append(VideoResponse(**video_data))
+    
+    return videos
+
+# Rutas de Cursos
+@app.get("/api/courses", response_model=List[CourseResponse])
+async def get_courses(current_user: UserResponse = Depends(get_current_user)):
+    # Cursos con precios diferenciados
+    courses_data = [
+        {
+            "id": "1",
+            "title": "Reiki Nivel 1",
+            "description": "Aprende los fundamentos del Reiki y cómo canalizar la energía sanadora",
+            "price": 150.0,
+            "duration": "4 semanas",
+            "level": "Principiante",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Reiki+Nivel+1"
+        },
+        {
+            "id": "2",
+            "title": "Reiki Nivel 2",
+            "description": "Profundiza en las técnicas avanzadas de Reiki y símbolos sagrados",
+            "price": 200.0,
+            "duration": "6 semanas",
+            "level": "Intermedio",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Reiki+Nivel+2"
+        },
+        {
+            "id": "3",
+            "title": "Yoga 0",
+            "description": "Introducción al yoga para principiantes absolutos",
+            "price": 80.0,
+            "duration": "3 semanas",
+            "level": "Principiante",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Yoga+0"
+        },
+        {
+            "id": "4",
+            "title": "Yoga Prenatal",
+            "description": "Yoga especializado para mujeres embarazadas",
+            "price": 120.0,
+            "duration": "8 semanas",
+            "level": "Todos los niveles",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Yoga+Prenatal"
+        }
+    ]
+    
+    courses = []
+    for course_data in courses_data:
+        # Aplicar descuento del 30% para usuarios premium
+        if current_user.is_premium:
+            course_data["discounted_price"] = course_data["price"] * 0.7
+        
+        courses.append(CourseResponse(**course_data))
+    
+    return courses
+
+# Rutas de Blog
+@app.get("/api/blog/posts", response_model=List[BlogPostSummary])
+async def get_blog_posts(current_user: UserResponse = Depends(get_current_user)):
+    # Posts de ejemplo
+    posts = await database.blog_posts.find().sort("published_date", -1).to_list(length=10)
+    
+    if not posts:
+        # Crear posts de ejemplo si no existen
+        example_posts = [
+            {
+                "_id": str(uuid.uuid4()),
+                "title": "Los Beneficios de la Meditación Diaria",
+                "content": "La meditación diaria puede transformar tu vida de maneras profundas. En este artículo exploramos cómo una práctica constante puede reducir el estrés, mejorar la concentración y aumentar tu bienestar general. La investigación científica ha demostrado que meditar regularmente puede cambiar la estructura del cerebro, fortalecer el sistema inmunológico y mejorar la calidad del sueño.",
+                "excerpt": "Descubre cómo la meditación diaria puede transformar tu vida y bienestar...",
+                "published_date": datetime.utcnow() - timedelta(days=1),
+                "author": "Calma Mi Alma",
+                "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Meditación"
+            },
+            {
+                "_id": str(uuid.uuid4()),
+                "title": "Cristales para la Sanación Emocional",
+                "content": "Los cristales han sido utilizados durante milenios para la sanación emocional y espiritual. En este artículo completo, exploraremos los cristales más efectivos para diferentes estados emocionales. La amatista, por ejemplo, es conocida por sus propiedades calmantes y puede ayudar a reducir la ansiedad y promover un sueño reparador.",
+                "excerpt": "Aprende sobre los cristales más poderosos para la sanación emocional...",
+                "published_date": datetime.utcnow() - timedelta(days=3),
+                "author": "Calma Mi Alma",
+                "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Cristales"
+            },
+            {
+                "_id": str(uuid.uuid4()),
+                "title": "El Arte del Tarot: Guía para Principiantes",
+                "content": "El tarot es una herramienta poderosa para la introspección y el autoconocimiento. En esta guía completa para principiantes, aprenderás sobre la historia del tarot, los diferentes tipos de mazos disponibles, y cómo realizar tus primeras lecturas. También exploraremos el significado de los Arcanos Mayores y cómo interpretar las cartas en diferentes contextos.",
+                "excerpt": "Una guía completa para comenzar tu viaje con el tarot...",
+                "published_date": datetime.utcnow() - timedelta(days=5),
+                "author": "Calma Mi Alma",
+                "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Tarot"
+            }
+        ]
+        
+        await database.blog_posts.insert_many(example_posts)
+        posts = example_posts
+    
+    blog_posts = []
+    for post in posts:
+        # Para usuarios gratuitos, mostrar solo las primeras 3 líneas
+        if not current_user.is_premium:
+            content_lines = post["content"].split('\n')
+            limited_content = '\n'.join(content_lines[:3])
+            if len(content_lines) > 3:
+                limited_content += "..."
+            post["excerpt"] = limited_content
+        
+        blog_posts.append(BlogPostSummary(
+            id=post["_id"],
+            title=post["title"],
+            excerpt=post["excerpt"],
+            image_url=post.get("image_url"),
+            published_date=post["published_date"],
+            author=post["author"]
+        ))
+    
+    return blog_posts
+
+@app.get("/api/blog/posts/{post_id}", response_model=BlogPostResponse)
+async def get_blog_post(post_id: str, current_user: UserResponse = Depends(get_current_user)):
+    post = await database.blog_posts.find_one({"_id": post_id})
+    
+    if not post:
+        raise HTTPException(status_code=404, detail="Post no encontrado")
+    
+    # Para usuarios gratuitos, mostrar solo las primeras 3 líneas
+    if not current_user.is_premium:
+        content_lines = post["content"].split('\n')
+        limited_content = '\n'.join(content_lines[:3])
+        if len(content_lines) > 3:
+            limited_content += "\n\n[Actualiza a Premium para leer el artículo completo]"
+        post["content"] = limited_content
+    
+    return BlogPostResponse(
+        id=post["_id"],
+        title=post["title"],
+        content=post["content"],
+        excerpt=post["excerpt"],
+        image_url=post.get("image_url"),
+        published_date=post["published_date"],
+        author=post["author"]
+    )
+
+@app.post("/api/blog/posts", response_model=BlogPostResponse)
+async def create_blog_post(
+    post_request: BlogPostRequest,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    # Solo usuarios premium pueden crear posts (o podrías agregar rol de admin)
+    if not current_user.is_premium:
+        raise HTTPException(
+            status_code=403,
+            detail="Solo usuarios premium pueden crear posts"
+        )
+    
+    post_data = {
+        "_id": str(uuid.uuid4()),
+        "title": post_request.title,
+        "content": post_request.content,
+        "excerpt": post_request.excerpt,
+        "image_url": post_request.image_url,
+        "published_date": datetime.utcnow(),
+        "author": current_user.name
+    }
+    
+    await database.blog_posts.insert_one(post_data)
+    
+    return BlogPostResponse(**post_data)
+
 @app.get("/api/auth/me", response_model=UserResponse)
 async def get_current_user_info(current_user: UserResponse = Depends(get_current_user)):
     return current_user
