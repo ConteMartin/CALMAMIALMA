@@ -786,29 +786,29 @@ async def create_test_user():
 @app.post("/api/auth/create-premium-user")
 async def create_premium_user():
     try:
-        # Verificar si ya existe un usuario premium de prueba
+        # Crear usuario premium específico como solicitado
         existing_user = await database.users.find_one({"email": "premium@calmamialma.com"})
         if existing_user:
-            return {"message": "Usuario premium de prueba ya existe", "email": "premium@calmamialma.com"}
+            return {"message": "Usuario premium ya existe", "email": "premium@calmamialma.com"}
         
-        # Crear usuario premium de prueba
+        # Crear usuario PREMIUM Vane
         premium_user = {
             "_id": str(uuid.uuid4()),
             "email": "premium@calmamialma.com",
-            "name": "Usuario Premium",
-            "password": get_password_hash("premium123"),
+            "name": "PREMIUM Vane",
+            "password": get_password_hash("asd123"),
             "is_premium": True,
             "created_at": datetime.utcnow(),
-            "subscription_expires": datetime.utcnow() + timedelta(days=30)
+            "subscription_expires": datetime.utcnow() + timedelta(days=365)  # 1 año
         }
         
         await database.users.insert_one(premium_user)
         
         return {
-            "message": "Usuario premium de prueba creado exitosamente",
+            "message": "Usuario premium PREMIUM Vane creado exitosamente",
             "email": "premium@calmamialma.com",
-            "password": "premium123",
-            "note": "Úsalo para probar funcionalidades premium"
+            "password": "asd123",
+            "note": "Usuario premium listo para probar funcionalidades"
         }
         
     except Exception as e:
