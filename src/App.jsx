@@ -401,11 +401,22 @@ const AppContent = () => {
     }
   };
 
-  // Manejador del formulario de contacto
-  const handleContactSubmit = (e) => {
-    e.preventDefault();
-    alert('¡Gracias por tu mensaje! En la versión completa tu mensaje sería enviado a nuestro equipo.');
-    e.target.reset();
+  // Manejador de clic en "Ver Más" de los cursos
+  const handleCourseDetails = (course) => {
+    setSelectedCourse(course);
+    openModal(setIsCourseModalOpen);
+  };
+
+  // Manejador de compra de curso exitosa
+  const handleCoursePurchased = () => {
+    // Recargar cursos para actualizar el estado
+    loadCourses();
+    closeModal(setIsCourseModalOpen);
+  };
+
+  // Manejador de cambio de vista
+  const handleViewChange = (view) => {
+    setCurrentView(view);
   };
 
   // Calculate properties for blog post click (placeholder for now)
