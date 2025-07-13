@@ -159,6 +159,34 @@ class BlogPostSummary(BaseModel):
     published_date: datetime
     author: str
 
+# Modelos para cursos comprados
+class PurchasedCourseRequest(BaseModel):
+    course_id: str
+    payment_method: str = "stripe"
+
+class PurchasedCourseResponse(BaseModel):
+    id: str
+    course_id: str
+    user_id: str
+    purchase_date: datetime
+    payment_status: str
+    access_granted: bool = True
+
+# Modelos para calendario
+class CalendarRoutineRequest(BaseModel):
+    weekly_routine: Dict[str, List[str]]  # {"monday": ["yoga", "meditation"], "tuesday": ["breathing"]}
+    
+class CalendarRoutineResponse(BaseModel):
+    id: str
+    user_id: str
+    weekly_routine: Dict[str, List[str]]
+    created_at: datetime
+    updated_at: datetime
+
+class GoogleCalendarSyncRequest(BaseModel):
+    access_token: str
+    sync_enabled: bool = True
+
 # Modelo para suscripción
 class SubscriptionRequest(BaseModel):
     payment_method_id: str
