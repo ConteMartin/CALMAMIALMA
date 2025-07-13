@@ -633,12 +633,18 @@ async def get_daily_tarot(current_user: UserResponse = Depends(get_current_user)
 
 
 
-# Rutas de Horóscopo
+# Rutas de Horóscopo (Solo Premium)
 @app.post("/api/horoscope/daily", response_model=HoroscopeResponse)
 async def get_daily_horoscope_route(
     horoscope_request: HoroscopeRequest,
     current_user: UserResponse = Depends(get_current_user)
 ):
+    if not current_user.is_premium:
+        raise HTTPException(
+            status_code=403,
+            detail="El horóscopo diario está disponible solo para usuarios premium"
+        )
+    
     # Calcular el signo zodiacal basado en la fecha de nacimiento
     birth_date = datetime.strptime(horoscope_request.birth_date, "%Y-%m-%d")
     zodiac_sign = calculate_zodiac_sign(birth_date)
