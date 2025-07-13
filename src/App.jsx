@@ -185,18 +185,19 @@ const AppContent = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const [isTarotModalOpen, setIsTarotModalOpen] = useState(false);
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false); // Nuevo estado para el modal de registro
-  const [isLoadingNatalChart, setIsLoadingNatalChart] = useState(false);
-  const [showNatalChartContent, setShowNatalChartContent] = useState(false);
-  const [selectedZodiac, setSelectedZodiac] = useState('');
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [isLoadingHoroscope, setIsLoadingHoroscope] = useState(false);
   const [clickedTarotCardId, setClickedTarotCardId] = useState(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [hoveredCardId, setHoveredCardId] = useState(null); // Nuevo estado para la carta sobre la que se hace hover
+  const [hoveredCardId, setHoveredCardId] = useState(null);
+  const [selectedVideoCategory, setSelectedVideoCategory] = useState('COMUNIDAD');
 
   // Estados para datos del backend
   const [tarotReading, setTarotReading] = useState(null);
-  const [natalChart, setNatalChart] = useState(null);
   const [horoscope, setHoroscope] = useState(null);
+  const [videos, setVideos] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [blogPosts, setBlogPosts] = useState([]);
   const [apiError, setApiError] = useState(null);
 
   // Referencias para las secciones donde los iconos deben ser visibles
