@@ -909,6 +909,12 @@ async def get_daily_horoscope_route(
 @app.post("/api/subscription/create-payment-intent")
 async def create_payment_intent(current_user: UserResponse = Depends(get_current_user)):
     try:
+        if not STRIPE_SECRET_KEY or STRIPE_SECRET_KEY == "your_stripe_secret_key_here":
+            return {
+                "error": "Stripe no está configurado",
+                "message": "Configure las claves de Stripe para habilitar pagos"
+            }
+        
         intent = stripe.PaymentIntent.create(
             amount=1999,  # $19.99 en centavos
             currency='usd',
@@ -942,6 +948,72 @@ async def upgrade_to_premium(current_user: UserResponse = Depends(get_current_us
     )
     
     return {"message": "Suscripción actualizada exitosamente", "expires": subscription_expires}
+
+@app.post("/api/subscription/create-subscription", response_model=SubscriptionResponse)
+async def create_subscription(
+    subscription_request: SubscriptionRequest,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    try:
+        if not STRIPE_SECRET_KEY or STRIPE_SECRET_KEY == "your_stripe_secret_key_here":
+            return SubscriptionResponse(
+                status="error",
+                client_secret="Stripe no está configurado"
+            )
+        
+        # Crear o recuperar customer de Stripe
+        customer = stripe.Customer.create(
+            email=current_user.email,
+            name=current_user.name,
+            payment_method=subscription_request.payment_method_id
+        )
+        
+        # Crear suscripción
+        subscription = stripe.Subscription.create(
+            customer=customer.id,
+            items=[{
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': 'Calma Mi Alma Premium',
+                    },
+                    'unit_amount': 1999,  # $19.99
+                    'recurring': {
+                        'interval': 'month',
+                    },
+                },
+                'quantity': 1,
+            }],
+            default_payment_method=subscription_request.payment_method_id,
+            expand=['latest_invoice.payment_intent']
+        )
+        
+        # Actualizar usuario a premium
+        await database.users.update_one(
+            {"_id": current_user.id},
+            {
+                "$set": {
+                    "is_premium": True,
+                    "subscription_expires": datetime.utcnow() + timedelta(days=30),
+                    "stripe_customer_id": customer.id,
+                    "stripe_subscription_id": subscription.id,
+                    "upgraded_at": datetime.utcnow()
+                }
+            }
+        )
+        
+        return SubscriptionResponse(
+            status="success",
+            subscription_id=subscription.id,
+            client_secret=subscription.latest_invoice.payment_intent.client_secret
+        )
+    
+    except Exception as e:
+        logger.error(f"Error creating subscription: {e}")
+        return SubscriptionResponse(
+            status="error",
+            client_secret=str(e)
+        )
 
 if __name__ == "__main__":
     import uvicorn
