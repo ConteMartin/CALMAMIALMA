@@ -153,6 +153,43 @@ class ApiService {
     return await this.request('/api/courses');
   }
 
+  // Obtener detalles de un curso específico
+  async getCourseDetails(courseId) {
+    return await this.request(`/api/courses/${courseId}/details`);
+  }
+
+  // Comprar un curso
+  async purchaseCourse(courseId) {
+    return await this.request('/api/courses/purchase', {
+      method: 'POST',
+      body: JSON.stringify({ course_id: courseId }),
+    });
+  }
+
+  // Obtener cursos comprados
+  async getPurchasedCourses() {
+    return await this.request('/api/courses/purchased');
+  }
+
+  // Métodos de calendario
+  async getCalendarRoutine() {
+    return await this.request('/api/calendar/routine');
+  }
+
+  async updateCalendarRoutine(routineData) {
+    return await this.request('/api/calendar/routine', {
+      method: 'PUT',
+      body: JSON.stringify({ weekly_routine: routineData }),
+    });
+  }
+
+  async syncGoogleCalendar(accessToken) {
+    return await this.request('/api/calendar/sync-google', {
+      method: 'POST',
+      body: JSON.stringify({ access_token: accessToken, sync_enabled: true }),
+    });
+  }
+
   // Métodos de blog
   async getBlogPosts() {
     return await this.request('/api/blog/posts');
