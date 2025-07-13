@@ -136,10 +136,36 @@ class ApiService {
   }
 
   // Métodos de horóscopo
-  async getDailyHoroscope(zodiacSign) {
+  async getDailyHoroscope(birthDate) {
     return await this.request('/api/horoscope/daily', {
       method: 'POST',
-      body: JSON.stringify({ zodiac_sign: zodiacSign }),
+      body: JSON.stringify({ birth_date: birthDate }),
+    });
+  }
+
+  // Métodos de videos
+  async getVideos() {
+    return await this.request('/api/videos');
+  }
+
+  // Métodos de cursos
+  async getCourses() {
+    return await this.request('/api/courses');
+  }
+
+  // Métodos de blog
+  async getBlogPosts() {
+    return await this.request('/api/blog/posts');
+  }
+
+  async getBlogPost(postId) {
+    return await this.request(`/api/blog/posts/${postId}`);
+  }
+
+  async createBlogPost(postData) {
+    return await this.request('/api/blog/posts', {
+      method: 'POST',
+      body: JSON.stringify(postData),
     });
   }
 
@@ -147,6 +173,13 @@ class ApiService {
   async createPaymentIntent() {
     return await this.request('/api/subscription/create-payment-intent', {
       method: 'POST',
+    });
+  }
+
+  async createSubscription(paymentMethodId) {
+    return await this.request('/api/subscription/create-subscription', {
+      method: 'POST',
+      body: JSON.stringify({ payment_method_id: paymentMethodId }),
     });
   }
 
