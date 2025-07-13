@@ -894,11 +894,7 @@ const AppContent = () => {
                 </li>
                 <li className="flex items-center">
                   <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                  <span>Primeras 3 líneas de artículos del blog</span>
-                </li>
-                <li className="flex items-center">
-                  <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                  <span>Cursos a precio completo</span>
+                  <span>Acceso limitado al blog</span>
                 </li>
                 <li className="flex items-center text-texto-secundario-dark">
                   <i className="fas fa-times mr-3"></i>
