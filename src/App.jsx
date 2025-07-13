@@ -828,7 +828,7 @@ const AppContent = () => {
                   onClick={() => alert(`Inscribirse en ${course.title} - ${course.discounted_price ? 'Precio Premium' : 'Precio Regular'} (funcionalidad pendiente)`)}
                   className="w-full bg-gris-palido-btn text-texto-principal-dark py-2 rounded-btn hover:bg-gris-btn-hover transition font-montserrat"
                 >
-                  {isLoggedIn() ? 'Inscribirse' : 'Ver Más'}
+                  {isLoggedIn() ? 'Ver Más' : 'Ver Más'}
                 </button>
               </div>
             ))}
