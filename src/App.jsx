@@ -512,7 +512,9 @@ const AppContent = () => {
             <li><a href="#membership" className="text-texto-claro-white hover:text-acento-claro transition">Membresía</a></li>
             {isPremium() && (
               <>
-                <li><a href="#horoscope" className="text-texto-claro-white hover:text-acento-claro transition">Carta Astral</a></li>
+                <li><a href="#horoscope" className="text-texto-claro-white hover:text-acento-claro transition">Horóscopo</a></li>
+                <li><a href="#videos" className="text-texto-claro-white hover:text-acento-claro transition">Videos</a></li>
+                <li><a href="#courses" className="text-texto-claro-white hover:text-acento-claro transition">Cursos</a></li>
                 <li><a href="#blog" className="text-texto-claro-white hover:text-acento-claro transition">Blog</a></li>
               </>
             )}
