@@ -598,10 +598,15 @@ async def get_daily_horoscope_route(
     horoscope_request: HoroscopeRequest,
     current_user: UserResponse = Depends(get_current_user)
 ):
-    horoscope_text = await generate_daily_horoscope(horoscope_request.zodiac_sign)
+    # Calcular el signo zodiacal basado en la fecha de nacimiento
+    birth_date = datetime.strptime(horoscope_request.birth_date, "%Y-%m-%d")
+    zodiac_sign = calculate_zodiac_sign(birth_date)
+    
+    horoscope_text = await generate_daily_horoscope(zodiac_sign)
     
     return HoroscopeResponse(
-        zodiac_sign=horoscope_request.zodiac_sign,
+        zodiac_sign=zodiac_sign,
+        birth_date=horoscope_request.birth_date,
         date=datetime.utcnow(),
         daily_horoscope=horoscope_text,
         is_premium=current_user.is_premium
