@@ -179,7 +179,7 @@ const FloatingIconsBackground = ({ numberOfIcons = 30, iconFilterStyle }) => {
         }
 
         .floating-icon.hover-move {
-          transform: scale(1.1) rotate(5deg) !important; /* Más grande y rotado al pasar el cursor */
+          transform: scale(1.1) rotate(5deg) !i mportant; /* Más grande y rotado al pasar el cursor */
           filter: brightness(1.2); /* Más brillante al pasar el pasar el cursor */
         }
       `}</style>

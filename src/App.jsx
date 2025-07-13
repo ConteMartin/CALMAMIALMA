@@ -402,6 +402,19 @@ const AppContent = () => {
     e.target.reset();
   };
 
+  // Calculate properties for blog post click (placeholder for now)
+  const handleBlogPostClick = (postId) => {
+    // In a real application, this would navigate to a detailed blog post page
+    alert(`Ver detalles del artículo con ID: ${postId} (funcionalidad pendiente)`);
+  };
+
+  // Placeholder for blog post creation (for premium users)
+  const handleBlogPostCreate = async (e) => {
+    e.preventDefault();
+    alert('Funcionalidad de creación de artículos de blog en desarrollo.');
+    e.target.reset();
+  };
+
   // Calcula las propiedades de estilo para el efecto de abanico de las cartas del tarot
   const calculateTarotCardStyle = (index, totalCards, isHovered) => {
     const cardWidth = 180;
@@ -811,6 +824,7 @@ const AppContent = () => {
             </div>
           )}
         </div>
+      </section> {/* <-- ¡Etiqueta de cierre de section añadida aquí! */}
 
       {/* Services Section */}
       <section id="services" className="py-12 px-4 bg-gradient-main-sections">
