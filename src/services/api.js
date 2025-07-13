@@ -1,9 +1,12 @@
-// API service para conectar con el backend
+// apiService.js
+// Configura la URL base de tu backend.
+// ¡Asegúrate de que esta sea la URL de tu backend de Python!
 const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
 
 class ApiService {
   constructor() {
     this.baseURL = BASE_URL;
+    // Intentar cargar el token al inicializar el servicio
     this.token = localStorage.getItem('access_token');
   }
 
@@ -27,19 +30,25 @@ class ApiService {
     try {
       const response = await fetch(url, config);
       
+      // Si la respuesta no es OK (ej. 401 Unauthorized, 404 Not Found)
       if (!response.ok) {
+        // Intentar parsear el cuerpo del error si es JSON
         const errorData = await response.json().catch(() => ({}));
+        // Lanzar un error con el detalle del backend o un mensaje genérico
         throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
       }
 
+      // Verificar el tipo de contenido para evitar errores al parsear JSON
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
         return await response.json();
       }
       
+      // Si no es JSON, devolver la respuesta directamente (ej. para 204 No Content)
       return response;
     } catch (error) {
       console.error('API Error:', error);
+      // Relanzar el error para que el componente que llama pueda manejarlo
       throw error;
     }
   }
@@ -61,13 +70,17 @@ class ApiService {
   }
 
   async login(email, password) {
-    const formData = new FormData();
+    // Para FastAPI con OAuth2PasswordRequestForm, el body debe ser FormData
+    const formData = new URLSearchParams();
     formData.append('username', email);
     formData.append('password', password);
 
     const response = await this.request('/api/auth/login', {
       method: 'POST',
-      headers: {}, // No content-type para FormData
+      headers: {
+        // No Content-Type para FormData, el navegador lo establecerá automáticamente
+        // con el boundary correcto
+      }, 
       body: formData,
     });
     
@@ -80,7 +93,26 @@ class ApiService {
     return response;
   }
 
+  // Nuevo método para registrar un usuario
+  async register(name, email, password) {
+    const response = await this.request('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ name, email, password }),
+    });
+    // El endpoint de registro de FastAPI ya devuelve el token y el user
+    if (response.access_token) {
+      this.token = response.access_token;
+      localStorage.setItem('access_token', response.access_token);
+      localStorage.setItem('user', JSON.stringify(response.user));
+    }
+    return response;
+  }
+
   async getCurrentUser() {
+    // Si no hay token, no intentar obtener el usuario
+    if (!this.token) {
+        return null;
+    }
     return await this.request('/api/auth/me');
   }
 

@@ -33,7 +33,7 @@ GOOGLE_CLIENT_ID = config("GOOGLE_CLIENT_ID", default="")
 GOOGLE_CLIENT_SECRET = config("GOOGLE_CLIENT_SECRET", default="")
 OPENAI_API_KEY = config("OPENAI_API_KEY", default="")
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", default="")
-FRONTEND_URL = config("FRONTEND_URL", default="http://localhost:5173")
+FRONTEND_URL = config("FRONTEND_URL", default="http://localhost:5173") # Asegúrate de que esta línea carga correctamente
 
 # Configuración de servicios externos
 openai.api_key = OPENAI_API_KEY
@@ -50,10 +50,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configuración de CORS
+# Configuración de CORS - ¡Esta sección es crucial!
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL, "http://localhost:3000", "http://localhost:5173"],
+    allow_origins=[FRONTEND_URL, "http://localhost:3000", "http://localhost:5173"], # Asegúrate de que FRONTEND_URL sea correcto
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
