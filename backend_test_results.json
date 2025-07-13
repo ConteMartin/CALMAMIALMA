@@ -1,0 +1,86 @@
+[
+  {
+    "test": "Health Check",
+    "success": true,
+    "message": "Backend is running and healthy",
+    "details": null,
+    "timestamp": "2025-07-13T19:06:11.983298"
+  },
+  {
+    "test": "Premium User Creation",
+    "success": true,
+    "message": "Premium user created successfully: PREMIUM Vane",
+    "details": null,
+    "timestamp": "2025-07-13T19:06:11.986429"
+  },
+  {
+    "test": "Premium User Login",
+    "success": true,
+    "message": "Premium user logged in successfully: PREMIUM Vane",
+    "details": null,
+    "timestamp": "2025-07-13T19:06:12.225931"
+  },
+  {
+    "test": "Course Details API",
+    "success": true,
+    "message": "Course details retrieved successfully. Premium discount applied: True",
+    "details": null,
+    "timestamp": "2025-07-13T19:06:12.229994"
+  },
+  {
+    "test": "Course Purchase API",
+    "success": true,
+    "message": "Course purchased successfully. Payment status: completed",
+    "details": null,
+    "timestamp": "2025-07-13T19:06:12.235053"
+  },
+  {
+    "test": "Purchased Courses API",
+    "success": true,
+    "message": "Retrieved 1 purchased courses",
+    "details": null,
+    "timestamp": "2025-07-13T19:06:12.238965"
+  },
+  {
+    "test": "Calendar Routine GET",
+    "success": true,
+    "message": "Calendar routine retrieved successfully. Days configured: 7",
+    "details": null,
+    "timestamp": "2025-07-13T19:06:12.243397"
+  },
+  {
+    "test": "Calendar Routine UPDATE",
+    "success": true,
+    "message": "Calendar routine updated successfully",
+    "details": null,
+    "timestamp": "2025-07-13T19:06:12.248500"
+  },
+  {
+    "test": "Google Calendar Sync",
+    "success": true,
+    "message": "Google Calendar sync configured successfully",
+    "details": null,
+    "timestamp": "2025-07-13T19:06:12.251677"
+  },
+  {
+    "test": "Tarot Restrictions",
+    "success": true,
+    "message": "Premium user can access tarot reading successfully",
+    "details": null,
+    "timestamp": "2025-07-13T19:06:12.257151"
+  },
+  {
+    "test": "Tarot Daily Limit",
+    "success": true,
+    "message": "Premium daily limit working correctly",
+    "details": null,
+    "timestamp": "2025-07-13T19:06:12.261146"
+  },
+  {
+    "test": "Free User Tarot",
+    "success": true,
+    "message": "Free user can access tarot reading (3-day limit applies)",
+    "details": null,
+    "timestamp": "2025-07-13T19:06:12.737673"
+  }
+]
