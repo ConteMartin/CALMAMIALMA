@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { AuthProvider, useAuth } from './hooks/useAuth.jsx';
 import apiService from './services/api';
+import CourseModal from './components/CourseModal.jsx';
+import CalendarSection from './components/CalendarSection.jsx';
+import MyCourses from './components/MyCourses.jsx';
 
 // Componente para los iconos flotantes
 const FloatingIconsBackground = ({ numberOfIcons = 30, iconFilterStyle }) => {
