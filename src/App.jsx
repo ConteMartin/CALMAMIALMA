@@ -358,8 +358,8 @@ const AppContent = () => {
     }, 800); // Ajusta este retraso para que coincida con la duración de tu animación
   };
 
-  // Manejador del formulario de carta astral
-  const handleNatalChartSubmit = async (e) => {
+  // Manejador del formulario de horóscopo
+  const handleHoroscopeSubmit = async (e) => {
     e.preventDefault();
     if (!isPremium()) {
       openModal(setIsUpgradeModalOpen);
@@ -367,39 +367,31 @@ const AppContent = () => {
     }
 
     try {
-      setIsLoadingNatalChart(true);
-      setShowNatalChartContent(false);
-
+      setIsLoadingHoroscope(true);
+      
       const formData = new FormData(e.target);
-      const birthData = {
-        birth_date: formData.get('birth_date'),
-        birth_time: formData.get('birth_time'),
-        birth_place: formData.get('birth_place'),
-        zodiac_sign: selectedZodiac
-      };
-
-      const chart = await apiService.createNatalChart(birthData);
-      setNatalChart(chart);
-      setShowNatalChartContent(true);
-    } catch (error) {
-      setApiError('Error al generar carta astral: ' + error.message);
-    } finally {
-      setIsLoadingNatalChart(false);
-    }
-  };
-
-  // Manejador de selección de signo zodiacal
-  const handleZodiacSelect = (sign) => {
-    setSelectedZodiac(sign);
-  };
-
-  // Obtener horóscopo diario
-  const handleGetHoroscope = async (zodiacSign) => {
-    try {
-      const horoscopeData = await apiService.getDailyHoroscope(zodiacSign);
+      const birthDate = formData.get('birth_date');
+      
+      const horoscopeData = await apiService.getDailyHoroscope(birthDate);
       setHoroscope(horoscopeData);
     } catch (error) {
       setApiError('Error al obtener horóscopo: ' + error.message);
+    } finally {
+      setIsLoadingHoroscope(false);
+    }
+  };
+
+  // Manejador de clic en videos
+  const handleVideoClick = (video) => {
+    if (video.is_premium && !isPremium()) {
+      openModal(setIsUpgradeModalOpen);
+      return;
+    }
+    
+    if (video.youtube_url) {
+      window.open(video.youtube_url, '_blank');
+    } else {
+      openModal(setIsUpgradeModalOpen);
     }
   };
 
