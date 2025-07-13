@@ -316,7 +316,6 @@ async def startup_db_client():
     # Crear índices
     await database.users.create_index("email", unique=True)
     await database.tarot_readings.create_index([("user_id", 1), ("reading_date", -1)])
-    await database.natal_charts.create_index("user_id")
     
     logger.info("Conectado a MongoDB")
 
