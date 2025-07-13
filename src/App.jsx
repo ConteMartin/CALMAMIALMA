@@ -537,18 +537,20 @@ const AppContent = () => {
         <a href="#hero" className="text-2xl font-bodoni-moda font-semibold">Calma Mi Alma</a>
         <nav>
           <ul className="flex space-x-6 font-montserrat">
-            <li><a href="#tarot" className="text-texto-claro-white hover:text-acento-claro transition">Tarot</a></li>
-            <li><a href="#services" className="text-texto-claro-white hover:text-acento-claro transition">Servicios</a></li>
-            <li><a href="#membership" className="text-texto-claro-white hover:text-acento-claro transition">Membresía</a></li>
+            <li><a href="#tarot" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Tarot</a></li>
+            <li><a href="#services" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Servicios</a></li>
+            {!isPremium() && <li><a href="#membership" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Membresía</a></li>}
             {isPremium() && (
               <>
-                <li><a href="#horoscope" className="text-texto-claro-white hover:text-acento-claro transition">Horóscopo</a></li>
-                <li><a href="#videos" className="text-texto-claro-white hover:text-acento-claro transition">Videos</a></li>
-                <li><a href="#courses" className="text-texto-claro-white hover:text-acento-claro transition">Cursos</a></li>
-                <li><a href="#blog" className="text-texto-claro-white hover:text-acento-claro transition">Blog</a></li>
+                <li><a href="#horoscope" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Horóscopo</a></li>
+                <li><a href="#videos" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Videos</a></li>
+                <li><a href="#courses" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Cursos</a></li>
+                <li><a href="#blog" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Blog</a></li>
+                <li><a href="#calendar" onClick={() => handleViewChange('calendar')} className="text-texto-claro-white hover:text-acento-claro transition">Mi Calendario</a></li>
+                <li><a href="#my-courses" onClick={() => handleViewChange('courses')} className="text-texto-claro-white hover:text-acento-claro transition">Mis Cursos</a></li>
               </>
             )}
-            <li><a href="#contact" className="text-texto-claro-white hover:text-acento-claro transition">Contacto</a></li>
+            <li><a href="#contact" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Contacto</a></li>
           </ul>
         </nav>
         <div>
