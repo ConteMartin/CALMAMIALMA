@@ -542,24 +542,58 @@ async def create_premium_user():
 # Rutas de Tarot
 @app.get("/api/tarot/daily", response_model=TarotReading)
 async def get_daily_tarot(current_user: UserResponse = Depends(get_current_user)):
-    # Verificar si ya tiene una lectura hoy
-    today = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
-    existing_reading = await database.tarot_readings.find_one({
-        "user_id": current_user.id,
-        "reading_date": {"$gte": today}
-    })
+    now = datetime.utcnow()
     
-    if existing_reading:
-        return TarotReading(**existing_reading)
+    # Verificar restricciones según el tipo de membresía
+    if current_user.is_premium:
+        # Premium: 1 lectura diaria
+        today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        existing_reading = await database.tarot_readings.find_one({
+            "user_id": current_user.id,
+            "reading_date": {"$gte": today}
+        })
+        
+        if existing_reading:
+            # Retornar la lectura existente del día
+            return TarotReading(
+                id=existing_reading["_id"],
+                user_id=existing_reading["user_id"],
+                card=TarotCard(**existing_reading["card"]),
+                reading_date=existing_reading["reading_date"],
+                is_premium=existing_reading["is_premium"]
+            )
+    else:
+        # Gratuita: 1 lectura cada 3 días
+        three_days_ago = now - timedelta(days=3)
+        recent_reading = await database.tarot_readings.find_one({
+            "user_id": current_user.id,
+            "reading_date": {"$gte": three_days_ago}
+        })
+        
+        if recent_reading:
+            # Calcular tiempo restante para la próxima lectura
+            next_reading_date = recent_reading["reading_date"] + timedelta(days=3)
+            hours_remaining = (next_reading_date - now).total_seconds() / 3600
+            
+            if hours_remaining > 0:
+                raise HTTPException(
+                    status_code=403,
+                    detail=f"Debes esperar {int(hours_remaining)} horas más para tu próxima lectura. Actualiza a Premium para lecturas diarias."
+                )
     
     # Generar nueva lectura
     import random
     tarot_cards = [
-        {"id": "1", "title": "El Loco", "description": "Nuevos comienzos"},
-        {"id": "2", "title": "El Mago", "description": "Manifestación"},
-        {"id": "3", "title": "La Emperatriz", "description": "Abundancia"},
-        {"id": "4", "title": "El Emperador", "description": "Liderazgo"},
-        {"id": "5", "title": "El Hierofante", "description": "Tradición"},
+        {"id": "1", "title": "El Loco", "description": "Nuevos comienzos", "image_url": "/carta-tarot-dorso.png"},
+        {"id": "2", "title": "El Mago", "description": "Manifestación", "image_url": "/carta-tarot-dorso.png"},
+        {"id": "3", "title": "La Emperatriz", "description": "Abundancia", "image_url": "/carta-tarot-dorso.png"},
+        {"id": "4", "title": "El Emperador", "description": "Liderazgo", "image_url": "/carta-tarot-dorso.png"},
+        {"id": "5", "title": "El Hierofante", "description": "Tradición", "image_url": "/carta-tarot-dorso.png"},
+        {"id": "6", "title": "Los Amantes", "description": "Amor y decisiones", "image_url": "/carta-tarot-dorso.png"},
+        {"id": "7", "title": "El Carro", "description": "Determinación", "image_url": "/carta-tarot-dorso.png"},
+        {"id": "8", "title": "La Justicia", "description": "Equilibrio", "image_url": "/carta-tarot-dorso.png"},
+        {"id": "9", "title": "El Ermitaño", "description": "Introspección", "image_url": "/carta-tarot-dorso.png"},
+        {"id": "10", "title": "La Rueda de la Fortuna", "description": "Cambio y destino", "image_url": "/carta-tarot-dorso.png"},
     ]
     
     selected_card = random.choice(tarot_cards)
@@ -569,18 +603,25 @@ async def get_daily_tarot(current_user: UserResponse = Depends(get_current_user)
         id=selected_card["id"],
         title=selected_card["title"],
         description=selected_card["description"],
-        meaning=reading_text
+        meaning=reading_text,
+        image_url=selected_card["image_url"]
     )
     
     reading_data = {
         "_id": str(uuid.uuid4()),
         "user_id": current_user.id,
         "card": card.dict(),
-        "reading_date": datetime.utcnow(),
+        "reading_date": now,
         "is_premium": current_user.is_premium
     }
     
     await database.tarot_readings.insert_one(reading_data)
+    
+    # Actualizar la última lectura del usuario
+    await database.users.update_one(
+        {"_id": current_user.id},
+        {"$set": {"last_tarot_reading": now}}
+    )
     
     return TarotReading(
         id=reading_data["_id"],
