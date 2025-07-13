@@ -199,39 +199,7 @@ async def generate_tarot_reading(card_data: dict, is_premium: bool = False) -> s
         logger.error(f"Error generating tarot reading: {e}")
         return f"El universo te envía energías positivas hoy. La carta {card_data['title']} te invita a la reflexión y el crecimiento personal."
 
-async def generate_natal_chart(birth_data: Dict[str, Any]) -> str:
-    """Genera carta astral usando OpenAI"""
-    try:
-        if not OPENAI_API_KEY:
-            return "Carta astral básica. Configure OPENAI_API_KEY para análisis completo."
-        
-        prompt = f"""
-        Como astrólogo experto, crea una carta astral detallada basada en:
-        - Fecha: {birth_data['birth_date']}
-        - Hora: {birth_data['birth_time']}
-        - Lugar: {birth_data['birth_place']}
-        - Signo: {birth_data['zodiac_sign']}
-        
-        Incluye:
-        - Análisis del signo solar, lunar y ascendente
-        - Influencias planetarias principales
-        - Características de personalidad
-        - Fortalezas y desafíos
-        - Consejos para el crecimiento personal
-        
-        Mantén un tono profesional pero accesible.
-        """
-        
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=800
-        )
-        
-        return response.choices[0].message.content
-    except Exception as e:
-        logger.error(f"Error generating natal chart: {e}")
-        return "Tu carta astral revela un alma única con gran potencial. Los astros sugieren un camino de crecimiento y autodescubrimiento."
+
 
 async def generate_daily_horoscope(zodiac_sign: str) -> str:
     """Genera horóscopo diario usando OpenAI"""
