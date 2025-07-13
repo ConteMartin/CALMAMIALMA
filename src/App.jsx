@@ -624,6 +624,160 @@ const AppContent = () => {
         </div>
       </section>
 
+      {/* Videos Section */}
+      <section id="videos" className="py-12 px-4 bg-gradient-main-sections">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-16">Biblioteca de Videos</h2>
+          
+          {/* Category Tabs */}
+          <div className="flex justify-center mb-8">
+            <div className="flex space-x-2 bg-fondo-claro p-2 rounded-lg">
+              {['COMUNIDAD', 'MEDITACION', 'YOGA'].map(category => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedVideoCategory(category)}
+                  className={`px-6 py-3 rounded-lg font-montserrat transition ${
+                    selectedVideoCategory === category
+                      ? 'bg-fondo-oscuro text-texto-claro-white'
+                      : 'text-texto-principal-dark hover:bg-acento-claro'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Videos Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {videos
+              .filter(video => video.category === selectedVideoCategory)
+              .map(video => (
+                <div key={video.id} className="bg-fondo-claro rounded-2xl overflow-hidden shadow-lg text-texto-principal-dark">
+                  <div className="relative">
+                    <img 
+                      src={video.thumbnail_url || 'https://placehold.co/400x225/e0e0e0/333333?text=Video'} 
+                      alt={video.title} 
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                      <div 
+                        className="w-16 h-16 bg-gris-palido-btn rounded-full flex items-center justify-center cursor-pointer hover:bg-acento-claro transition"
+                        onClick={() => handleVideoClick(video)}
+                      >
+                        <i className="fas fa-play text-texto-principal-dark text-xl"></i>
+                      </div>
+                    </div>
+                    {video.is_premium && (
+                      <div className="absolute top-3 right-3 bg-acento-claro text-texto-principal-dark text-xs px-2 py-1 rounded-full font-montserrat">
+                        Premium
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bodoni-moda font-medium text-texto-principal-dark mb-2">{video.title}</h3>
+                    <p className="font-montserrat text-texto-secundario-dark mb-3">{video.description}</p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-texto-secundario-dark font-montserrat">
+                        {video.duration}
+                      </span>
+                      <span className="text-sm text-acento-claro font-montserrat">
+                        {video.category}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </div>
+
+          {/* Premium Prompt for Free Users */}
+          {!isPremium() && (selectedVideoCategory === 'MEDITACION' || selectedVideoCategory === 'YOGA') && (
+            <div className="mt-12 p-8 bg-fondo-oscuro text-texto-claro-white rounded-2xl text-center">
+              <h3 className="text-2xl font-bodoni-moda font-medium mb-4">
+                Contenido Premium
+              </h3>
+              <p className="font-montserrat mb-6">
+                Los videos de {selectedVideoCategory} están disponibles solo para miembros Premium.
+              </p>
+              <button
+                onClick={() => openModal(setIsUpgradeModalOpen)}
+                className="bg-acento-claro text-texto-principal-dark px-8 py-3 rounded-btn hover:bg-gris-btn-hover transition font-montserrat"
+              >
+                Actualizar a Premium
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Courses Section */}
+      <section id="courses" className="py-12 px-4 bg-fondo-claro">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-16">Cursos Especializados</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {courses.map(course => (
+              <div key={course.id} className="bg-gradient-main-sections p-6 rounded-2xl shadow-lg text-texto-principal-dark relative">
+                {course.discounted_price && (
+                  <div className="absolute top-3 right-3 bg-acento-claro text-texto-principal-dark text-xs px-2 py-1 rounded-full font-montserrat">
+                    30% OFF
+                  </div>
+                )}
+                <div className="text-center mb-6">
+                  <img 
+                    src={course.image_url || 'https://placehold.co/200x150/e0e0e0/333333?text=Curso'} 
+                    alt={course.title} 
+                    className="w-full h-32 object-cover rounded-lg mx-auto mb-4"
+                  />
+                  <h3 className="text-xl font-bodoni-moda font-medium">{course.title}</h3>
+                  <p className="text-sm text-texto-secundario-dark font-montserrat mt-1">{course.level}</p>
+                </div>
+                <p className="font-montserrat mb-4 text-texto-secundario-dark text-sm">{course.description}</p>
+                <div className="mb-4">
+                  <p className="text-sm text-texto-secundario-dark font-montserrat">
+                    Duración: {course.duration}
+                  </p>
+                </div>
+                <div className="mb-4">
+                  {course.discounted_price ? (
+                    <div className="text-center">
+                      <span className="text-lg text-acento-claro font-raleway font-semibold">
+                        ${course.discounted_price.toFixed(0)}
+                      </span>
+                      <span className="text-sm text-texto-secundario-dark line-through ml-2">
+                        ${course.price.toFixed(0)}
+                      </span>
+                      <p className="text-xs text-texto-secundario-dark">Precio Premium</p>
+                    </div>
+                  ) : (
+                    <p className="text-lg text-acento-claro font-raleway font-semibold text-center">
+                      ${course.price.toFixed(0)}
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={() => alert(`Inscribirse en ${course.title} - ${course.discounted_price ? 'Precio Premium' : 'Precio Regular'} (funcionalidad pendiente)`)}
+                  className="w-full bg-gris-palido-btn text-texto-principal-dark py-2 rounded-btn hover:bg-gris-btn-hover transition font-montserrat"
+                >
+                  {isLoggedIn() ? 'Inscribirse' : 'Ver Más'}
+                </button>
+              </div>
+            ))}
+          </div>
+          
+          {!isPremium() && (
+            <div className="mt-12 p-6 bg-acento-claro text-texto-principal-dark rounded-lg text-center font-montserrat">
+              <p className="mb-4 text-lg">¿Quieres un 30% de descuento en todos los cursos?</p>
+              <button
+                onClick={() => openModal(setIsUpgradeModalOpen)}
+                className="bg-fondo-oscuro text-texto-claro-white px-6 py-3 rounded-btn hover:bg-gris-btn-hover transition text-md"
+              >
+                Suscríbete a Premium
+              </button>
+            </div>
+          )}
+        </div>
+
       {/* Services Section */}
       <section id="services" className="py-12 px-4 bg-gradient-main-sections">
         <div className="max-w-6xl mx-auto">
