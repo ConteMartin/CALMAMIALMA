@@ -1019,102 +1019,125 @@ const AppContent = () => {
         </section>
       )}
 
-      {/* Blog & Media Section (Solo Premium) */}
-      {isPremium() && (
-        <section id="blog" className="py-12 px-4 bg-gradient-main-sections">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-16">Blog & Media</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-              {/* Blog Post 1 */}
-              <div className="blog-card bg-fondo-claro text-texto-principal-dark rounded-2xl shadow-lg">
-                <img src="https://placehold.co/400x200/e0e0e0/333333?text=Cristales" alt="Cristales para Principiantes" className="w-full h-48 object-cover rounded-t-2xl"/>
+      {/* Blog Section */}
+      <section id="blog" className="py-12 px-4 bg-gradient-main-sections">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-16">Blog de Bienestar</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {blogPosts.map(post => (
+              <div key={post.id} className="blog-card bg-fondo-claro text-texto-principal-dark rounded-2xl shadow-lg">
+                <img 
+                  src={post.image_url || 'https://placehold.co/400x200/e0e0e0/333333?text=Blog'} 
+                  alt={post.title} 
+                  className="w-full h-48 object-cover rounded-t-2xl"
+                />
                 <div className="p-6">
-                  <span className="text-xs text-texto-secundario-dark font-montserrat">Abril 15, 2025</span>
-                  <h3 className="text-xl font-bodoni-moda font-medium text-texto-principal-dark mt-2 mb-3">Cristales para Principiantes: Por Dónde Empezar</h3>
+                  <span className="text-xs text-texto-secundario-dark font-montserrat">
+                    {new Date(post.published_date).toLocaleDateString('es-ES')}
+                  </span>
+                  <h3 className="text-xl font-bodoni-moda font-medium text-texto-principal-dark mt-2 mb-3">
+                    {post.title}
+                  </h3>
                   <p className="font-montserrat mb-4 line-clamp-3 text-texto-secundario-dark">
-                    Descubre los mejores cristales para principiantes y cómo incorporarlos en tu rutina diaria de bienestar.
+                    {post.excerpt}
                   </p>
-                  <a href="#" className="text-acento-claro hover:underline font-montserrat">Leer Más</a>
+                  <button 
+                    onClick={() => handleBlogPostClick(post.id)}
+                    className="text-acento-claro hover:underline font-montserrat"
+                  >
+                    Leer Más
+                  </button>
                 </div>
               </div>
-
-              {/* Blog Post 2 */}
-              <div className="blog-card bg-fondo-claro text-texto-principal-dark rounded-2xl shadow-lg">
-                <img src="https://placehold.co/400x200/e0e0e0/333333?text=Yoga" alt="Rutina de Yoga Matutina" className="w-full h-48 object-cover rounded-t-2xl"/>
-                <div className="p-6">
-                  <span className="text-xs text-texto-secundario-dark font-montserrat">Abril 10, 2025</span>
-                  <h3 className="text-xl font-bodoni-moda font-medium text-texto-principal-dark mt-2 mb-3">Rutina de Yoga Matutina de 5 Minutos</h3>
-                  <p className="font-montserrat mb-4 line-clamp-3 text-texto-secundario-dark">
-                    Comienza tu día con esta secuencia de yoga simple pero efectiva diseñada para energizar tu cuerpo y calmar tu mente.
-                  </p>
-                  <a href="#" className="text-acento-claro hover:underline font-montserrat">Leer Más</a>
-                </div>
-              </div>
-
-              {/* Blog Post 3 (Premium) */}
-              <div className="blog-card bg-fondo-claro text-texto-principal-dark rounded-2xl shadow-lg">
-                <div className="relative">
-                  <img src="https://placehold.co/400x200/e0e0e0/333333?text=Tarot" alt="Lectura de Tarot" className="w-full h-48 object-cover rounded-t-2xl"/>
-                  <div className="absolute top-3 right-3 bg-acento-claro text-texto-principal-dark text-xs px-2 py-1 rounded-full font-montserrat">Premium</div>
-                </div>
-                <div className="p-6">
-                  <span className="text-xs text-texto-secundario-dark font-montserrat">Abril 5, 2025</span>
-                  <h3 className="text-xl font-bodoni-moda font-medium text-texto-principal-dark mt-2 mb-3">Tiradas de Tarot Avanzadas para el Autodescubrimiento</h3>
-                  <p className="font-montserrat mb-4 line-clamp-3 text-texto-secundario-dark">
-                    Lleva tu práctica de tarot al siguiente nivel con estas tiradas en profundidad diseñadas para una reflexión más profunda.
-                  </p>
-                  <a href="#" className="text-acento-claro hover:underline font-montserrat">Leer Más</a>
-                </div>
-              </div>
-            </div>
-
-            <h3 className="text-2xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-10">Videos Destacados</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Video 1 */}
-              <div className="bg-fondo-claro rounded-2xl overflow-hidden shadow-lg text-texto-principal-dark">
-                <div className="aspect-w-16 aspect-h-9 bg-acento-claro flex items-center justify-center">
-                  <img src="https://placehold.co/400x200/e0e0e0/333333?text=Meditación" alt="Video de Meditación Guiada" className="w-full h-full object-cover"/>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-16 h-16 bg-gris-palido-btn rounded-full flex items-center justify-center cursor-pointer pulse"
-                         onClick={() => alert('Reproducir video de meditación (funcionalidad pendiente)')}>
-                      <i className="fas fa-play text-texto-principal-dark text-xl"></i>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h4 className="text-xl font-bodoni-moda font-medium text-texto-principal-dark mb-2">Meditación Guiada de 15 Minutos para Aliviar el Estrés</h4>
-                  <p className="font-montserrat text-texto-secundario-dark">
-                    Una práctica de meditación tranquilizante para ayudarte a liberar la tensión y encontrar tu centro.
-                  </p>
-                </div>
-              </div>
-
-              {/* Video 2 (Premium) */}
-              <div className="bg-fondo-claro rounded-2xl overflow-hidden shadow-lg">
-                <div className="relative">
-                  <div className="aspect-w-16 aspect-h-9 bg-acento-claro flex items-center justify-center">
-                    <img src="https://placehold.co/400x200/e0e0e0/333333?text=Yoga" alt="Video de Yoga Flow" className="w-full h-full object-cover"/>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 bg-gris-palido-btn rounded-full flex items-center justify-center cursor-pointer pulse"
-                           onClick={() => alert('Reproducir video de yoga (funcionalidad pendiente)')}>
-                        <i className="fas fa-play text-texto-principal-dark text-xl"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="absolute top-3 right-3 bg-acento-claro text-texto-principal-dark text-xs px-2 py-1 rounded-full font-montserrat">Premium</div>
-                </div>
-                <div className="p-6">
-                  <h4 className="text-xl font-bodoni-moda font-medium text-texto-principal-dark mb-2">Flujo de Yoga Suave de 30 Minutos para Principiantes</h4>
-                  <p className="font-montserrat text-texto-secundario-dark">
-                    Una secuencia de yoga de ritmo lento perfecta para principiantes o cualquiera que busque una práctica suave.
-                  </p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
-        </section>
-      )}
+
+          {/* Blog Creation for Premium Users */}
+          {isPremium() && (
+            <div className="bg-fondo-claro p-8 rounded-2xl shadow-lg">
+              <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-6">
+                Crear Nuevo Artículo
+              </h3>
+              <form onSubmit={handleBlogPostCreate}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label htmlFor="blog-title" className="block text-texto-secundario-dark mb-2 font-montserrat">
+                      Título del Artículo
+                    </label>
+                    <input 
+                      type="text" 
+                      name="title" 
+                      id="blog-title" 
+                      required 
+                      className="w-full p-3 border border-acento-claro rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="blog-image" className="block text-texto-secundario-dark mb-2 font-montserrat">
+                      URL de Imagen (opcional)
+                    </label>
+                    <input 
+                      type="url" 
+                      name="image_url" 
+                      id="blog-image" 
+                      className="w-full p-3 border border-acento-claro rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"
+                    />
+                  </div>
+                </div>
+                <div className="mb-6">
+                  <label htmlFor="blog-excerpt" className="block text-texto-secundario-dark mb-2 font-montserrat">
+                    Resumen (máximo 3 líneas)
+                  </label>
+                  <textarea 
+                    name="excerpt" 
+                    id="blog-excerpt" 
+                    rows="3" 
+                    required 
+                    className="w-full p-3 border border-acento-claro rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"
+                  ></textarea>
+                </div>
+                <div className="mb-6">
+                  <label htmlFor="blog-content" className="block text-texto-secundario-dark mb-2 font-montserrat">
+                    Contenido Completo
+                  </label>
+                  <textarea 
+                    name="content" 
+                    id="blog-content" 
+                    rows="10" 
+                    required 
+                    className="w-full p-3 border border-acento-claro rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"
+                  ></textarea>
+                </div>
+                <button 
+                  type="submit" 
+                  className="bg-gris-palido-btn text-texto-principal-dark px-8 py-3 rounded-btn hover:bg-gris-btn-hover transition font-montserrat"
+                >
+                  Publicar Artículo
+                </button>
+              </form>
+            </div>
+          )}
+          
+          {/* Premium Prompt for Free Users */}
+          {!isPremium() && (
+            <div className="mt-12 p-8 bg-fondo-oscuro text-texto-claro-white rounded-2xl text-center">
+              <h3 className="text-2xl font-bodoni-moda font-medium mb-4">
+                ¿Quieres acceso completo al blog?
+              </h3>
+              <p className="font-montserrat mb-6">
+                Los usuarios Premium pueden leer artículos completos y crear sus propios posts.
+              </p>
+              <button
+                onClick={() => openModal(setIsUpgradeModalOpen)}
+                className="bg-acento-claro text-texto-principal-dark px-8 py-3 rounded-btn hover:bg-gris-btn-hover transition font-montserrat"
+              >
+                Actualizar a Premium
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* Contact & Social Section */}
       <section id="contact" className="py-12 px-4 bg-fondo-oscuro relative" ref={contactSectionRef}>
