@@ -531,50 +531,53 @@ const AppContent = () => {
   }
 
   return (
-    <div className="relative">
-      {/* Header / Navigation */}
-      <header className="fixed top-0 left-0 w-full bg-fondo-oscuro text-texto-claro-white bg-opacity-90 z-50 py-4 px-6 flex justify-between items-center shadow-sm rounded-b-lg">
-        <a href="#hero" className="text-2xl font-bodoni-moda font-semibold">Calma Mi Alma</a>
-        <nav>
-          <ul className="flex space-x-6 font-montserrat">
-            <li><a href="#tarot" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Tarot</a></li>
-            <li><a href="#services" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Servicios</a></li>
-            {!isPremium() && <li><a href="#membership" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Membresía</a></li>}
-            {isPremium() && (
-              <>
-                <li><a href="#horoscope" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Horóscopo</a></li>
-                <li><a href="#videos" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Videos</a></li>
-                <li><a href="#courses" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Cursos</a></li>
-                <li><a href="#blog" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Blog</a></li>
-                <li><a href="#calendar" onClick={() => handleViewChange('calendar')} className="text-texto-claro-white hover:text-acento-claro transition">Mi Calendario</a></li>
-                <li><a href="#my-courses" onClick={() => handleViewChange('courses')} className="text-texto-claro-white hover:text-acento-claro transition">Mis Cursos</a></li>
-              </>
-            )}
-            <li><a href="#contact" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Contacto</a></li>
-          </ul>
-        </nav>
-        <div>
-          {isLoggedIn() ? (
-            <div className="flex items-center space-x-4">
-              <span className="text-acento-claro">Hola, {user?.name}</span>
-              {isPremium() && <span className="bg-acento-claro text-texto-principal-dark px-2 py-1 rounded text-xs">Premium</span>}
-              <button
-                onClick={logout}
-                className="bg-gris-palido-btn text-texto-principal-dark px-4 py-2 rounded-btn hover:bg-gris-btn-hover transition font-montserrat"
-              >
-                Cerrar Sesión
-              </button>
+    <div className="min-h-screen bg-fondo-claro">
+      {/* Renderizado condicional según la vista actual */}
+      {currentView === 'home' && (
+        <div className="relative">
+          {/* Header / Navigation */}
+          <header className="fixed top-0 left-0 w-full bg-fondo-oscuro text-texto-claro-white bg-opacity-90 z-50 py-4 px-6 flex justify-between items-center shadow-sm rounded-b-lg">
+            <a href="#hero" className="text-2xl font-bodoni-moda font-semibold">Calma Mi Alma</a>
+            <nav>
+              <ul className="flex space-x-6 font-montserrat">
+                <li><a href="#tarot" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Tarot</a></li>
+                <li><a href="#services" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Servicios</a></li>
+                {!isPremium() && <li><a href="#membership" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Membresía</a></li>}
+                {isPremium() && (
+                  <>
+                    <li><a href="#horoscope" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Horóscopo</a></li>
+                    <li><a href="#videos" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Videos</a></li>
+                    <li><a href="#courses" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Cursos</a></li>
+                    <li><a href="#blog" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Blog</a></li>
+                    <li><a href="#calendar" onClick={() => handleViewChange('calendar')} className="text-texto-claro-white hover:text-acento-claro transition">Mi Calendario</a></li>
+                    <li><a href="#my-courses" onClick={() => handleViewChange('courses')} className="text-texto-claro-white hover:text-acento-claro transition">Mis Cursos</a></li>
+                  </>
+                )}
+                <li><a href="#contact" onClick={() => handleViewChange('home')} className="text-texto-claro-white hover:text-acento-claro transition">Contacto</a></li>
+              </ul>
+            </nav>
+            <div>
+              {isLoggedIn() ? (
+                <div className="flex items-center space-x-4">
+                  <span className="text-acento-claro">Hola, {user?.name}</span>
+                  {isPremium() && <span className="bg-acento-claro text-texto-principal-dark px-2 py-1 rounded text-xs">Premium</span>}
+                  <button
+                    onClick={logout}
+                    className="bg-gris-palido-btn text-texto-principal-dark px-4 py-2 rounded-btn hover:bg-gris-btn-hover transition font-montserrat"
+                  >
+                    Cerrar Sesión
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => openModal(setIsLoginModalOpen)}
+                  className="bg-gris-palido-btn text-texto-principal-dark px-4 py-2 rounded-btn hover:bg-gris-btn-hover transition font-montserrat"
+                >
+                  Iniciar Sesión
+                </button>
+              )}
             </div>
-          ) : (
-            <button
-              onClick={() => openModal(setIsLoginModalOpen)}
-              className="bg-gris-palido-btn text-texto-principal-dark px-4 py-2 rounded-btn hover:bg-gris-btn-hover transition font-montserrat"
-            >
-              Iniciar Sesión
-            </button>
-          )}
-        </div>
-      </header>
+          </header>
 
       {/* Mostrar errores de API si existen */}
       {apiError && (
