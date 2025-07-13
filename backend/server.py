@@ -239,7 +239,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         name=user["name"],
         is_premium=user.get("is_premium", False),
         created_at=user["created_at"],
-        subscription_expires=user.get("subscription_expires")
+        subscription_expires=user.get("subscription_expires"),
+        last_tarot_reading=user.get("last_tarot_reading")
     )
 
 async def generate_tarot_reading(card_data: dict, is_premium: bool = False) -> str:
