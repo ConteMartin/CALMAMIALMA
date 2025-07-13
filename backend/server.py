@@ -635,6 +635,70 @@ async def get_courses(current_user: UserResponse = Depends(get_current_user)):
     
     return courses
 
+# Ruta para obtener detalles de un curso específico (incluyendo video)
+@app.get("/api/courses/{course_id}/details")
+async def get_course_details(
+    course_id: str,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Obtener detalles completos de un curso incluyendo video de YouTube"""
+    courses_data = [
+        {
+            "id": "1",
+            "title": "Reiki Nivel 1",
+            "description": "Aprende los fundamentos del Reiki y cómo canalizar la energía sanadora",
+            "price": 150.0,
+            "duration": "4 semanas",
+            "level": "Principiante",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Reiki+Nivel+1",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "program": "Semana 1: Introducción al Reiki y su historia\nSemana 2: Los chakras y el sistema energético\nSemana 3: Técnicas básicas de canalización\nSemana 4: Práctica y autosanación"
+        },
+        {
+            "id": "2",
+            "title": "Reiki Nivel 2",
+            "description": "Profundiza en las técnicas avanzadas de Reiki y símbolos sagrados",
+            "price": 200.0,
+            "duration": "6 semanas",
+            "level": "Intermedio",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Reiki+Nivel+2",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "program": "Semana 1-2: Símbolos del Reiki Nivel 2\nSemana 3-4: Sanación a distancia\nSemana 5-6: Técnicas avanzadas y maestría"
+        },
+        {
+            "id": "3",
+            "title": "Yoga 0",
+            "description": "Introducción al yoga para principiantes absolutos",
+            "price": 80.0,
+            "duration": "3 semanas",
+            "level": "Principiante",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Yoga+0",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "program": "Semana 1: Posturas básicas y respiración\nSemana 2: Secuencias simples y flexibilidad\nSemana 3: Meditación y relajación"
+        },
+        {
+            "id": "4",
+            "title": "Yoga Prenatal",
+            "description": "Yoga especializado para mujeres embarazadas",
+            "price": 120.0,
+            "duration": "8 semanas",
+            "level": "Todos los niveles",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Yoga+Prenatal",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "program": "Semana 1-2: Adaptaciones para el embarazo\nSemana 3-4: Fortalecimiento y flexibilidad\nSemana 5-6: Preparación para el parto\nSemana 7-8: Relajación y conexión madre-bebé"
+        }
+    ]
+    
+    course = next((c for c in courses_data if c["id"] == course_id), None)
+    if not course:
+        raise HTTPException(status_code=404, detail="Curso no encontrado")
+    
+    # Aplicar descuento del 30% para usuarios premium
+    if current_user.is_premium:
+        course["discounted_price"] = course["price"] * 0.7
+    
+    return course
+
 # Rutas de Blog
 @app.get("/api/blog/posts", response_model=List[BlogPostSummary])
 async def get_blog_posts(current_user: UserResponse = Depends(get_current_user)):
