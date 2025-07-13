@@ -748,6 +748,242 @@ async def create_blog_post(
     
     return BlogPostResponse(**post_data)
 
+# Rutas para cursos comprados
+@app.post("/api/courses/purchase", response_model=PurchasedCourseResponse)
+async def purchase_course(
+    purchase_request: PurchasedCourseRequest,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Procesar compra de curso"""
+    try:
+        # Verificar si el curso existe
+        courses_data = [
+            {"id": "1", "title": "Reiki Nivel 1", "price": 150.0},
+            {"id": "2", "title": "Reiki Nivel 2", "price": 200.0},
+            {"id": "3", "title": "Yoga 0", "price": 80.0},
+            {"id": "4", "title": "Yoga Prenatal", "price": 120.0}
+        ]
+        
+        course = next((c for c in courses_data if c["id"] == purchase_request.course_id), None)
+        if not course:
+            raise HTTPException(status_code=404, detail="Curso no encontrado")
+        
+        # Verificar si ya compró el curso
+        existing_purchase = await database.purchased_courses.find_one({
+            "user_id": current_user.id,
+            "course_id": purchase_request.course_id
+        })
+        
+        if existing_purchase:
+            return PurchasedCourseResponse(
+                id=existing_purchase["_id"],
+                course_id=existing_purchase["course_id"],
+                user_id=existing_purchase["user_id"],
+                purchase_date=existing_purchase["purchase_date"],
+                payment_status=existing_purchase["payment_status"],
+                access_granted=existing_purchase["access_granted"]
+            )
+        
+        # Crear nueva compra
+        purchase_data = {
+            "_id": str(uuid.uuid4()),
+            "course_id": purchase_request.course_id,
+            "user_id": current_user.id,
+            "purchase_date": datetime.utcnow(),
+            "payment_status": "completed",  # En desarrollo, asumimos pago exitoso
+            "access_granted": True
+        }
+        
+        await database.purchased_courses.insert_one(purchase_data)
+        
+        return PurchasedCourseResponse(
+            id=purchase_data["_id"],
+            course_id=purchase_data["course_id"],
+            user_id=purchase_data["user_id"],
+            purchase_date=purchase_data["purchase_date"],
+            payment_status=purchase_data["payment_status"],
+            access_granted=purchase_data["access_granted"]
+        )
+        
+    except Exception as e:
+        logger.error(f"Error purchasing course: {e}")
+        raise HTTPException(status_code=500, detail="Error al procesar compra")
+
+@app.get("/api/courses/purchased", response_model=List[CourseResponse])
+async def get_purchased_courses(current_user: UserResponse = Depends(get_current_user)):
+    """Obtener cursos comprados por el usuario"""
+    try:
+        # Obtener cursos comprados
+        purchased = await database.purchased_courses.find({"user_id": current_user.id}).to_list(length=None)
+        
+        # Datos de cursos
+        courses_data = [
+            {
+                "id": "1",
+                "title": "Reiki Nivel 1",
+                "description": "Aprende los fundamentos del Reiki y cómo canalizar la energía sanadora",
+                "price": 150.0,
+                "duration": "4 semanas",
+                "level": "Principiante",
+                "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Reiki+Nivel+1"
+            },
+            {
+                "id": "2",
+                "title": "Reiki Nivel 2",
+                "description": "Profundiza en las técnicas avanzadas de Reiki y símbolos sagrados",
+                "price": 200.0,
+                "duration": "6 semanas",
+                "level": "Intermedio",
+                "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Reiki+Nivel+2"
+            },
+            {
+                "id": "3",
+                "title": "Yoga 0",
+                "description": "Introducción al yoga para principiantes absolutos",
+                "price": 80.0,
+                "duration": "3 semanas",
+                "level": "Principiante",
+                "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Yoga+0"
+            },
+            {
+                "id": "4",
+                "title": "Yoga Prenatal",
+                "description": "Yoga especializado para mujeres embarazadas",
+                "price": 120.0,
+                "duration": "8 semanas",
+                "level": "Todos los niveles",
+                "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Yoga+Prenatal"
+            }
+        ]
+        
+        purchased_courses = []
+        for purchase in purchased:
+            course_data = next((c for c in courses_data if c["id"] == purchase["course_id"]), None)
+            if course_data:
+                purchased_courses.append(CourseResponse(**course_data))
+        
+        return purchased_courses
+        
+    except Exception as e:
+        logger.error(f"Error getting purchased courses: {e}")
+        raise HTTPException(status_code=500, detail="Error al obtener cursos comprados")
+
+# Rutas para calendario
+@app.get("/api/calendar/routine", response_model=CalendarRoutineResponse)
+async def get_calendar_routine(current_user: UserResponse = Depends(get_current_user)):
+    """Obtener rutina semanal del usuario"""
+    if not current_user.is_premium:
+        raise HTTPException(
+            status_code=403,
+            detail="El calendario está disponible solo para usuarios premium"
+        )
+    
+    try:
+        routine = await database.calendar_routines.find_one({"user_id": current_user.id})
+        
+        if not routine:
+            # Crear rutina por defecto
+            default_routine = {
+                "_id": str(uuid.uuid4()),
+                "user_id": current_user.id,
+                "weekly_routine": {
+                    "lunes": ["yoga", "meditacion"],
+                    "martes": ["respiracion"],
+                    "miercoles": ["yoga"],
+                    "jueves": ["meditacion"],
+                    "viernes": ["yoga", "respiracion"],
+                    "sabado": ["meditacion"],
+                    "domingo": ["yoga", "meditacion"]
+                },
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
+            }
+            
+            await database.calendar_routines.insert_one(default_routine)
+            routine = default_routine
+        
+        return CalendarRoutineResponse(
+            id=routine["_id"],
+            user_id=routine["user_id"],
+            weekly_routine=routine["weekly_routine"],
+            created_at=routine["created_at"],
+            updated_at=routine["updated_at"]
+        )
+        
+    except Exception as e:
+        logger.error(f"Error getting calendar routine: {e}")
+        raise HTTPException(status_code=500, detail="Error al obtener rutina")
+
+@app.put("/api/calendar/routine", response_model=CalendarRoutineResponse)
+async def update_calendar_routine(
+    routine_request: CalendarRoutineRequest,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Actualizar rutina semanal del usuario"""
+    if not current_user.is_premium:
+        raise HTTPException(
+            status_code=403,
+            detail="El calendario está disponible solo para usuarios premium"
+        )
+    
+    try:
+        # Actualizar rutina existente o crear nueva
+        routine_data = {
+            "user_id": current_user.id,
+            "weekly_routine": routine_request.weekly_routine,
+            "updated_at": datetime.utcnow()
+        }
+        
+        result = await database.calendar_routines.update_one(
+            {"user_id": current_user.id},
+            {"$set": routine_data, "$setOnInsert": {
+                "_id": str(uuid.uuid4()),
+                "created_at": datetime.utcnow()
+            }},
+            upsert=True
+        )
+        
+        # Obtener rutina actualizada
+        routine = await database.calendar_routines.find_one({"user_id": current_user.id})
+        
+        return CalendarRoutineResponse(
+            id=routine["_id"],
+            user_id=routine["user_id"],
+            weekly_routine=routine["weekly_routine"],
+            created_at=routine["created_at"],
+            updated_at=routine["updated_at"]
+        )
+        
+    except Exception as e:
+        logger.error(f"Error updating calendar routine: {e}")
+        raise HTTPException(status_code=500, detail="Error al actualizar rutina")
+
+@app.post("/api/calendar/sync-google")
+async def sync_google_calendar(
+    sync_request: GoogleCalendarSyncRequest,
+    current_user: UserResponse = Depends(get_current_user)
+):
+    """Sincronizar con Google Calendar"""
+    if not current_user.is_premium:
+        raise HTTPException(
+            status_code=403,
+            detail="La sincronización con Google Calendar está disponible solo para usuarios premium"
+        )
+    
+    try:
+        # En un entorno real, aquí implementarías la integración con Google Calendar API
+        # Por ahora, simulamos la sincronización
+        return {
+            "message": "Sincronización con Google Calendar configurada",
+            "status": "success",
+            "sync_enabled": sync_request.sync_enabled,
+            "note": "Funcionalidad de Google Calendar en desarrollo"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error syncing Google Calendar: {e}")
+        raise HTTPException(status_code=500, detail="Error al sincronizar con Google Calendar")
+
 @app.get("/api/auth/me", response_model=UserResponse)
 async def get_current_user_info(current_user: UserResponse = Depends(get_current_user)):
     return current_user
