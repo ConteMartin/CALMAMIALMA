@@ -79,6 +79,7 @@ class UserResponse(BaseModel):
     is_premium: bool = False
     created_at: datetime
     subscription_expires: Optional[datetime] = None
+    last_tarot_reading: Optional[datetime] = None
 
 class Token(BaseModel):
     access_token: str
@@ -99,30 +100,73 @@ class TarotReading(BaseModel):
     reading_date: datetime
     is_premium: bool = False
 
-class NatalChartRequest(BaseModel):
-    birth_date: str
-    birth_time: str
-    birth_place: str
-    zodiac_sign: str
-
-class NatalChartResponse(BaseModel):
-    id: str
-    user_id: str
-    birth_data: Dict[str, Any]
-    chart_analysis: str
-    created_at: datetime
-
 class HoroscopeRequest(BaseModel):
-    zodiac_sign: str
+    birth_date: str
 
 class HoroscopeResponse(BaseModel):
     zodiac_sign: str
+    birth_date: str
     date: datetime
     daily_horoscope: str
     is_premium: bool = False
 
 class GoogleAuthRequest(BaseModel):
     token: str
+
+# Nuevos modelos para videos
+class VideoResponse(BaseModel):
+    id: str
+    title: str
+    description: str
+    youtube_url: str
+    category: str  # MEDITACION, YOGA, COMUNIDAD
+    thumbnail_url: Optional[str] = None
+    duration: Optional[str] = None
+    is_premium: bool = False
+
+# Nuevos modelos para cursos
+class CourseResponse(BaseModel):
+    id: str
+    title: str
+    description: str
+    price: float
+    discounted_price: Optional[float] = None
+    duration: str
+    level: str
+    image_url: Optional[str] = None
+
+# Nuevos modelos para blog
+class BlogPostRequest(BaseModel):
+    title: str
+    content: str
+    excerpt: str
+    image_url: Optional[str] = None
+
+class BlogPostResponse(BaseModel):
+    id: str
+    title: str
+    content: str
+    excerpt: str
+    image_url: Optional[str] = None
+    published_date: datetime
+    author: str
+
+class BlogPostSummary(BaseModel):
+    id: str
+    title: str
+    excerpt: str
+    image_url: Optional[str] = None
+    published_date: datetime
+    author: str
+
+# Modelo para suscripción
+class SubscriptionRequest(BaseModel):
+    payment_method_id: str
+
+class SubscriptionResponse(BaseModel):
+    status: str
+    subscription_id: Optional[str] = None
+    client_secret: Optional[str] = None
 
 # Funciones de utilidad
 def verify_password(plain_password, hashed_password):
