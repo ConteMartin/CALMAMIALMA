@@ -548,39 +548,7 @@ async def get_daily_tarot(current_user: UserResponse = Depends(get_current_user)
         is_premium=current_user.is_premium
     )
 
-# Rutas de Carta Astral (Solo Premium)
-@app.post("/api/natal-chart", response_model=NatalChartResponse)
-async def create_natal_chart(
-    chart_request: NatalChartRequest,
-    current_user: UserResponse = Depends(get_current_user)
-):
-    if not current_user.is_premium:
-        raise HTTPException(
-            status_code=403,
-            detail="La carta astral está disponible solo para usuarios premium"
-        )
-    
-    # Generar análisis de carta astral
-    birth_data = chart_request.dict()
-    chart_analysis = await generate_natal_chart(birth_data)
-    
-    chart_data = {
-        "_id": str(uuid.uuid4()),
-        "user_id": current_user.id,
-        "birth_data": birth_data,
-        "chart_analysis": chart_analysis,
-        "created_at": datetime.utcnow()
-    }
-    
-    await database.natal_charts.insert_one(chart_data)
-    
-    return NatalChartResponse(
-        id=chart_data["_id"],
-        user_id=current_user.id,
-        birth_data=birth_data,
-        chart_analysis=chart_analysis,
-        created_at=chart_data["created_at"]
-    )
+
 
 # Rutas de Horóscopo
 @app.post("/api/horoscope/daily", response_model=HoroscopeResponse)
