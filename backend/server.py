@@ -347,6 +347,8 @@ async def startup_db_client():
     await database.tarot_readings.create_index([("user_id", 1), ("reading_date", -1)])
     await database.blog_posts.create_index([("published_date", -1)])
     await database.blog_posts.create_index("author")
+    await database.purchased_courses.create_index([("user_id", 1), ("course_id", 1)])
+    await database.calendar_routines.create_index("user_id", unique=True)
     
     logger.info("Conectado a MongoDB")
 
