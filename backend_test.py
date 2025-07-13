@@ -1,0 +1,546 @@
+#!/usr/bin/env python3
+"""
+Backend API Testing Script for Calma Mi Alma Premium Features
+Tests all the new premium functionality including user creation, courses, calendar, and tarot restrictions.
+"""
+
+import requests
+import json
+import sys
+from datetime import datetime, timedelta
+from typing import Dict, Any, Optional
+
+# Configuration
+BASE_URL = "http://localhost:8001/api"
+HEADERS = {"Content-Type": "application/json"}
+
+class BackendTester:
+    def __init__(self):
+        self.base_url = BASE_URL
+        self.headers = HEADERS.copy()
+        self.premium_token = None
+        self.free_token = None
+        self.test_results = []
+        
+    def log_test(self, test_name: str, success: bool, message: str, details: Any = None):
+        """Log test results"""
+        result = {
+            "test": test_name,
+            "success": success,
+            "message": message,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        status = "✅ PASS" if success else "❌ FAIL"
+        print(f"{status}: {test_name} - {message}")
+        if details and not success:
+            print(f"   Details: {details}")
+    
+    def make_request(self, method: str, endpoint: str, data: Dict = None, token: str = None) -> Dict:
+        """Make HTTP request with error handling"""
+        url = f"{self.base_url}{endpoint}"
+        headers = self.headers.copy()
+        
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+        
+        try:
+            if method.upper() == "GET":
+                response = requests.get(url, headers=headers)
+            elif method.upper() == "POST":
+                response = requests.post(url, headers=headers, json=data)
+            elif method.upper() == "PUT":
+                response = requests.put(url, headers=headers, json=data)
+            else:
+                return {"error": f"Unsupported method: {method}"}
+            
+            return {
+                "status_code": response.status_code,
+                "data": response.json() if response.content else {},
+                "success": response.status_code < 400
+            }
+        except requests.exceptions.ConnectionError:
+            return {"error": "Connection failed - Backend server not running", "status_code": 0}
+        except Exception as e:
+            return {"error": str(e), "status_code": 0}
+    
+    def test_health_check(self):
+        """Test if backend is running"""
+        print("\n=== HEALTH CHECK ===")
+        result = self.make_request("GET", "/health")
+        
+        if result.get("error"):
+            self.log_test("Health Check", False, result["error"])
+            return False
+        
+        if result["success"]:
+            self.log_test("Health Check", True, "Backend is running and healthy")
+            return True
+        else:
+            self.log_test("Health Check", False, f"Health check failed: {result.get('data', {})}")
+            return False
+    
+    def test_premium_user_creation(self):
+        """Test creating the premium user 'PREMIUM Vane'"""
+        print("\n=== PREMIUM USER CREATION ===")
+        
+        # First create the premium user
+        result = self.make_request("POST", "/auth/create-premium-user")
+        
+        if result.get("error"):
+            self.log_test("Premium User Creation", False, result["error"])
+            return False
+        
+        if result["success"]:
+            data = result["data"]
+            expected_email = "premium@calmamialma.com"
+            expected_name = "PREMIUM Vane"
+            
+            if data.get("email") == expected_email:
+                self.log_test("Premium User Creation", True, 
+                            f"Premium user created successfully: {expected_name}")
+                return True
+            else:
+                self.log_test("Premium User Creation", False, 
+                            f"User created but email mismatch. Expected: {expected_email}, Got: {data.get('email')}")
+                return False
+        else:
+            self.log_test("Premium User Creation", False, 
+                        f"Failed to create premium user: {result.get('data', {})}")
+            return False
+    
+    def test_login_premium_user(self):
+        """Test login with premium user credentials"""
+        print("\n=== PREMIUM USER LOGIN ===")
+        
+        login_data = {
+            "username": "premium@calmamialma.com",
+            "password": "asd123"
+        }
+        
+        # Use form data for OAuth2PasswordRequestForm
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        
+        try:
+            url = f"{self.base_url}/auth/login"
+            response = requests.post(url, headers=headers, data=login_data)
+            
+            result = {
+                "status_code": response.status_code,
+                "data": response.json() if response.content else {},
+                "success": response.status_code < 400
+            }
+        except Exception as e:
+            result = {"error": str(e), "status_code": 0}
+        
+        if result.get("error"):
+            self.log_test("Premium User Login", False, result["error"])
+            return False
+        
+        if result["success"]:
+            data = result["data"]
+            if "access_token" in data and data.get("user", {}).get("is_premium"):
+                self.premium_token = data["access_token"]
+                user_name = data.get("user", {}).get("name", "Unknown")
+                self.log_test("Premium User Login", True, 
+                            f"Premium user logged in successfully: {user_name}")
+                return True
+            else:
+                self.log_test("Premium User Login", False, 
+                            "Login successful but user is not premium or missing token")
+                return False
+        else:
+            self.log_test("Premium User Login", False, 
+                        f"Login failed: {result.get('data', {})}")
+            return False
+    
+    def test_course_details_api(self):
+        """Test the course details API endpoint"""
+        print("\n=== COURSE DETAILS API ===")
+        
+        if not self.premium_token:
+            self.log_test("Course Details API", False, "No premium token available")
+            return False
+        
+        # Test getting details for course ID "1"
+        course_id = "1"
+        result = self.make_request("GET", f"/courses/{course_id}/details", token=self.premium_token)
+        
+        if result.get("error"):
+            self.log_test("Course Details API", False, result["error"])
+            return False
+        
+        if result["success"]:
+            data = result["data"]
+            required_fields = ["id", "title", "description", "price", "duration", "level", "youtube_url", "program"]
+            
+            missing_fields = [field for field in required_fields if field not in data]
+            
+            if not missing_fields:
+                # Check if premium discount is applied
+                has_discount = "discounted_price" in data
+                self.log_test("Course Details API", True, 
+                            f"Course details retrieved successfully. Premium discount applied: {has_discount}")
+                return True
+            else:
+                self.log_test("Course Details API", False, 
+                            f"Missing required fields: {missing_fields}")
+                return False
+        else:
+            self.log_test("Course Details API", False, 
+                        f"Failed to get course details: {result.get('data', {})}")
+            return False
+    
+    def test_course_purchase_api(self):
+        """Test course purchase functionality"""
+        print("\n=== COURSE PURCHASE API ===")
+        
+        if not self.premium_token:
+            self.log_test("Course Purchase API", False, "No premium token available")
+            return False
+        
+        # Test purchasing course ID "1"
+        purchase_data = {
+            "course_id": "1",
+            "payment_method": "stripe"
+        }
+        
+        result = self.make_request("POST", "/courses/purchase", data=purchase_data, token=self.premium_token)
+        
+        if result.get("error"):
+            self.log_test("Course Purchase API", False, result["error"])
+            return False
+        
+        if result["success"]:
+            data = result["data"]
+            required_fields = ["id", "course_id", "user_id", "purchase_date", "payment_status", "access_granted"]
+            
+            missing_fields = [field for field in required_fields if field not in data]
+            
+            if not missing_fields and data.get("access_granted"):
+                self.log_test("Course Purchase API", True, 
+                            f"Course purchased successfully. Payment status: {data.get('payment_status')}")
+                return True
+            else:
+                self.log_test("Course Purchase API", False, 
+                            f"Purchase incomplete. Missing fields: {missing_fields}")
+                return False
+        else:
+            self.log_test("Course Purchase API", False, 
+                        f"Failed to purchase course: {result.get('data', {})}")
+            return False
+    
+    def test_purchased_courses_api(self):
+        """Test getting purchased courses"""
+        print("\n=== PURCHASED COURSES API ===")
+        
+        if not self.premium_token:
+            self.log_test("Purchased Courses API", False, "No premium token available")
+            return False
+        
+        result = self.make_request("GET", "/courses/purchased", token=self.premium_token)
+        
+        if result.get("error"):
+            self.log_test("Purchased Courses API", False, result["error"])
+            return False
+        
+        if result["success"]:
+            data = result["data"]
+            if isinstance(data, list):
+                self.log_test("Purchased Courses API", True, 
+                            f"Retrieved {len(data)} purchased courses")
+                return True
+            else:
+                self.log_test("Purchased Courses API", False, 
+                            "Response is not a list of courses")
+                return False
+        else:
+            self.log_test("Purchased Courses API", False, 
+                        f"Failed to get purchased courses: {result.get('data', {})}")
+            return False
+    
+    def test_calendar_routine_get(self):
+        """Test getting calendar routine (premium only)"""
+        print("\n=== CALENDAR ROUTINE GET ===")
+        
+        if not self.premium_token:
+            self.log_test("Calendar Routine GET", False, "No premium token available")
+            return False
+        
+        result = self.make_request("GET", "/calendar/routine", token=self.premium_token)
+        
+        if result.get("error"):
+            self.log_test("Calendar Routine GET", False, result["error"])
+            return False
+        
+        if result["success"]:
+            data = result["data"]
+            required_fields = ["id", "user_id", "weekly_routine", "created_at", "updated_at"]
+            
+            missing_fields = [field for field in required_fields if field not in data]
+            
+            if not missing_fields:
+                routine_days = len(data.get("weekly_routine", {}))
+                self.log_test("Calendar Routine GET", True, 
+                            f"Calendar routine retrieved successfully. Days configured: {routine_days}")
+                return True
+            else:
+                self.log_test("Calendar Routine GET", False, 
+                            f"Missing required fields: {missing_fields}")
+                return False
+        else:
+            self.log_test("Calendar Routine GET", False, 
+                        f"Failed to get calendar routine: {result.get('data', {})}")
+            return False
+    
+    def test_calendar_routine_update(self):
+        """Test updating calendar routine (premium only)"""
+        print("\n=== CALENDAR ROUTINE UPDATE ===")
+        
+        if not self.premium_token:
+            self.log_test("Calendar Routine UPDATE", False, "No premium token available")
+            return False
+        
+        routine_data = {
+            "weekly_routine": {
+                "lunes": ["yoga", "meditacion"],
+                "martes": ["respiracion", "yoga"],
+                "miercoles": ["meditacion"],
+                "jueves": ["yoga"],
+                "viernes": ["respiracion"],
+                "sabado": ["yoga", "meditacion"],
+                "domingo": ["meditacion"]
+            }
+        }
+        
+        result = self.make_request("PUT", "/calendar/routine", data=routine_data, token=self.premium_token)
+        
+        if result.get("error"):
+            self.log_test("Calendar Routine UPDATE", False, result["error"])
+            return False
+        
+        if result["success"]:
+            data = result["data"]
+            if "weekly_routine" in data and data["weekly_routine"] == routine_data["weekly_routine"]:
+                self.log_test("Calendar Routine UPDATE", True, 
+                            "Calendar routine updated successfully")
+                return True
+            else:
+                self.log_test("Calendar Routine UPDATE", False, 
+                            "Routine not updated correctly")
+                return False
+        else:
+            self.log_test("Calendar Routine UPDATE", False, 
+                        f"Failed to update calendar routine: {result.get('data', {})}")
+            return False
+    
+    def test_google_calendar_sync(self):
+        """Test Google Calendar sync (premium only)"""
+        print("\n=== GOOGLE CALENDAR SYNC ===")
+        
+        if not self.premium_token:
+            self.log_test("Google Calendar Sync", False, "No premium token available")
+            return False
+        
+        sync_data = {
+            "access_token": "fake_google_token_for_testing",
+            "sync_enabled": True
+        }
+        
+        result = self.make_request("POST", "/calendar/sync-google", data=sync_data, token=self.premium_token)
+        
+        if result.get("error"):
+            self.log_test("Google Calendar Sync", False, result["error"])
+            return False
+        
+        if result["success"]:
+            data = result["data"]
+            if data.get("status") == "success":
+                self.log_test("Google Calendar Sync", True, 
+                            "Google Calendar sync configured successfully")
+                return True
+            else:
+                self.log_test("Google Calendar Sync", False, 
+                            f"Sync failed: {data.get('message', 'Unknown error')}")
+                return False
+        else:
+            self.log_test("Google Calendar Sync", False, 
+                        f"Failed to sync Google Calendar: {result.get('data', {})}")
+            return False
+    
+    def test_tarot_restrictions(self):
+        """Test tarot restrictions for premium vs free users"""
+        print("\n=== TAROT RESTRICTIONS TEST ===")
+        
+        if not self.premium_token:
+            self.log_test("Tarot Restrictions", False, "No premium token available")
+            return False
+        
+        # Test premium user tarot access
+        result = self.make_request("GET", "/tarot/daily", token=self.premium_token)
+        
+        if result.get("error"):
+            self.log_test("Tarot Restrictions", False, f"Premium tarot failed: {result['error']}")
+            return False
+        
+        if result["success"]:
+            data = result["data"]
+            if data.get("is_premium") and "card" in data:
+                self.log_test("Tarot Restrictions", True, 
+                            "Premium user can access tarot reading successfully")
+                
+                # Now test that we can't get another reading immediately (daily limit)
+                result2 = self.make_request("GET", "/tarot/daily", token=self.premium_token)
+                if result2["success"]:
+                    data2 = result2["data"]
+                    # Should return the same reading (same ID)
+                    if data2.get("id") == data.get("id"):
+                        self.log_test("Tarot Daily Limit", True, 
+                                    "Premium daily limit working correctly")
+                        return True
+                    else:
+                        self.log_test("Tarot Daily Limit", False, 
+                                    "Premium user got different reading on same day")
+                        return False
+                else:
+                    self.log_test("Tarot Daily Limit", False, 
+                                f"Second tarot request failed: {result2.get('data', {})}")
+                    return False
+            else:
+                self.log_test("Tarot Restrictions", False, 
+                            "Premium user tarot reading missing required fields")
+                return False
+        else:
+            self.log_test("Tarot Restrictions", False, 
+                        f"Premium tarot reading failed: {result.get('data', {})}")
+            return False
+    
+    def create_free_user_and_test_tarot(self):
+        """Create a free user and test tarot restrictions"""
+        print("\n=== FREE USER TAROT TEST ===")
+        
+        # Create a free test user
+        result = self.make_request("POST", "/auth/create-test-user")
+        
+        if not result.get("success", False):
+            self.log_test("Free User Creation", False, "Failed to create free test user")
+            return False
+        
+        # Login as free user
+        login_data = {
+            "username": "test@calmamialma.com",
+            "password": "password123"
+        }
+        
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        
+        try:
+            url = f"{self.base_url}/auth/login"
+            response = requests.post(url, headers=headers, data=login_data)
+            
+            login_result = {
+                "status_code": response.status_code,
+                "data": response.json() if response.content else {},
+                "success": response.status_code < 400
+            }
+        except Exception as e:
+            self.log_test("Free User Login", False, str(e))
+            return False
+        
+        if not login_result["success"]:
+            self.log_test("Free User Login", False, "Failed to login free user")
+            return False
+        
+        free_token = login_result["data"].get("access_token")
+        if not free_token:
+            self.log_test("Free User Login", False, "No access token received")
+            return False
+        
+        # Test free user tarot access
+        result = self.make_request("GET", "/tarot/daily", token=free_token)
+        
+        if result.get("error"):
+            self.log_test("Free User Tarot", False, result["error"])
+            return False
+        
+        if result["success"]:
+            data = result["data"]
+            if not data.get("is_premium") and "card" in data:
+                self.log_test("Free User Tarot", True, 
+                            "Free user can access tarot reading (3-day limit applies)")
+                return True
+            else:
+                self.log_test("Free User Tarot", False, 
+                            "Free user tarot reading has incorrect premium status")
+                return False
+        else:
+            self.log_test("Free User Tarot", False, 
+                        f"Free user tarot reading failed: {result.get('data', {})}")
+            return False
+    
+    def run_all_tests(self):
+        """Run all backend tests"""
+        print("🚀 Starting Backend API Tests for Calma Mi Alma Premium Features")
+        print("=" * 70)
+        
+        # Health check first
+        if not self.test_health_check():
+            print("\n❌ Backend server is not running. Please start the backend service.")
+            return False
+        
+        # Test sequence
+        tests = [
+            self.test_premium_user_creation,
+            self.test_login_premium_user,
+            self.test_course_details_api,
+            self.test_course_purchase_api,
+            self.test_purchased_courses_api,
+            self.test_calendar_routine_get,
+            self.test_calendar_routine_update,
+            self.test_google_calendar_sync,
+            self.test_tarot_restrictions,
+            self.create_free_user_and_test_tarot
+        ]
+        
+        passed = 0
+        total = len(tests)
+        
+        for test in tests:
+            try:
+                if test():
+                    passed += 1
+            except Exception as e:
+                self.log_test(test.__name__, False, f"Test crashed: {str(e)}")
+        
+        # Summary
+        print("\n" + "=" * 70)
+        print(f"📊 TEST SUMMARY: {passed}/{total} tests passed")
+        print("=" * 70)
+        
+        failed_tests = [result for result in self.test_results if not result["success"]]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"   - {test['test']}: {test['message']}")
+        
+        success_rate = (passed / total) * 100
+        print(f"\n✅ Success Rate: {success_rate:.1f}%")
+        
+        return passed == total
+
+def main():
+    """Main function to run tests"""
+    tester = BackendTester()
+    success = tester.run_all_tests()
+    
+    # Save detailed results
+    with open("/app/backend_test_results.json", "w") as f:
+        json.dump(tester.test_results, f, indent=2, default=str)
+    
+    print(f"\n📄 Detailed results saved to: /app/backend_test_results.json")
+    
+    return 0 if success else 1
+
+if __name__ == "__main__":
+    sys.exit(main())
