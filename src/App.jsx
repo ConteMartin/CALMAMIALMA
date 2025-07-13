@@ -189,11 +189,14 @@ const AppContent = () => {
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const [isTarotModalOpen, setIsTarotModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
   const [isLoadingHoroscope, setIsLoadingHoroscope] = useState(false);
   const [clickedTarotCardId, setClickedTarotCardId] = useState(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [hoveredCardId, setHoveredCardId] = useState(null);
   const [selectedVideoCategory, setSelectedVideoCategory] = useState('COMUNIDAD');
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [currentView, setCurrentView] = useState('home');
 
   // Estados para datos del backend
   const [tarotReading, setTarotReading] = useState(null);
