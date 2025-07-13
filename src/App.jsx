@@ -1192,7 +1192,9 @@ const AppContent = () => {
               <a href="#membership" className="hover:text-acento-claro transition">Membresía</a>
               {isPremium() && (
                 <>
-                  <li><a href="#horoscope" className="hover:text-acento-claro transition">Carta Astral</a></li>
+                  <li><a href="#horoscope" className="hover:text-acento-claro transition">Horóscopo</a></li>
+                  <li><a href="#videos" className="hover:text-acento-claro transition">Videos</a></li>
+                  <li><a href="#courses" className="hover:text-acento-claro transition">Cursos</a></li>
                   <li><a href="#blog" className="hover:text-acento-claro transition">Blog</a></li>
                 </>
               )}
