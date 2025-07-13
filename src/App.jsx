@@ -768,85 +768,57 @@ const AppContent = () => {
         </div>
       </section>
 
-      {/* Natal Chart & Horoscope Section (Solo Premium) */}
+      {/* Horoscope Section (Solo Premium) */}
       {isPremium() && (
         <section id="horoscope" className="py-12 px-4 bg-fondo-claro">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-6">Carta Astral & Horóscopo</h2>
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-6">Horóscopo Diario</h2>
             <p className="text-center font-montserrat text-texto-secundario-dark mb-16 max-w-2xl mx-auto">
-              Descubre las influencias cósmicas que moldean tu personalidad y destino con nuestro análisis detallado de la carta astral.
+              Descubre lo que los astros tienen preparado para ti hoy. Ingresa tu fecha de nacimiento para recibir tu horóscopo personalizado.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div className="bg-gradient-main-sections p-8 rounded-2xl shadow-lg text-texto-principal-dark">
-                <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-6">Tu Información de Nacimiento</h3>
-                <form onSubmit={handleNatalChartSubmit}>
-                  <div className="mb-4">
-                    <label htmlFor="birth-date" className="block text-texto-secundario-dark mb-2 font-montserrat">Fecha de Nacimiento</label>
-                    <input type="date" name="birth_date" id="birth-date" required className="w-full p-3 border border-acento-claro rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"/>
-                  </div>
-                  <div className="mb-4">
-                    <label htmlFor="birth-time" className="block text-texto-secundario-dark mb-2 font-montserrat">Hora de Nacimiento</label>
-                    <input type="time" name="birth_time" id="birth-time" required className="w-full p-3 border border-acento-claro rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"/>
-                  </div>
+                <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-6">Tu Fecha de Nacimiento</h3>
+                <form onSubmit={handleHoroscopeSubmit}>
                   <div className="mb-6">
-                    <label htmlFor="birth-place" className="block text-texto-secundario-dark mb-2 font-montserrat">Lugar de Nacimiento</label>
-                    <input type="text" name="birth_place" id="birth-place" placeholder="Ciudad, País" required className="w-full p-3 border border-acento-claro rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"/>
+                    <label htmlFor="birth-date" className="block text-texto-secundario-dark mb-2 font-montserrat">Fecha de Nacimiento</label>
+                    <input 
+                      type="date" 
+                      name="birth_date" 
+                      id="birth-date" 
+                      required 
+                      className="w-full p-3 border border-acento-claro rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"
+                    />
                   </div>
-
-                  <h4 className="text-lg font-bodoni-moda font-medium text-texto-principal-dark mb-3">Selecciona Tu Signo Zodiacal</h4>
-                  <div className="zodiac-selector">
-                    {[
-                      { sign: 'aries', icon: 'fas fa-fire' },
-                      { sign: 'taurus', icon: 'fas fa-seedling' },
-                      { sign: 'gemini', icon: 'fas fa-user-friends' },
-                      { sign: 'cancer', icon: 'fas fa-water' },
-                      { sign: 'leo', icon: 'fas fa-sun' },
-                      { sign: 'virgo', icon: 'fas fa-leaf' },
-                      { sign: 'libra', icon: 'fas fa-balance-scale' },
-                      { sign: 'scorpio', icon: 'fas fa-dragon' },
-                      { sign: 'sagittarius', icon: 'fas fa-horse' },
-                      { sign: 'capricorn', icon: 'fas fa-mountain' },
-                      { sign: 'aquarius', icon: 'fas fa-wind' },
-                      { sign: 'pisces', icon: 'fas fa-fish' },
-                    ].map(zodiac => (
-                      <div
-                        key={zodiac.sign}
-                        className={`zodiac-icon bg-acento-claro text-texto-principal-dark hover:bg-fondo-oscuro hover:text-texto-claro-white ${selectedZodiac === zodiac.sign ? 'selected bg-fondo-oscuro text-texto-claro-white' : ''}`}
-                        data-sign={zodiac.sign}
-                        onClick={() => handleZodiacSelect(zodiac.sign)}
-                      >
-                        <i className={`${zodiac.icon} text-2xl`}></i>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button type="submit" disabled={!selectedZodiac} className="w-full mt-6 bg-gris-palido-btn text-texto-principal-dark py-3 rounded-btn hover:bg-gris-btn-hover transition font-montserrat disabled:opacity-50">
-                    Generar Carta Astral
+                  <button type="submit" className="w-full bg-gris-palido-btn text-texto-principal-dark py-3 rounded-btn hover:bg-gris-btn-hover transition font-montserrat">
+                    Obtener Mi Horóscopo
                   </button>
                 </form>
               </div>
 
               <div className="bg-gradient-main-sections p-8 rounded-2xl shadow-lg text-texto-principal-dark">
-                <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-4">Tu Huella Cósmica</h3>
-                {isLoadingNatalChart ? (
+                <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-4">Tu Horóscopo de Hoy</h3>
+                {isLoadingHoroscope ? (
                   <div className="loading">
                     <span></span>
                     <span></span>
                     <span></span>
                   </div>
-                ) : showNatalChartContent && natalChart ? (
-                  <div id="chart-content">
+                ) : horoscope ? (
+                  <div id="horoscope-content">
                     <div className="bg-fondo-claro p-4 rounded-lg mb-4">
-                      <h4 className="font-medium text-texto-principal-dark mb-2">Tu Carta Astral</h4>
+                      <h4 className="font-medium text-texto-principal-dark mb-2">
+                        {horoscope.zodiac_sign} - {new Date(horoscope.date).toLocaleDateString('es-ES')}
+                      </h4>
                       <p className="text-sm text-texto-secundario-dark font-montserrat whitespace-pre-line">
-                        {natalChart.chart_analysis}
+                        {horoscope.daily_horoscope}
                       </p>
                     </div>
                   </div>
                 ) : (
                   <p className="font-montserrat text-texto-secundario-dark">
-                    Completa el formulario para generar tu carta astral personalizada usando inteligencia artificial.
+                    Ingresa tu fecha de nacimiento para recibir tu horóscopo diario personalizado generado con inteligencia artificial.
                   </p>
                 )}
               </div>
