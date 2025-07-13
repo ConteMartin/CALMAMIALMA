@@ -870,15 +870,23 @@ const AppContent = () => {
               <ul className="space-y-4 font-montserrat">
                 <li className="flex items-center">
                   <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                  <span>Lectura diaria de tarot (básica)</span>
+                  <span>Lectura de tarot cada 3 días</span>
+                </li>
+                <li className="flex items-center">
+                  <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                  <span>Acceso a videos de la comunidad</span>
+                </li>
+                <li className="flex items-center">
+                  <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                  <span>Primeras 3 líneas de artículos del blog</span>
+                </li>
+                <li className="flex items-center">
+                  <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                  <span>Cursos a precio completo</span>
                 </li>
                 <li className="flex items-center text-texto-secundario-dark">
                   <i className="fas fa-times mr-3"></i>
-                  <span>30% de descuento en todos los servicios</span>
-                </li>
-                <li className="flex items-center text-texto-secundario-dark">
-                  <i className="fas fa-times mr-3"></i>
-                  <span>Carta astral detallada</span>
+                  <span>30% de descuento en servicios y cursos</span>
                 </li>
                 <li className="flex items-center text-texto-secundario-dark">
                   <i className="fas fa-times mr-3"></i>
@@ -886,11 +894,11 @@ const AppContent = () => {
                 </li>
                 <li className="flex items-center text-texto-secundario-dark">
                   <i className="fas fa-times mr-3"></i>
-                  <span>Contenido exclusivo del blog</span>
+                  <span>Acceso completo a videos de yoga y meditación</span>
                 </li>
                 <li className="flex items-center text-texto-secundario-dark">
                   <i className="fas fa-times mr-3"></i>
-                  <span>Acceso a la biblioteca de videos</span>
+                  <span>Contenido completo del blog</span>
                 </li>
                 <li className="flex items-center text-texto-secundario-dark">
                   <i className="fas fa-times mr-3"></i>
@@ -920,23 +928,19 @@ const AppContent = () => {
                 </li>
                 <li className="flex items-center">
                   <i className="fas fa-check mr-3"></i>
-                  <span>30% de descuento en todos los servicios</span>
+                  <span>30% de descuento en todos los servicios y cursos</span>
                 </li>
                 <li className="flex items-center">
                   <i className="fas fa-check mr-3"></i>
-                  <span>Carta astral detallada</span>
+                  <span>Horóscopo diario personalizado con IA</span>
                 </li>
                 <li className="flex items-center">
                   <i className="fas fa-check mr-3"></i>
-                  <span>Horóscopo diario personalizado</span>
+                  <span>Acceso completo a todos los videos</span>
                 </li>
                 <li className="flex items-center">
                   <i className="fas fa-check mr-3"></i>
-                  <span>Contenido exclusivo del blog</span>
-                </li>
-                <li className="flex items-center">
-                  <i className="fas fa-check mr-3"></i>
-                  <span>Acceso a la biblioteca de videos</span>
+                  <span>Contenido completo del blog</span>
                 </li>
                 <li className="flex items-center">
                   <i className="fas fa-check mr-3"></i>
