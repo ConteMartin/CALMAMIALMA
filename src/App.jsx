@@ -489,6 +489,9 @@ const AppContent = () => {
                   <li><a href="#courses" onClick={() => handleViewChange('home')} className="hover:text-white transition">Cursos</a></li>
                   <li><a href="#" onClick={() => handleViewChange('calendar')} className="hover:text-white transition">Mi Calendario</a></li>
                   <li><a href="#" onClick={() => handleViewChange('my-courses')} className="hover:text-white transition">Mis Cursos</a></li>
+                  {isAdmin() && (
+                    <li><a href="#" onClick={() => handleViewChange('admin')} className="hover:text-white transition">Admin</a></li>
+                  )}
                 </>
               )}
               <li><a href="#contact" onClick={() => handleViewChange('home')} className="hover:text-white transition">Contacto</a></li>
