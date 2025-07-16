@@ -668,23 +668,27 @@ const AppContent = () => {
                       >
                         {/* El contenido de la cara trasera solo se renderiza si la carta está volteada */}
                         {clickedTarotCardId === card.id && ( 
-                          <div className="w-full h-full flex items-center justify-center"> {/* Wrapper to center ProfileCard */}
-                            {/* Se ha solicitado explícitamente mostrar el componente ProfileCard aquí.
-                              Ten en cuenta que las propiedades proporcionadas (como "Software Engineer", "Javi A. Torres")
-                              podrían no alinearse temáticamente con una lectura de cartas de tarot.
-                              Asumimos que esto es para probar el renderizado del componente.
-                            */}
-                            <ProfileCard
-                              name="Javi A. Torres"
-                              title="Software Engineer"
-                              handle="javicodes"
-                              status="Online"
-                              contactText="Contact Me"
-                              avatarUrl="/path/to/avatar.jpg" // Asegúrate de que esta ruta sea válida o reemplázala con una imagen genérica
-                              showUserInfo={true}
-                              enableTilt={true}
-                              onContactClick={() => console.log('Contact clicked')}
-                            />
+                          <div className="tarot-card-back-content">
+                            <h3 className="tarot-back-title">{card.title}</h3>
+                            {card.imageUrlBack && (
+                              <img
+                                src={card.imageUrlBack}
+                                alt={card.title}
+                                className="tarot-back-image"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                  console.error(`Error loading back image for card ${card.id}: ${card.imageUrlBack}`);
+                                }}
+                              />
+                            )}
+                            <div className="tarot-back-main-text custom-scrollbar">
+                              {card.mainText}
+                            </div>
+                            {card.practiceText && (
+                              <div className="tarot-back-practice-text">
+                                {card.practiceText}
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
