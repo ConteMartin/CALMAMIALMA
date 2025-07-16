@@ -783,7 +783,7 @@ async def get_course_details(
 
 # Rutas de Blog
 @app.get("/api/blog/posts", response_model=List[BlogPostSummary])
-async def get_blog_posts(current_user: UserResponse = Depends(get_current_user)):
+async def get_blog_posts(current_user: Optional[UserResponse] = Depends(get_current_user_optional)):
     # Posts de ejemplo
     posts = await database.blog_posts.find().sort("published_date", -1).to_list(length=10)
     
@@ -825,7 +825,7 @@ async def get_blog_posts(current_user: UserResponse = Depends(get_current_user))
     blog_posts = []
     for post in posts:
         # Para usuarios gratuitos, mostrar solo las primeras 3 líneas
-        if not current_user.is_premium:
+        if not current_user or not current_user.is_premium:
             content_lines = post["content"].split('\n')
             limited_content = '\n'.join(content_lines[:3])
             if len(content_lines) > 3:
