@@ -501,6 +501,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         email=user["email"],
         name=user["name"],
         is_premium=user.get("is_premium", False),
+        is_admin=user.get("is_admin", False),
         created_at=user["created_at"],
         subscription_expires=user.get("subscription_expires")
     )
