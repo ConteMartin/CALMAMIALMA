@@ -93,6 +93,11 @@ export const AuthProvider = ({ children }) => {
     return user?.is_premium; 
   }, [user]);
 
+  const isAdmin = useCallback(() => {
+    // Asegúrate de que user exista y tenga la propiedad is_admin
+    return user?.is_admin; 
+  }, [user]);
+
   const value = {
     user,
     loading,
@@ -102,6 +107,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     isLoggedIn,
     isPremium,
+    isAdmin,
     fetchCurrentUser // Para recargar el estado del usuario si es necesario (ej. después de una actualización premium)
   };
 
