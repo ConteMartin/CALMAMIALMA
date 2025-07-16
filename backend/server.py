@@ -1305,18 +1305,60 @@ async def get_daily_tarot(current_user: UserResponse = Depends(get_current_user)
     
     # Generar nueva lectura
     import random
+    
+    # Datos de las 40 cartas del tarot
     tarot_cards = [
-        {"id": "1", "title": "El Loco", "description": "Nuevos comienzos", "image_url": "/carta-tarot-dorso.png"},
-        {"id": "2", "title": "El Mago", "description": "Manifestación", "image_url": "/carta-tarot-dorso.png"},
-        {"id": "3", "title": "La Emperatriz", "description": "Abundancia", "image_url": "/carta-tarot-dorso.png"},
-        {"id": "4", "title": "El Emperador", "description": "Liderazgo", "image_url": "/carta-tarot-dorso.png"},
-        {"id": "5", "title": "El Hierofante", "description": "Tradición", "image_url": "/carta-tarot-dorso.png"},
-        {"id": "6", "title": "Los Amantes", "description": "Amor y decisiones", "image_url": "/carta-tarot-dorso.png"},
-        {"id": "7", "title": "El Carro", "description": "Determinación", "image_url": "/carta-tarot-dorso.png"},
-        {"id": "8", "title": "La Justicia", "description": "Equilibrio", "image_url": "/carta-tarot-dorso.png"},
-        {"id": "9", "title": "El Ermitaño", "description": "Introspección", "image_url": "/carta-tarot-dorso.png"},
-        {"id": "10", "title": "La Rueda de la Fortuna", "description": "Cambio y destino", "image_url": "/carta-tarot-dorso.png"},
+        {
+            "id": "1",
+            "title": "ERES SUFICIENTE, TAL COMO ERES",
+            "description": "Esta carta te invita a recordarte una verdad esencial: no necesitas demostrar nada. Tu valor no depende de tus logros, tu apariencia o de la aprobación externa. Eres suficiente desde el primer latido de tu corazón.",
+            "premium_description": "Mírate con ternura, con esa mirada compasiva que tanto ofreces a los demás. Abre espacio para aceptar tus imperfecciones, porque incluso ellas forman parte de tu magia. Hoy es un día perfecto para practicar la autocompasión y recordar que tu esencia es pura luz.",
+            "practice_text": "✨ Práctica sugerida: Párate frente al espejo, mírate a los ojos y repite tres veces: 'Soy suficiente. Me amo tal como soy. Hoy me honro.' Respira hondo y permite que ese mensaje llegue a tu corazón.",
+            "image_url": "/tarot1.png"
+        },
+        {
+            "id": "2",
+            "title": "NUEVA ESPERANZA RENACE",
+            "description": "Los ciclos terminan para dar paso a nuevos comienzos. Esta carta anuncia que después de un período de pausa o dificultad, llega la renovación y las oportunidades frescas.",
+            "premium_description": "El universo está conspirando a tu favor. Las semillas que plantaste en silencio están germinando. Es momento de confiar en el proceso y abrirte a recibir las bendiciones que están por llegar. Tu fe será recompensada.",
+            "practice_text": "✨ Práctica sugerida: Escribe en un papel tres cosas que quieres manifestar en tu vida. Luego, siéntate en silencio, cierra los ojos y visualiza cada una de ellas ya cumplida. Siente la gratitud en tu corazón.",
+            "image_url": "/tarot2.png"
+        },
+        {
+            "id": "3",
+            "title": "EL CAMINO SE ACLARA",
+            "description": "La confusión se disipa y la claridad mental llega a tu vida. Las decisiones que has estado posponiendo encontrarán su respuesta natural.",
+            "premium_description": "Tu intuición está especialmente activa hoy. Confía en esas corazonadas que surgen sin explicación lógica. Los sincronismos y las señales del universo te guiarán hacia la dirección correcta. Mantén los ojos abiertos a los mensajes sutiles.",
+            "practice_text": "✨ Práctica sugerida: Dedica 10 minutos a meditar en silencio. Pregúntale a tu corazón: '¿Qué necesito saber hoy?' Escucha sin juzgar las primeras impresiones que lleguen a tu mente.",
+            "image_url": "/tarot3.png"
+        }
     ]
+    
+    # Generar 37 cartas adicionales con estructura básica (IDs 4-40)
+    for i in range(4, 41):
+        tarot_cards.append({
+            "id": str(i),
+            "title": f"CARTA {i}",
+            "description": f"Descripción básica de la carta {i} que verán todos los usuarios. Esta carta trae un mensaje de reflexión y crecimiento personal.",
+            "premium_description": f"Descripción extendida y detallada solo para usuarios premium de la carta {i}. Incluye insights profundos y conexiones espirituales más avanzadas.",
+            "practice_text": f"✨ Práctica sugerida: Meditación y reflexión específica para la carta {i}. Dedica tiempo a conectar con la energía de esta carta.",
+            "image_url": f"/tarot{i}.png"
+        })
+    
+    # Obtener la carta de la lectura anterior si existe para evitar repetir
+    last_card_id = None
+    if current_user.last_tarot_reading:
+        last_reading = await database.tarot_readings.find_one({
+            "user_id": current_user.id,
+            "reading_date": {"$lte": current_user.last_tarot_reading}
+        }, sort=[("reading_date", -1)])
+        if last_reading:
+            last_card_id = last_reading["card"]["id"]
+    
+    # Filtrar la carta anterior para evitar repetición
+    available_cards = [card for card in tarot_cards if card["id"] != last_card_id]
+    if not available_cards:  # Si solo hay una carta disponible
+        available_cards = tarot_cards
     
     selected_card = random.choice(tarot_cards)
     reading_text = await generate_tarot_reading(selected_card, current_user.is_premium)
