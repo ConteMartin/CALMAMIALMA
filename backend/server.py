@@ -486,6 +486,9 @@ async def register(user_data: UserCreate):
         
         return Token(access_token=access_token, token_type="bearer", user=user_response)
         
+    except HTTPException:
+        # Re-raise HTTP exceptions (like 400 for duplicate user)
+        raise
     except Exception as e:
         logger.error(f"Error in user registration: {e}")
         raise HTTPException(status_code=500, detail="Error interno del servidor")
