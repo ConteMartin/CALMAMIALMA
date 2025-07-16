@@ -787,7 +787,13 @@ class BackendTester:
             self.test_calendar_routine_update,
             self.test_google_calendar_sync,
             self.test_tarot_restrictions,
-            self.create_free_user_and_test_tarot
+            self.create_free_user_and_test_tarot,
+            self.test_admin_user_creation_and_login,
+            self.test_admin_video_creation,
+            self.test_admin_course_creation,
+            self.test_admin_blog_post_creation,
+            self.test_videos_access_control,
+            self.test_blog_content_restrictions
         ]
         
         passed = 0
