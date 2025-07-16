@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Configuration
-BASE_URL = "http://localhost:8001/api"
+BASE_URL = "http://localhost:8010/api"
 HEADERS = {"Content-Type": "application/json"}
 
 def test_user_registration():
