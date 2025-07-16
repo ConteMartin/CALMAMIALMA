@@ -55,10 +55,17 @@ class BackendTester:
             else:
                 return {"error": f"Unsupported method: {method}"}
             
+            # Try to parse JSON, but handle cases where response is not JSON
+            try:
+                response_data = response.json() if response.content else {}
+            except ValueError as e:
+                response_data = {"error": f"Invalid JSON response: {response.text[:200]}"}
+            
             return {
                 "status_code": response.status_code,
-                "data": response.json() if response.content else {},
-                "success": response.status_code < 400
+                "data": response_data,
+                "success": response.status_code < 400,
+                "raw_text": response.text[:500] if hasattr(response, 'text') else ""
             }
         except requests.exceptions.ConnectionError:
             return {"error": "Connection failed - Backend server not running", "status_code": 0}
