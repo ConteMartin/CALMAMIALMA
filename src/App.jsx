@@ -9,6 +9,8 @@ import AdminDashboard from './components/AdminDashboard.jsx';
 import FloatingIconsBackground from './components/FloatingIcons.jsx'; 
 // Importa el NUEVO componente ProfileCard (aunque ya no se usa para el tarot)
 import ProfileCard from './components/ProfileCard.jsx'; 
+// Importa el componente SpotlightCard para el efecto holograma
+import SpotlightCard from './components/SpotlightCard.jsx';
 // Importa el nuevo CSS para el display de las cartas de tarot
 import './components/TarotCardDisplay.css';
 
