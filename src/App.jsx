@@ -1190,7 +1190,7 @@ const AppContent = () => {
           </section>
 
           {/* Contact & Social Section */}
-          <section id="contact" className="bg-lino relative py-12 px-4" ref={contactSectionRef}> {/* Changed bg-pink-section to bg-lino */}
+          <section id="contact" className="bg-white relative py-12 px-4" ref={contactSectionRef}> {/* Changed bg-lino to bg-white */}
             <FloatingIconsBackground numberOfIcons={30} iconFilterStyle="brightness(0.5)" /> 
             <div className="max-w-6xl mx-auto relative z-20 text-texto-principal-dark">
               <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-16">Conecta Con Nosotros</h2>
@@ -1199,22 +1199,22 @@ const AppContent = () => {
                   <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-6">Envíanos un Mensaje</h3>
                   <form onSubmit={handleContactSubmit}>
                     <div className="mb-4">
-                      <label htmlFor="name" className="block text-acento-principal mb-2 font-montserrat">Tu Nombre</label> {/* Changed text-acento-personalizado to text-acento-principal */}
-                      <input type="text" id="name" name="name" required className="w-full p-3 border border-acento-principal rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"/> {/* Changed border-acento-personalizado to border-acento-principal */}
+                      <label htmlFor="name" className="block text-texto-principal-dark mb-2 font-montserrat">Tu Nombre</label> {/* Changed text-acento-principal to text-texto-principal-dark */}
+                      <input type="text" id="name" name="name" required className="w-full p-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-lino text-texto-principal-dark"/> {/* Changed border-acento-principal to border-black and bg-fondo-claro to bg-lino */}
                     </div>
                     <div className="mb-4">
-                      <label htmlFor="email" className="block text-acento-principal mb-2 font-montserrat">Correo Electrónico</label> {/* Changed text-acento-personalizado to text-acento-principal */}
-                      <input type="email" id="email" name="email" required className="w-full p-3 border border-acento-principal rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"/> {/* Changed border-acento-personalizado to border-acento-principal */}
+                      <label htmlFor="email" className="block text-texto-principal-dark mb-2 font-montserrat">Correo Electrónico</label> {/* Changed text-acento-principal to text-texto-principal-dark */}
+                      <input type="email" id="email" name="email" required className="w-full p-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-lino text-texto-principal-dark"/> {/* Changed border-acento-principal to border-black and bg-fondo-claro to bg-lino */}
                     </div>
                     <div className="mb-4">
-                      <label htmlFor="subject" className="block text-acento-principal mb-2 font-montserrat">Asunto</label> {/* Changed text-acento-personalizado to text-acento-principal */}
-                      <input type="text" id="subject" name="subject" required className="w-full p-3 border border-acento-principal rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"/> {/* Changed border-acento-personalizado to border-acento-principal */}
+                      <label htmlFor="subject" className="block text-texto-principal-dark mb-2 font-montserrat">Asunto</label> {/* Changed text-acento-principal to text-texto-principal-dark */}
+                      <input type="text" id="subject" name="subject" required className="w-full p-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-lino text-texto-principal-dark"/> {/* Changed border-acento-principal to border-black and bg-fondo-claro to bg-lino */}
                     </div>
                     <div className="mb-6">
-                      <label htmlFor="message" className="block text-acento-principal mb-2 font-montserrat">Tu Mensaje</label> {/* Changed text-acento-personalizado to text-acento-principal */}
-                      <textarea id="message" name="message" rows="4" required className="w-full p-3 border border-acento-principal rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"></textarea> {/* Changed border-acento-personalizado to border-acento-principal */}
+                      <label htmlFor="message" className="block text-texto-principal-dark mb-2 font-montserrat">Tu Mensaje</label> {/* Changed text-acento-principal to text-texto-principal-dark */}
+                      <textarea id="message" name="message" rows="4" required className="w-full p-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-lino text-texto-principal-dark"></textarea> {/* Changed border-acento-principal to border-black and bg-fondo-claro to bg-lino */}
                     </div>
-                    <button type="submit" className="btn-general px-6 py-3 font-montserrat">
+                    <button type="submit" className="btn-general px-6 py-3 font-montserrat border border-black">
                       Enviar Mensaje
                     </button>
                   </form>
@@ -1223,29 +1223,29 @@ const AppContent = () => {
                 <div>
                   <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-6">Síguenos</h3>
                   <div className="flex space-x-4 mb-10">
-                    <a href="#" className="w-12 h-12 bg-acento-claro rounded-full flex items-center justify-center text-texto-principal-dark hover:bg-gris-palido-btn hover:text-texto-principal-dark transition">
+                    <a href="#" className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-white hover:bg-terracota transition"> {/* Changed bg-acento-claro to bg-gray-600 and hover:bg-gris-palido-btn to hover:bg-terracota */}
                       <i className="fab fa-instagram text-xl"></i>
                     </a>
-                    <a href="#" className="w-12 h-12 bg-acento-claro rounded-full flex items-center justify-center text-texto-principal-dark hover:bg-gris-palido-btn hover:text-texto-principal-dark transition">
+                    <a href="#" className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-white hover:bg-terracota transition"> {/* Changed bg-acento-claro to bg-gray-600 and hover:bg-gris-palido-btn to hover:bg-terracota */}
                       <i className="fab fa-facebook-f text-xl"></i>
                     </a>
-                    <a href="#" className="w-12 h-12 bg-acento-claro rounded-full flex items-center justify-center text-texto-principal-dark hover:bg-gris-palido-btn hover:text-texto-principal-dark transition">
+                    <a href="#" className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-white hover:bg-terracota transition"> {/* Changed bg-acento-claro to bg-gray-600 and hover:bg-gris-palido-btn to hover:bg-terracota */}
                       <i className="fab fa-twitter text-xl"></i>
                     </a>
-                    <a href="#" className="w-12 h-12 bg-acento-claro rounded-full flex items-center justify-center text-texto-principal-dark hover:bg-gris-palido-btn hover:text-texto-principal-dark transition">
+                    <a href="#" className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-white hover:bg-terracota transition"> {/* Changed bg-acento-claro to bg-gray-600 and hover:bg-gris-palido-btn to hover:bg-terracota */}
                       <i className="fab fa-pinterest text-xl"></i>
                     </a>
                   </div>
 
                   <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-6">Visítanos</h3>
-                  <address className="not-italic font-montserrat text-acento-principal mb-6"> {/* Changed text-acento-personalizado to text-acento-principal */}
+                  <address className="not-italic font-montserrat text-texto-principal-dark mb-6"> {/* Changed text-acento-principal to text-texto-principal-dark */}
                     <p className="mb-2">123 Serenity Lane</p>
                     <p className="mb-2">Harmony Hills, CA 90210</p>
                     <p className="mb-2">Estados Unidos</p>
                   </address>
 
                   <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-6">Información de Contacto</h3>
-                  <div className="font-montserrat text-acento-principal"> {/* Changed text-acento-personalizado to text-acento-principal */}
+                  <div className="font-montserrat text-texto-principal-dark"> {/* Changed text-acento-principal to text-texto-principal-dark */}
                     <p className="mb-2">Email: hola@calmamialma.com</p>
                     <p>Teléfono: (555) 123-4567</p>
                   </div>
