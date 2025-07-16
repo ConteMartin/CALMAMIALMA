@@ -646,7 +646,7 @@ async def get_videos(current_user: Optional[UserResponse] = Depends(get_current_
 
 # Rutas de Cursos
 @app.get("/api/courses", response_model=List[CourseResponse])
-async def get_courses(current_user: UserResponse = Depends(get_current_user)):
+async def get_courses(current_user: Optional[UserResponse] = Depends(get_current_user_optional)):
     # Cursos con precios diferenciados
     courses_data = [
         {
@@ -684,13 +684,22 @@ async def get_courses(current_user: UserResponse = Depends(get_current_user)):
             "duration": "8 semanas",
             "level": "Todos los niveles",
             "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Yoga+Prenatal"
+        },
+        {
+            "id": "5",
+            "title": "Introducción a la Meditación",
+            "description": "Curso gratuito para aprender los fundamentos de la meditación",
+            "price": 0.0,
+            "duration": "2 semanas",
+            "level": "Principiante",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Meditación+Gratis"
         }
     ]
     
     courses = []
     for course_data in courses_data:
         # Aplicar descuento del 30% para usuarios premium
-        if current_user.is_premium:
+        if current_user and current_user.is_premium and course_data["price"] > 0:
             course_data["discounted_price"] = course_data["price"] * 0.7
         
         courses.append(CourseResponse(**course_data))
