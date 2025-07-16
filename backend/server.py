@@ -871,15 +871,9 @@ async def get_blog_post(post_id: str, current_user: UserResponse = Depends(get_c
 @app.post("/api/blog/posts", response_model=BlogPostResponse)
 async def create_blog_post(
     post_request: BlogPostRequest,
-    current_user: UserResponse = Depends(get_current_user)
+    current_admin: UserResponse = Depends(get_current_admin_user)
 ):
-    # Solo usuarios premium pueden crear posts (o podrías agregar rol de admin)
-    if not current_user.is_premium:
-        raise HTTPException(
-            status_code=403,
-            detail="Solo usuarios premium pueden crear posts"
-        )
-    
+    # Solo admin puede crear posts
     post_data = {
         "_id": str(uuid.uuid4()),
         "title": post_request.title,
@@ -887,7 +881,7 @@ async def create_blog_post(
         "excerpt": post_request.excerpt,
         "image_url": post_request.image_url,
         "published_date": datetime.utcnow(),
-        "author": current_user.name
+        "author": current_admin.name
     }
     
     await database.blog_posts.insert_one(post_data)
