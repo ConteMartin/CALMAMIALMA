@@ -389,6 +389,7 @@ async def register(user_data: UserCreate):
             "email": user_data.email,
             "name": user_data.name,
             "is_premium": False,
+            "is_admin": False,
             "created_at": datetime.utcnow(),
             "subscription_expires": None
         }
