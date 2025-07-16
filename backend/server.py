@@ -448,6 +448,7 @@ async def google_auth(auth_request: GoogleAuthRequest):
                 "name": name,
                 "google_id": google_id,
                 "is_premium": False,
+                "is_admin": False,
                 "created_at": datetime.utcnow(),
                 "subscription_expires": None
             }
