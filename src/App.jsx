@@ -608,8 +608,8 @@ const AppContent = () => {
             <div className="w-full mx-auto relative z-20 py-32 px-4">
               <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-16">Oráculo Diario</h2>
               <div className="relative h-[400px] flex justify-center items-center w-[80vw] mx-auto"> {/* Changed h-[275px] to h-[400px] */}
-                {tarotCardsData.map((card, index) => {
-                  const cardStyle = calculateTarotCardStyle(index, tarotCardsData.length, hoveredCardId === card.id);
+                {baseTarotCardsData.map((card, index) => {
+                  const cardStyle = calculateTarotCardStyle(index, baseTarotCardsData.length, hoveredCardId === card.id);
                   
                   return (
                     <div
