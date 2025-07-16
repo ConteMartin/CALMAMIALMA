@@ -957,7 +957,7 @@ async def purchase_course(
 
 @app.get("/api/courses/purchased", response_model=List[CourseResponse])
 async def get_purchased_courses(current_user: UserResponse = Depends(get_current_user)):
-    """Obtener cursos comprados por el usuario"""
+    """Obtener cursos comprados por el usuario + cursos gratuitos automáticamente"""
     try:
         # Obtener cursos comprados
         purchased = await database.purchased_courses.find({"user_id": current_user.id}).to_list(length=None)
@@ -999,16 +999,32 @@ async def get_purchased_courses(current_user: UserResponse = Depends(get_current
                 "duration": "8 semanas",
                 "level": "Todos los niveles",
                 "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Yoga+Prenatal"
+            },
+            {
+                "id": "5",
+                "title": "Introducción a la Meditación",
+                "description": "Curso gratuito para aprender los fundamentos de la meditación",
+                "price": 0.0,
+                "duration": "2 semanas",
+                "level": "Principiante",
+                "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Meditación+Gratis"
             }
         ]
         
-        purchased_courses = []
+        available_courses = []
+        
+        # Agregar cursos gratuitos automáticamente para todos los usuarios registrados
+        for course_data in courses_data:
+            if course_data["price"] == 0:
+                available_courses.append(CourseResponse(**course_data))
+        
+        # Agregar cursos comprados
         for purchase in purchased:
             course_data = next((c for c in courses_data if c["id"] == purchase["course_id"]), None)
-            if course_data:
-                purchased_courses.append(CourseResponse(**course_data))
+            if course_data and course_data["price"] > 0:  # Solo agregar si no es gratuito (ya está agregado arriba)
+                available_courses.append(CourseResponse(**course_data))
         
-        return purchased_courses
+        return available_courses
         
     except Exception as e:
         logger.error(f"Error getting purchased courses: {e}")
