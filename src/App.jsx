@@ -814,7 +814,7 @@ const AppContent = () => {
               </div>
               
               {!isPremium() && (
-                <div className="mt-12 p-6 bg-white text-texto-principal-dark rounded-lg text-center font-montserrat"> {/* Changed bg-main-white to bg-white */}
+                <div className="mt-12 p-6 bg-lino text-texto-principal-dark rounded-lg text-center font-montserrat"> {/* Changed bg-white to bg-lino */}
                   <p className="mb-4 text-lg">¿Quieres un 30% de descuento en todos los cursos?</p>
                   <button
                     onClick={() => openModal(setIsUpgradeModalOpen)}
