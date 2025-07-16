@@ -566,7 +566,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 # Rutas de Videos
 @app.get("/api/videos", response_model=List[VideoResponse])
-async def get_videos(current_user: UserResponse = Depends(get_current_user)):
+async def get_videos(current_user: Optional[UserResponse] = Depends(get_current_user_optional)):
     # Videos de ejemplo organizados por categorías
     videos_data = [
         # COMUNIDAD - Accesible para todos
@@ -637,7 +637,7 @@ async def get_videos(current_user: UserResponse = Depends(get_current_user)):
     videos = []
     for video_data in videos_data:
         # Si es contenido premium y el usuario no es premium, ocultar URL
-        if video_data["is_premium"] and not current_user.is_premium:
+        if video_data["is_premium"] and (not current_user or not current_user.is_premium):
             video_data["youtube_url"] = ""
         
         videos.append(VideoResponse(**video_data))
