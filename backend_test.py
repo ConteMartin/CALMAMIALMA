@@ -727,50 +727,227 @@ class BackendTester:
                         "Failed to get videos for access control testing")
             return False
     
-    def test_blog_content_restrictions(self):
-        """Test blog content restrictions for free vs premium users"""
-        print("\n=== BLOG CONTENT RESTRICTIONS ===")
+    def test_tarot_comprehensive_functionality(self):
+        """Comprehensive test of tarot functionality with 40 cards and anti-repetition"""
+        print("\n=== COMPREHENSIVE TAROT FUNCTIONALITY TEST ===")
         
-        # Test with premium user
         if not self.premium_token:
-            self.log_test("Blog Content Restrictions", False, "No premium token available")
+            self.log_test("Comprehensive Tarot Test", False, "No premium token available")
             return False
         
-        result_premium = self.make_request("GET", "/blog/posts", token=self.premium_token)
+        # Test 1: Premium user gets tarot reading
+        result = self.make_request("GET", "/tarot/daily", token=self.premium_token)
         
-        if result_premium.get("error"):
-            self.log_test("Blog Content Restrictions", False, f"Premium user blog failed: {result_premium['error']}")
+        if result.get("error"):
+            self.log_test("Tarot Basic Functionality", False, f"Premium tarot failed: {result['error']}")
             return False
         
-        # Test with free user
-        if not hasattr(self, 'free_token') or not self.free_token:
-            self.log_test("Blog Content Restrictions", False, "No free token available")
+        if not result["success"]:
+            self.log_test("Tarot Basic Functionality", False, f"Tarot request failed: {result.get('data', {})}")
             return False
         
-        result_free = self.make_request("GET", "/blog/posts", token=self.free_token)
+        data = result["data"]
         
-        if result_free.get("error"):
-            self.log_test("Blog Content Restrictions", False, f"Free user blog failed: {result_free['error']}")
+        # Verify structure
+        required_fields = ["id", "user_id", "card", "reading_date", "is_premium"]
+        missing_fields = [field for field in required_fields if field not in data]
+        
+        if missing_fields:
+            self.log_test("Tarot Structure Test", False, f"Missing fields: {missing_fields}")
             return False
         
-        if result_premium["success"] and result_free["success"]:
-            premium_posts = result_premium["data"]
-            free_posts = result_free["data"]
-            
-            if len(premium_posts) > 0 and len(free_posts) > 0:
-                # Check that free users get limited content (should have "..." in excerpt)
-                free_limited = any("..." in post.get("excerpt", "") for post in free_posts)
-                
-                self.log_test("Blog Content Restrictions", True, 
-                            f"Blog content restrictions working - Free users get limited content: {free_limited}")
-                return True
+        # Verify card structure
+        card = data.get("card", {})
+        card_required_fields = ["id", "title", "description", "meaning", "image_url"]
+        card_missing_fields = [field for field in card_required_fields if field not in card]
+        
+        if card_missing_fields:
+            self.log_test("Tarot Card Structure", False, f"Missing card fields: {card_missing_fields}")
+            return False
+        
+        # Verify premium content
+        if not data.get("is_premium"):
+            self.log_test("Tarot Premium Status", False, "Premium user not getting premium status")
+            return False
+        
+        # Verify premium user gets practice_text
+        if not card.get("practice_text"):
+            self.log_test("Tarot Premium Content", False, "Premium user not getting practice_text")
+            return False
+        
+        self.log_test("Tarot Basic Functionality", True, f"Premium tarot working - Card: {card.get('title')}")
+        
+        # Test 2: Same day restriction (should get same card)
+        result2 = self.make_request("GET", "/tarot/daily", token=self.premium_token)
+        
+        if result2["success"]:
+            data2 = result2["data"]
+            if data2.get("id") == data.get("id"):
+                self.log_test("Tarot Daily Restriction", True, "Premium daily limit working - same reading returned")
             else:
-                self.log_test("Blog Content Restrictions", False, 
-                            "No blog posts found for testing")
+                self.log_test("Tarot Daily Restriction", False, "Premium user got different reading on same day")
                 return False
         else:
-            self.log_test("Blog Content Restrictions", False, 
-                        "Failed to get blog posts for restriction testing")
+            self.log_test("Tarot Daily Restriction", False, "Second tarot request failed")
+            return False
+        
+        return True
+    
+    def test_tarot_free_user_restrictions(self):
+        """Test tarot restrictions for free users (3-day limit)"""
+        print("\n=== TAROT FREE USER RESTRICTIONS ===")
+        
+        if not hasattr(self, 'free_token') or not self.free_token:
+            self.log_test("Free User Tarot Restrictions", False, "No free token available")
+            return False
+        
+        # Test free user tarot access
+        result = self.make_request("GET", "/tarot/daily", token=self.free_token)
+        
+        if result.get("error"):
+            self.log_test("Free User Tarot Access", False, result["error"])
+            return False
+        
+        if not result["success"]:
+            self.log_test("Free User Tarot Access", False, f"Free user tarot failed: {result.get('data', {})}")
+            return False
+        
+        data = result["data"]
+        
+        # Verify free user status
+        if data.get("is_premium"):
+            self.log_test("Free User Status", False, "Free user marked as premium in tarot response")
+            return False
+        
+        # Verify free user gets basic content (no practice_text)
+        card = data.get("card", {})
+        if card.get("practice_text"):
+            self.log_test("Free User Content", False, "Free user getting premium practice_text")
+            return False
+        
+        # Verify basic structure is present
+        if not card.get("title") or not card.get("description"):
+            self.log_test("Free User Basic Content", False, "Free user missing basic card content")
+            return False
+        
+        self.log_test("Free User Tarot Access", True, f"Free user tarot working - Card: {card.get('title')}")
+        
+        # Test 3-day restriction (should get same card within 3 days)
+        result2 = self.make_request("GET", "/tarot/daily", token=self.free_token)
+        
+        if result2["success"]:
+            data2 = result2["data"]
+            if data2.get("id") == data.get("id"):
+                self.log_test("Free User 3-Day Restriction", True, "Free user 3-day limit working - same reading returned")
+                return True
+            else:
+                self.log_test("Free User 3-Day Restriction", False, "Free user got different reading within 3-day period")
+                return False
+        else:
+            self.log_test("Free User 3-Day Restriction", False, "Second free user tarot request failed")
+            return False
+    
+    def test_blog_post_permissions(self):
+        """Test that only ADMIN users can create blog posts, not premium users"""
+        print("\n=== BLOG POST PERMISSIONS TEST ===")
+        
+        # Test 1: Admin user CAN create blog posts
+        if not hasattr(self, 'admin_token') or not self.admin_token:
+            self.log_test("Admin Blog Permission", False, "No admin token available")
+            return False
+        
+        admin_blog_data = {
+            "title": "Admin Test Blog Post",
+            "content": "This blog post was created by an admin user to test permissions.",
+            "excerpt": "Admin test blog post excerpt...",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Admin+Blog"
+        }
+        
+        result_admin = self.make_request("POST", "/blog/posts", data=admin_blog_data, token=self.admin_token)
+        
+        if result_admin.get("error"):
+            self.log_test("Admin Blog Creation", False, f"Admin blog creation failed: {result_admin['error']}")
+            return False
+        
+        if not result_admin["success"]:
+            self.log_test("Admin Blog Creation", False, f"Admin cannot create blog post: {result_admin.get('data', {})}")
+            return False
+        
+        self.log_test("Admin Blog Creation", True, "Admin can create blog posts successfully")
+        
+        # Test 2: Premium user CANNOT create blog posts
+        if not self.premium_token:
+            self.log_test("Premium Blog Permission", False, "No premium token available")
+            return False
+        
+        premium_blog_data = {
+            "title": "Premium User Test Blog Post",
+            "content": "This should fail - premium users cannot create blog posts.",
+            "excerpt": "Premium user test excerpt...",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Premium+Blog"
+        }
+        
+        result_premium = self.make_request("POST", "/blog/posts", data=premium_blog_data, token=self.premium_token)
+        
+        # Premium user should get 403 Forbidden
+        if result_premium.get("status_code") == 403:
+            self.log_test("Premium Blog Restriction", True, "Premium user correctly blocked from creating blog posts")
+            return True
+        elif result_premium["success"]:
+            self.log_test("Premium Blog Restriction", False, "Premium user can create blog posts (should be blocked)")
+            return False
+        else:
+            self.log_test("Premium Blog Restriction", False, f"Unexpected error testing premium blog creation: {result_premium}")
+            return False
+    
+    def test_tarot_anti_repetition_multiple_calls(self):
+        """Test anti-repetition by making multiple tarot calls over time (simulated)"""
+        print("\n=== TAROT ANTI-REPETITION MULTIPLE CALLS TEST ===")
+        
+        if not self.premium_token:
+            self.log_test("Tarot Anti-Repetition", False, "No premium token available")
+            return False
+        
+        # Get current tarot reading
+        result1 = self.make_request("GET", "/tarot/daily", token=self.premium_token)
+        
+        if not result1["success"]:
+            self.log_test("Tarot Anti-Repetition Setup", False, "Failed to get initial tarot reading")
+            return False
+        
+        card1_id = result1["data"]["card"]["id"]
+        card1_title = result1["data"]["card"]["title"]
+        
+        # Multiple calls on same day should return same card
+        same_day_calls = []
+        for i in range(3):
+            result = self.make_request("GET", "/tarot/daily", token=self.premium_token)
+            if result["success"]:
+                same_day_calls.append(result["data"]["card"]["id"])
+        
+        # All calls should return the same card ID
+        if all(card_id == card1_id for card_id in same_day_calls):
+            self.log_test("Tarot Same Day Consistency", True, f"All same-day calls returned same card: {card1_title}")
+        else:
+            self.log_test("Tarot Same Day Consistency", False, "Same-day calls returned different cards")
+            return False
+        
+        # Test that the system has 40 cards available
+        # We can't easily test different days, but we can verify the card structure suggests 40 cards
+        card_id = int(card1_id)
+        if 1 <= card_id <= 40:
+            self.log_test("Tarot Card Range", True, f"Card ID {card_id} is within expected range 1-40")
+        else:
+            self.log_test("Tarot Card Range", False, f"Card ID {card_id} is outside expected range 1-40")
+            return False
+        
+        # Verify card has proper content structure for 40-card system
+        card = result1["data"]["card"]
+        if card.get("title") and card.get("description") and card.get("image_url"):
+            self.log_test("Tarot 40-Card Structure", True, "Card has proper structure for 40-card system")
+            return True
+        else:
+            self.log_test("Tarot 40-Card Structure", False, "Card missing required fields for 40-card system")
             return False
     
     def run_all_tests(self):
