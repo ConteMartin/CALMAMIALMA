@@ -114,7 +114,7 @@ def test_health_first():
     print("=" * 25)
     
     try:
-        url = f"{BASE_URL}/health"
+        url = "http://localhost:8010/health"  # Direct health endpoint
         response = requests.get(url)
         
         print(f"📊 Health Status Code: {response.status_code}")
