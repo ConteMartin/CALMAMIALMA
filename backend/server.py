@@ -406,6 +406,8 @@ async def startup_db_client():
     await database.blog_posts.create_index("author")
     await database.purchased_courses.create_index([("user_id", 1), ("course_id", 1)])
     await database.calendar_routines.create_index("user_id", unique=True)
+    await database.videos.create_index([("category", 1), ("created_at", -1)])
+    await database.courses.create_index([("price", 1), ("created_at", -1)])
     
     logger.info("Conectado a MongoDB")
 
