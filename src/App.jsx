@@ -614,19 +614,15 @@ const AppContent = () => {
                   return (
                     <div
                       key={card.id}
-                      className={`tarot-card absolute group bg-heavy-metal rounded-xl shadow-lg 
-                                  ${clickedTarotCardId === card.id ? 'flipped' : ''}`} // Added 'flipped' class
+                      className="tarot-card absolute group bg-heavy-metal rounded-xl shadow-lg cursor-pointer"
                       style={{
                         width: '120px', // Ancho fijo
                         height: '200px', // Alto fijo
-                        transformStyle: 'preserve-3d', // Importante para el volteo 3D
-                        // La transición se aplica aquí para que la animación de "estiramiento" sea suave
                         transition: animationStarted ? 'transform 2s ease-out, left 2s ease-out, top 2s ease-out, opacity 0.5s ease-out, box-shadow 0.3s ease-out' : 'none',
-                        perspective: "1000px", // Asegura la perspectiva para el volteo
                         left: cardStyle.left, // Aplica las propiedades individuales de posición
                         top: cardStyle.top,
-                        zIndex: clickedTarotCardId === card.id ? 101 : index, // La carta volteada siempre arriba
-                        transform: `rotateY(${clickedTarotCardId === card.id ? 180 : 0}deg) ${cardStyle.transform}`, // Aplica la rotación de volteo
+                        zIndex: index,
+                        transform: cardStyle.transform,
                         transformOrigin: cardStyle.transformOrigin, // Mantiene el origen de la transformación
                         opacity: cardStyle.opacity // Controla la opacidad para el efecto de aparición
                       }}
@@ -634,49 +630,17 @@ const AppContent = () => {
                       onMouseLeave={() => setHoveredCardId(null)}   // Manejador de salida del ratón
                       onClick={() => handleTarotCardClick(card)} // Simplified click handler
                     >
-                      {/* Front Face (dorso de la carta) */}
-                      <div
-                        className="absolute w-full h-full rounded-xl backface-hidden overflow-hidden front"
-                        style={{ zIndex: clickedTarotCardId === card.id ? 1 : 2 }} // Asegura que el frente esté encima del dorso cuando no está volteado
-                      >
-                        <img
-                          src={card.imageUrlFront}
-                          alt="Tarot Card Back Design"
-                          className="w-full h-full object-cover rounded-xl" // Added rounded-xl here
-                          onError={(e) => {
-                            e.target.onerror = null; // Evita bucles infinitos si la imagen de fallback también falla
-                            e.target.src = 'https://placehold.co/120x200/CCCCCC/333333?text=Error+Carga+Dorso'; // Imagen de fallback
-                            console.error(`Error al cargar la imagen del dorso para la carta ${card.id}: ${card.imageUrlFront}`);
-                          }}
-                        />
-                      </div>
-
-                      {/* Back Face (ProfileCard con SpotlightCard) */}
-                      <div
-                        className="absolute w-full h-full rounded-xl backface-hidden overflow-hidden back"
-                        style={{
-                            transform: 'rotateY(180deg)', // Rotación inicial para la cara trasera
-                            zIndex: clickedTarotCardId === card.id ? 2 : 1
+                      {/* Solo mostramos el dorso de la carta */}
+                      <img
+                        src={card.imageUrlFront}
+                        alt="Tarot Card Back Design"
+                        className="w-full h-full object-cover rounded-xl" // Added rounded-xl here
+                        onError={(e) => {
+                          e.target.onerror = null; // Evita bucles infinitos si la imagen de fallback también falla
+                          e.target.src = 'https://placehold.co/120x200/CCCCCC/333333?text=Error+Carga+Dorso'; // Imagen de fallback
+                          console.error(`Error al cargar la imagen del dorso para la carta ${card.id}: ${card.imageUrlFront}`);
                         }}
-                      >
-                        {/* El ProfileCard con SpotlightCard solo se renderiza si la carta está volteada */}
-                        {clickedTarotCardId === card.id && tarotReading && ( 
-                          <SpotlightCard 
-                            className="custom-spotlight-card" 
-                            spotlightColor="rgba(0, 229, 255, 0.2)"
-                          >
-                            <ProfileCard
-                              mainTitle={tarotReading.card.title}
-                              mainText={tarotReading.card.description}
-                              practiceText={tarotReading.card.practice_text}
-                              avatarUrl={tarotReading.card.image_url}
-                              enableTilt={false}
-                              cardBackground={`url(${tarotReading.card.image_url})`}
-                              className="tarot-profile-card"
-                            />
-                          </SpotlightCard>
-                        )}
-                      </div>
+                      />
                     </div>
                   );
                 })}
