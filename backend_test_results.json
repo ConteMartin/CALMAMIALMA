@@ -4,125 +4,125 @@
     "success": true,
     "message": "Backend is running and healthy",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.235237"
+    "timestamp": "2025-07-16T11:07:27.154675"
   },
   {
     "test": "Premium User Creation",
     "success": true,
     "message": "Premium user created successfully: PREMIUM Vane",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.238215"
+    "timestamp": "2025-07-16T11:07:27.157700"
   },
   {
     "test": "Premium User Login",
     "success": true,
     "message": "Premium user logged in successfully: PREMIUM Vane",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.469422"
+    "timestamp": "2025-07-16T11:07:27.389062"
   },
   {
     "test": "Course Details API",
     "success": true,
     "message": "Course details retrieved successfully. Premium discount applied: True",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.473430"
+    "timestamp": "2025-07-16T11:07:27.393031"
   },
   {
     "test": "Course Purchase API",
     "success": true,
     "message": "Course purchased successfully. Payment status: completed",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.477592"
+    "timestamp": "2025-07-16T11:07:27.397234"
   },
   {
     "test": "Purchased Courses API",
     "success": true,
     "message": "Retrieved 2 purchased courses",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.481236"
+    "timestamp": "2025-07-16T11:07:27.401266"
   },
   {
     "test": "Calendar Routine GET",
     "success": true,
     "message": "Calendar routine retrieved successfully. Days configured: 7",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.484759"
+    "timestamp": "2025-07-16T11:07:27.405032"
   },
   {
     "test": "Calendar Routine UPDATE",
     "success": true,
     "message": "Calendar routine updated successfully",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.493222"
+    "timestamp": "2025-07-16T11:07:27.410075"
   },
   {
     "test": "Google Calendar Sync",
     "success": true,
     "message": "Google Calendar sync configured successfully",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.496877"
+    "timestamp": "2025-07-16T11:07:27.413088"
   },
   {
     "test": "Tarot Restrictions",
     "success": true,
     "message": "Premium user can access tarot reading successfully",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.500980"
+    "timestamp": "2025-07-16T11:07:27.416757"
   },
   {
     "test": "Tarot Daily Limit",
     "success": true,
     "message": "Premium daily limit working correctly",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.504762"
+    "timestamp": "2025-07-16T11:07:27.420393"
   },
   {
     "test": "Free User Tarot",
     "success": true,
     "message": "Free user can access tarot reading (3-day limit applies)",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.747093"
+    "timestamp": "2025-07-16T11:07:27.661556"
   },
   {
     "test": "Admin User Login",
     "success": true,
     "message": "Admin user logged in successfully",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.984573"
+    "timestamp": "2025-07-16T11:07:27.897450"
   },
   {
     "test": "Admin Video Creation",
     "success": true,
     "message": "Video created successfully: Test Meditation Video",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.991382"
+    "timestamp": "2025-07-16T11:07:27.902443"
   },
   {
     "test": "Admin Course Creation",
     "success": true,
     "message": "Course created successfully: Test Reiki Course",
     "details": null,
-    "timestamp": "2025-07-16T11:07:01.997394"
+    "timestamp": "2025-07-16T11:07:27.906516"
   },
   {
     "test": "Admin Blog Post Creation",
     "success": false,
-    "message": "Expecting value: line 1 column 1 (char 0)",
+    "message": "Failed to create blog post: {'error': 'Invalid JSON response: Internal Server Error'}",
     "details": null,
-    "timestamp": "2025-07-16T11:07:02.006548"
+    "timestamp": "2025-07-16T11:07:27.911412"
   },
   {
     "test": "Videos Access Control",
     "success": true,
     "message": "Video access control working correctly - premium users get URLs, free users don't",
     "details": null,
-    "timestamp": "2025-07-16T11:07:02.013013"
+    "timestamp": "2025-07-16T11:07:27.917390"
   },
   {
     "test": "Blog Content Restrictions",
     "success": true,
     "message": "Blog content restrictions working - Free users get limited content: True",
     "details": null,
-    "timestamp": "2025-07-16T11:07:02.019935"
+    "timestamp": "2025-07-16T11:07:27.924537"
   }
 ]
