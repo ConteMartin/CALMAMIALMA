@@ -273,8 +273,10 @@ const ProfileCardComponent = ({
           </div>
           <div className="pc-content">
             <div className="pc-details">
-              {mainTitle && <h3>{mainTitle}</h3>}
-              {mainText && <p>{mainText}</p>}
+              {/* Usa name si está disponible, si no mainTitle */}
+              {(name || mainTitle) && <h3>{name || mainTitle}</h3>}
+              {/* Usa title si está disponible, si no mainText */}
+              {(title || mainText) && <p>{title || mainText}</p>}
             </div>
             {practiceText && (
               <div className="pc-practice-text">
