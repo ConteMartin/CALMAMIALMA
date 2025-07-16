@@ -293,6 +293,41 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         last_tarot_reading=user.get("last_tarot_reading")
     )
 
+async def get_current_admin_user(current_user: UserResponse = Depends(get_current_user)):
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permisos de administrador"
+        )
+    return current_user
+
+async def get_current_user_optional(token: str = Depends(oauth2_scheme)):
+    """Función para obtener el usuario actual, pero permite continuar sin autenticación"""
+    if not token:
+        return None
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            return None
+    except JWTError:
+        return None
+    
+    user = await database.users.find_one({"email": email})
+    if user is None:
+        return None
+    
+    return UserResponse(
+        id=str(user["_id"]),
+        email=user["email"],
+        name=user["name"],
+        is_premium=user.get("is_premium", False),
+        is_admin=user.get("is_admin", False),
+        created_at=user["created_at"],
+        subscription_expires=user.get("subscription_expires"),
+        last_tarot_reading=user.get("last_tarot_reading")
+    )
+
 async def generate_tarot_reading(card_data: dict, is_premium: bool = False) -> str:
     """Genera una lectura de tarot usando OpenAI"""
     try:
