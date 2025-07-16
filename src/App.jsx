@@ -886,111 +886,113 @@ const AppContent = () => {
             </div>
           </section>
 
-          {/* Membership Section */}
-          <section id="membership" className="bg-white overflow-hidden"> {/* Changed bg-[#f8f7f4] to bg-white */}
-            <div className="max-w-6xl mx-auto py-12 px-4">
-              <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-16">Beneficios de Membresía</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                {/* Membresía Gratuita */}
-                <div className="bg-fondo-claro p-10 rounded-2xl shadow-lg text-texto-principal-dark">
-                  <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-2">Membresía Gratuita</h3>
-                    <p className="font-montserrat text-texto-secundario-dark">Comienza tu viaje de bienestar</p>
-                    <p className="text-2xl text-acento-principal mt-4 font-raleway">$0 / mes</p> {/* Changed text-acento-personalizado to text-acento-principal */}
+          {/* Membership Section - Solo mostrar para usuarios NO premium */}
+          {!isPremium() && (
+            <section id="membership" className="bg-white overflow-hidden"> {/* Changed bg-[#f8f7f4] to bg-white */}
+              <div className="max-w-6xl mx-auto py-12 px-4">
+                <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-16">Beneficios de Membresía</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  {/* Membresía Gratuita */}
+                  <div className="bg-fondo-claro p-10 rounded-2xl shadow-lg text-texto-principal-dark">
+                    <div className="text-center mb-8">
+                      <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-2">Membresía Gratuita</h3>
+                      <p className="font-montserrat text-texto-secundario-dark">Comienza tu viaje de bienestar</p>
+                      <p className="text-2xl text-acento-principal mt-4 font-raleway">$0 / mes</p> {/* Changed text-acento-personalizado to text-acento-principal */}
+                    </div>
+                    <ul className="space-y-4 font-montserrat">
+                      <li className="flex items-center">
+                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                        <span>Lectura de tarot cada 3 días</span>
+                      </li>
+                      <li className="flex items-center">
+                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                        <span>Acceso a videos de la comunidad</span>
+                      </li>
+                      <li className="flex items-center">
+                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                        <span>Acceso limitado al blog</span>
+                      </li>
+                      <li className="flex items-center text-texto-secundario-dark">
+                        <i className="fas fa-times mr-3"></i>
+                        <span>30% de descuento en servicios y cursos</span>
+                      </li>
+                      <li className="flex items-center text-texto-secundario-dark">
+                        <i className="fas fa-times mr-3"></i>
+                        <span>Horóscopo diario personalizado</span>
+                      </li>
+                      <li className="flex items-center text-texto-secundario-dark">
+                        <i className="fas fa-times mr-3"></i>
+                        <span>Acceso completo a videos de yoga y meditación</span>
+                      </li>
+                      <li className="flex items-center text-texto-secundario-dark">
+                        <i className="fas fa-times mr-3"></i>
+                        <span>Contenido completo del blog</span>
+                      </li>
+                      <li className="flex items-center text-texto-secundario-dark">
+                        <i className="fas fa-times mr-3"></i>
+                        <span>Regalo de bienestar mensual</span>
+                      </li>
+                    </ul>
+                    <button
+                      onClick={() => !isLoggedIn() ? openModal(setIsLoginModalOpen) : alert('¡Ya tienes membresía gratuita!')}
+                      className="btn-general w-full mt-8 font-montserrat"
+                    >
+                      {isLoggedIn() ? 'Membresía Actual' : 'Únete Gratis'}
+                    </button>
                   </div>
-                  <ul className="space-y-4 font-montserrat">
-                    <li className="flex items-center">
-                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                      <span>Lectura de tarot cada 3 días</span>
-                    </li>
-                    <li className="flex items-center">
-                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                      <span>Acceso a videos de la comunidad</span>
-                    </li>
-                    <li className="flex items-center">
-                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                      <span>Acceso limitado al blog</span>
-                    </li>
-                    <li className="flex items-center text-texto-secundario-dark">
-                      <i className="fas fa-times mr-3"></i>
-                      <span>30% de descuento en servicios y cursos</span>
-                    </li>
-                    <li className="flex items-center text-texto-secundario-dark">
-                      <i className="fas fa-times mr-3"></i>
-                      <span>Horóscopo diario personalizado</span>
-                    </li>
-                    <li className="flex items-center text-texto-secundario-dark">
-                      <i className="fas fa-times mr-3"></i>
-                      <span>Acceso completo a videos de yoga y meditación</span>
-                    </li>
-                    <li className="flex items-center text-texto-secundario-dark">
-                      <i className="fas fa-times mr-3"></i>
-                      <span>Contenido completo del blog</span>
-                    </li>
-                    <li className="flex items-center text-texto-secundario-dark">
-                      <i className="fas fa-times mr-3"></i>
-                      <span>Regalo de bienestar mensual</span>
-                    </li>
-                  </ul>
-                  <button
-                    onClick={() => !isLoggedIn() ? openModal(setIsLoginModalOpen) : alert('¡Ya tienes membresía gratuita!')}
-                    className="btn-general w-full mt-8 font-montserrat"
-                  >
-                    {isLoggedIn() ? 'Membresía Actual' : 'Únete Gratis'}
-                  </button>
-                </div>
 
-                {/* Membresía Premium */}
-                <div className="bg-terracota p-10 rounded-2xl shadow-lg relative overflow-hidden text-texto-claro-white"> {/* Changed bg-pink-section to bg-terracota and text-texto-principal-dark to text-texto-claro-white */}
-                  <div className="absolute top-0 right-0 bg-detail-accent text-texto-principal-dark py-1 px-4 text-sm font-medium rounded-bl-lg">Más Popular</div> {/* Changed bg-acento-secundario to bg-detail-accent */}
-                  <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bodoni-moda font-medium text-texto-claro-white mb-2">Membresía Premium</h3> {/* Changed text-texto-principal-dark to text-texto-claro-white */}
-                    <p className="font-montserrat text-lino">Experiencia de bienestar completa</p> {/* Changed text-acento-principal to text-lino */}
-                    <p className="text-2xl text-lino mt-4 font-raleway">$19.99 / mes</p> {/* Changed text-acento-principal to text-lino */}
+                  {/* Membresía Premium */}
+                  <div className="bg-terracota p-10 rounded-2xl shadow-lg relative overflow-hidden text-texto-claro-white"> {/* Changed bg-pink-section to bg-terracota and text-texto-principal-dark to text-texto-claro-white */}
+                    <div className="absolute top-0 right-0 bg-detail-accent text-texto-principal-dark py-1 px-4 text-sm font-medium rounded-bl-lg">Más Popular</div> {/* Changed bg-acento-secundario to bg-detail-accent */}
+                    <div className="text-center mb-8">
+                      <h3 className="text-2xl font-bodoni-moda font-medium text-texto-claro-white mb-2">Membresía Premium</h3> {/* Changed text-texto-principal-dark to text-texto-claro-white */}
+                      <p className="font-montserrat text-lino">Experiencia de bienestar completa</p> {/* Changed text-acento-principal to text-lino */}
+                      <p className="text-2xl text-lino mt-4 font-raleway">$19.99 / mes</p> {/* Changed text-acento-principal to text-lino */}
+                    </div>
+                    <ul className="space-y-4 font-montserrat">
+                      <li className="flex items-center">
+                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                        <span>Lectura diaria de tarot (insights premium)</span>
+                      </li>
+                      <li className="flex items-center">
+                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                        <span>30% de descuento en todos los servicios y cursos</span>
+                      </li>
+                      <li className="flex items-center">
+                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                        <span>Horóscopo diario personalizado con IA</span>
+                      </li>
+                      <li className="flex items-center">
+                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                        <span>Acceso completo a todos los videos</span>
+                      </li>
+                      <li className="flex items-center">
+                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                        <span>Contenido completo del blog</span>
+                      </li>
+                      <li className="flex items-center">
+                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                        <span>Regalo de bienestar mensual</span>
+                      </li>
+                    </ul>
+                    <button
+                      onClick={() => isPremium() ? alert('¡Ya eres usuario Premium!') : openModal(setIsUpgradeModalOpen)}
+                      className="btn-general w-full mt-8 font-montserrat"
+                    >
+                      {isPremium() ? 'Ya eres Premium' : 'Actualizar Ahora'}
+                    </button>
                   </div>
-                  <ul className="space-y-4 font-montserrat">
-                    <li className="flex items-center">
-                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                      <span>Lectura diaria de tarot (insights premium)</span>
-                    </li>
-                    <li className="flex items-center">
-                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                      <span>30% de descuento en todos los servicios y cursos</span>
-                    </li>
-                    <li className="flex items-center">
-                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                      <span>Horóscopo diario personalizado con IA</span>
-                    </li>
-                    <li className="flex items-center">
-                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                      <span>Acceso completo a todos los videos</span>
-                    </li>
-                    <li className="flex items-center">
-                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                      <span>Contenido completo del blog</span>
-                    </li>
-                    <li className="flex items-center">
-                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                      <span>Regalo de bienestar mensual</span>
-                    </li>
-                  </ul>
-                  <button
-                    onClick={() => isPremium() ? alert('¡Ya eres usuario Premium!') : openModal(setIsUpgradeModalOpen)}
-                    className="btn-general w-full mt-8 font-montserrat"
-                  >
-                    {isPremium() ? 'Ya eres Premium' : 'Actualizar Ahora'}
-                  </button>
                 </div>
               </div>
-            </div>
-            {/* Onda al final de la sección Membresía */}
-            <div className="absolute bottom-0 left-0 w-full h-24 overflow-hidden">
-              <svg className="w-full h-full" viewBox="0 0 100 96" preserveAspectRatio="none">
-                {/* La onda de Membresía ahora rellena con el color de la sección Horóscopo/Blog */}
-                <path d={wavePath} fill="white"></path> 
-              </svg>
-            </div>
-          </section>
+              {/* Onda al final de la sección Membresía */}
+              <div className="absolute bottom-0 left-0 w-full h-24 overflow-hidden">
+                <svg className="w-full h-full" viewBox="0 0 100 96" preserveAspectRatio="none">
+                  {/* La onda de Membresía ahora rellena con el color de la sección Horóscopo/Blog */}
+                  <path d={wavePath} fill="white"></path> 
+                </svg>
+              </div>
+            </section>
+          )}
 
           {/* Horoscope Section (Solo Premium) */}
           {isPremium() && (
