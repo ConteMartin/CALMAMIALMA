@@ -5,6 +5,7 @@ import CourseModal from './components/CourseModal.jsx';
 import CalendarSection from './components/CalendarSection.jsx';
 import MyCourses from './components/MyCourses.jsx';
 import AdminDashboard from './components/AdminDashboard.jsx';
+import TarotCardModal from './components/TarotCardModal.jsx';
 // Importa el componente FloatingIconsBackground desde su nuevo archivo
 import FloatingIconsBackground from './components/FloatingIcons.jsx'; 
 // Importa el NUEVO componente ProfileCard (aunque ya no se usa para el tarot)
