@@ -402,8 +402,8 @@ const AppContent = () => {
     };
   };
 
-  // Datos de ejemplo para las cartas del tarot (40 cartas genéricas)
-  const tarotCardsData = Array.from({ length: 40 }, (_, i) => {
+  // Datos de las 40 cartas del tarot (se mostrarán randomizadas)
+  const baseTarotCardsData = Array.from({ length: 40 }, (_, i) => {
     const isSpecialCard = i === 0; // Card with ID 1 will be the special one (index 0)
     return {
       id: i + 1,
