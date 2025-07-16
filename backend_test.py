@@ -457,6 +457,9 @@ class BackendTester:
             self.log_test("Free User Login", False, "No access token received")
             return False
         
+        # Store free token for later use
+        self.free_token = free_token
+        
         # Test free user tarot access
         result = self.make_request("GET", "/tarot/daily", token=free_token)
         
@@ -477,6 +480,290 @@ class BackendTester:
         else:
             self.log_test("Free User Tarot", False, 
                         f"Free user tarot reading failed: {result.get('data', {})}")
+            return False
+    
+    def test_admin_user_creation_and_login(self):
+        """Test creating and logging in admin user"""
+        print("\n=== ADMIN USER CREATION AND LOGIN ===")
+        
+        # Create admin user
+        result = self.make_request("POST", "/auth/create-admin-user")
+        
+        if result.get("error"):
+            self.log_test("Admin User Creation", False, result["error"])
+            return False
+        
+        if not result["success"]:
+            self.log_test("Admin User Creation", False, f"Failed to create admin user: {result.get('data', {})}")
+            return False
+        
+        # Login as admin
+        login_data = {
+            "username": "admin@calmamialma.com",
+            "password": "admin123"
+        }
+        
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        
+        try:
+            url = f"{self.base_url}/auth/login"
+            response = requests.post(url, headers=headers, data=login_data)
+            
+            login_result = {
+                "status_code": response.status_code,
+                "data": response.json() if response.content else {},
+                "success": response.status_code < 400
+            }
+        except Exception as e:
+            self.log_test("Admin User Login", False, str(e))
+            return False
+        
+        if not login_result["success"]:
+            self.log_test("Admin User Login", False, "Failed to login admin user")
+            return False
+        
+        admin_token = login_result["data"].get("access_token")
+        user_data = login_result["data"].get("user", {})
+        
+        if not admin_token:
+            self.log_test("Admin User Login", False, "No access token received")
+            return False
+        
+        if not user_data.get("is_admin"):
+            self.log_test("Admin User Login", False, "User is not marked as admin")
+            return False
+        
+        # Store admin token for later use
+        self.admin_token = admin_token
+        
+        self.log_test("Admin User Login", True, "Admin user logged in successfully")
+        return True
+    
+    def test_admin_video_creation(self):
+        """Test admin video creation endpoint"""
+        print("\n=== ADMIN VIDEO CREATION ===")
+        
+        if not hasattr(self, 'admin_token') or not self.admin_token:
+            self.log_test("Admin Video Creation", False, "No admin token available")
+            return False
+        
+        video_data = {
+            "title": "Test Meditation Video",
+            "description": "A test meditation video for admin testing",
+            "youtube_url": "https://www.youtube.com/watch?v=test123",
+            "category": "MEDITACION",
+            "thumbnail_url": "https://img.youtube.com/vi/test123/maxresdefault.jpg",
+            "duration": "15:30",
+            "is_premium": True
+        }
+        
+        result = self.make_request("POST", "/admin/videos", data=video_data, token=self.admin_token)
+        
+        if result.get("error"):
+            self.log_test("Admin Video Creation", False, result["error"])
+            return False
+        
+        if result["success"]:
+            data = result["data"]
+            required_fields = ["id", "title", "description", "youtube_url", "category"]
+            missing_fields = [field for field in required_fields if field not in data]
+            
+            if not missing_fields:
+                self.log_test("Admin Video Creation", True, 
+                            f"Video created successfully: {data.get('title')}")
+                return True
+            else:
+                self.log_test("Admin Video Creation", False, 
+                            f"Missing required fields: {missing_fields}")
+                return False
+        else:
+            self.log_test("Admin Video Creation", False, 
+                        f"Failed to create video: {result.get('data', {})}")
+            return False
+    
+    def test_admin_course_creation(self):
+        """Test admin course creation endpoint"""
+        print("\n=== ADMIN COURSE CREATION ===")
+        
+        if not hasattr(self, 'admin_token') or not self.admin_token:
+            self.log_test("Admin Course Creation", False, "No admin token available")
+            return False
+        
+        course_data = {
+            "title": "Test Reiki Course",
+            "description": "A test Reiki course for admin testing",
+            "price": 99.99,
+            "duration": "4 weeks",
+            "level": "Beginner",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Test+Course",
+            "youtube_url": "https://www.youtube.com/watch?v=testcourse123",
+            "program": "Week 1: Introduction\nWeek 2: Basic techniques\nWeek 3: Advanced practice\nWeek 4: Mastery"
+        }
+        
+        result = self.make_request("POST", "/admin/courses", data=course_data, token=self.admin_token)
+        
+        if result.get("error"):
+            self.log_test("Admin Course Creation", False, result["error"])
+            return False
+        
+        if result["success"]:
+            data = result["data"]
+            required_fields = ["id", "title", "description", "price", "duration", "level"]
+            missing_fields = [field for field in required_fields if field not in data]
+            
+            if not missing_fields:
+                self.log_test("Admin Course Creation", True, 
+                            f"Course created successfully: {data.get('title')}")
+                return True
+            else:
+                self.log_test("Admin Course Creation", False, 
+                            f"Missing required fields: {missing_fields}")
+                return False
+        else:
+            self.log_test("Admin Course Creation", False, 
+                        f"Failed to create course: {result.get('data', {})}")
+            return False
+    
+    def test_admin_blog_post_creation(self):
+        """Test admin blog post creation endpoint"""
+        print("\n=== ADMIN BLOG POST CREATION ===")
+        
+        if not hasattr(self, 'admin_token') or not self.admin_token:
+            self.log_test("Admin Blog Post Creation", False, "No admin token available")
+            return False
+        
+        blog_data = {
+            "title": "Test Blog Post",
+            "content": "This is a test blog post created by admin for testing purposes. It contains multiple paragraphs to test content restrictions for free users.\n\nThis is the second paragraph that should be visible to premium users only.\n\nThis is the third paragraph with more premium content.",
+            "excerpt": "This is a test blog post created by admin for testing purposes...",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Test+Blog"
+        }
+        
+        result = self.make_request("POST", "/blog/posts", data=blog_data, token=self.admin_token)
+        
+        if result.get("error"):
+            self.log_test("Admin Blog Post Creation", False, result["error"])
+            return False
+        
+        if result["success"]:
+            data = result["data"]
+            required_fields = ["id", "title", "content", "excerpt", "published_date", "author"]
+            missing_fields = [field for field in required_fields if field not in data]
+            
+            if not missing_fields:
+                self.log_test("Admin Blog Post Creation", True, 
+                            f"Blog post created successfully: {data.get('title')}")
+                return True
+            else:
+                self.log_test("Admin Blog Post Creation", False, 
+                            f"Missing required fields: {missing_fields}")
+                return False
+        else:
+            self.log_test("Admin Blog Post Creation", False, 
+                        f"Failed to create blog post: {result.get('data', {})}")
+            return False
+    
+    def test_videos_access_control(self):
+        """Test video access control for different user types"""
+        print("\n=== VIDEOS ACCESS CONTROL ===")
+        
+        # Test with premium user
+        if not self.premium_token:
+            self.log_test("Videos Access Control", False, "No premium token available")
+            return False
+        
+        result_premium = self.make_request("GET", "/videos", token=self.premium_token)
+        
+        if result_premium.get("error"):
+            self.log_test("Videos Access Control", False, f"Premium user videos failed: {result_premium['error']}")
+            return False
+        
+        # Test with free user
+        if not hasattr(self, 'free_token') or not self.free_token:
+            self.log_test("Videos Access Control", False, "No free token available")
+            return False
+        
+        result_free = self.make_request("GET", "/videos", token=self.free_token)
+        
+        if result_free.get("error"):
+            self.log_test("Videos Access Control", False, f"Free user videos failed: {result_free['error']}")
+            return False
+        
+        if result_premium["success"] and result_free["success"]:
+            premium_videos = result_premium["data"]
+            free_videos = result_free["data"]
+            
+            # Check that premium user gets full access to premium videos
+            premium_video_with_url = None
+            for video in premium_videos:
+                if video.get("is_premium") and video.get("youtube_url"):
+                    premium_video_with_url = video
+                    break
+            
+            # Check that free user gets restricted access to premium videos
+            free_premium_video_restricted = None
+            for video in free_videos:
+                if video.get("is_premium") and not video.get("youtube_url"):
+                    free_premium_video_restricted = video
+                    break
+            
+            if premium_video_with_url and free_premium_video_restricted:
+                self.log_test("Videos Access Control", True, 
+                            "Video access control working correctly - premium users get URLs, free users don't")
+                return True
+            else:
+                self.log_test("Videos Access Control", False, 
+                            "Video access control not working as expected")
+                return False
+        else:
+            self.log_test("Videos Access Control", False, 
+                        "Failed to get videos for access control testing")
+            return False
+    
+    def test_blog_content_restrictions(self):
+        """Test blog content restrictions for free vs premium users"""
+        print("\n=== BLOG CONTENT RESTRICTIONS ===")
+        
+        # Test with premium user
+        if not self.premium_token:
+            self.log_test("Blog Content Restrictions", False, "No premium token available")
+            return False
+        
+        result_premium = self.make_request("GET", "/blog/posts", token=self.premium_token)
+        
+        if result_premium.get("error"):
+            self.log_test("Blog Content Restrictions", False, f"Premium user blog failed: {result_premium['error']}")
+            return False
+        
+        # Test with free user
+        if not hasattr(self, 'free_token') or not self.free_token:
+            self.log_test("Blog Content Restrictions", False, "No free token available")
+            return False
+        
+        result_free = self.make_request("GET", "/blog/posts", token=self.free_token)
+        
+        if result_free.get("error"):
+            self.log_test("Blog Content Restrictions", False, f"Free user blog failed: {result_free['error']}")
+            return False
+        
+        if result_premium["success"] and result_free["success"]:
+            premium_posts = result_premium["data"]
+            free_posts = result_free["data"]
+            
+            if len(premium_posts) > 0 and len(free_posts) > 0:
+                # Check that free users get limited content (should have "..." in excerpt)
+                free_limited = any("..." in post.get("excerpt", "") for post in free_posts)
+                
+                self.log_test("Blog Content Restrictions", True, 
+                            f"Blog content restrictions working - Free users get limited content: {free_limited}")
+                return True
+            else:
+                self.log_test("Blog Content Restrictions", False, 
+                            "No blog posts found for testing")
+                return False
+        else:
+            self.log_test("Blog Content Restrictions", False, 
+                        "Failed to get blog posts for restriction testing")
             return False
     
     def run_all_tests(self):
