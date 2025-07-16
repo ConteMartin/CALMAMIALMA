@@ -656,7 +656,7 @@ const AppContent = () => {
                         />
                       </div>
 
-                      {/* Back Face (ProfileCard component) */}
+                      {/* Back Face (ProfileCard con SpotlightCard) */}
                       <div
                         className="absolute w-full h-full rounded-xl backface-hidden overflow-hidden back"
                         style={{
@@ -664,17 +664,22 @@ const AppContent = () => {
                             zIndex: clickedTarotCardId === card.id ? 2 : 1
                         }}
                       >
-                        {/* El ProfileCard solo se renderiza si la carta está volteada */}
+                        {/* El ProfileCard con SpotlightCard solo se renderiza si la carta está volteada */}
                         {clickedTarotCardId === card.id && ( 
-                          <ProfileCard
-                            mainTitle={card.title}
-                            mainText={card.mainText}
-                            practiceText={card.practiceText}
-                            avatarUrl={card.imageUrlBack}
-                            enableTilt={false}
-                            cardBackground="#1A1A1A"
-                            className="tarot-profile-card"
-                          />
+                          <SpotlightCard 
+                            className="custom-spotlight-card" 
+                            spotlightColor="rgba(0, 229, 255, 0.2)"
+                          >
+                            <ProfileCard
+                              mainTitle={card.title}
+                              mainText={card.mainText}
+                              practiceText={card.practiceText}
+                              avatarUrl={card.imageUrlBack}
+                              enableTilt={false}
+                              cardBackground="transparent"
+                              className="tarot-profile-card"
+                            />
+                          </SpotlightCard>
                         )}
                       </div>
                     </div>
