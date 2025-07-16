@@ -1313,6 +1313,10 @@ const AppContent = () => {
         <MyCourses />
       )}
 
+      {currentView === 'admin' && isAdmin() && (
+        <AdminDashboard />
+      )}
+
       {/* Footer */}
       <footer className="bg-terracota text-texto-claro-white py-10 px-4 rounded-t-lg"> {/* Changed bg-fondo-oscuro to bg-terracota */}
         <div className="max-w-6xl mx-auto">
