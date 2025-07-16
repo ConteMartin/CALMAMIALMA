@@ -1360,14 +1360,18 @@ async def get_daily_tarot(current_user: UserResponse = Depends(get_current_user)
     if not available_cards:  # Si solo hay una carta disponible
         available_cards = tarot_cards
     
-    selected_card = random.choice(tarot_cards)
-    reading_text = await generate_tarot_reading(selected_card, current_user.is_premium)
+    
+    selected_card = random.choice(available_cards)
+    
+    # Usar la descripción apropiada según el tipo de usuario
+    description = selected_card["premium_description"] if current_user.is_premium else selected_card["description"]
+    practice_text = selected_card["practice_text"] if current_user.is_premium else None
     
     card = TarotCard(
         id=selected_card["id"],
         title=selected_card["title"],
-        description=selected_card["description"],
-        meaning=reading_text,
+        description=description,
+        meaning=practice_text or "",
         image_url=selected_card["image_url"]
     )
     
