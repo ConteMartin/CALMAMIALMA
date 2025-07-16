@@ -213,8 +213,8 @@ const AppContent = () => {
       // Actualizar los datos del tarot con la respuesta del backend
       setTarotReading(reading);
       
-      // Voltear la carta seleccionada
-      setClickedTarotCardId(cardData.id);
+      // Abrir el modal en lugar de voltear la carta
+      openModal(setIsTarotModalOpen);
       
       console.log('Tarot reading obtained from API:', reading);
       
