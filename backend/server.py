@@ -415,6 +415,7 @@ async def register(user_data: UserCreate):
             email=user_doc["email"],
             name=user_doc["name"],
             is_premium=user_doc.get("is_premium", False),
+            is_admin=user_doc.get("is_admin", False),
             created_at=user_doc["created_at"],
             subscription_expires=user_doc.get("subscription_expires")
         )
