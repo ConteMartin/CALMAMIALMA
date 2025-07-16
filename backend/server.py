@@ -267,6 +267,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         email=user["email"],
         name=user["name"],
         is_premium=user.get("is_premium", False),
+        is_admin=user.get("is_admin", False),
         created_at=user["created_at"],
         subscription_expires=user.get("subscription_expires"),
         last_tarot_reading=user.get("last_tarot_reading")
