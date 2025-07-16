@@ -25,6 +25,7 @@ const AppContent = () => {
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
+  const [isTarotModalOpen, setIsTarotModalOpen] = useState(false);
   const [isLoadingHoroscope, setIsLoadingHoroscope] = useState(false);
   const [clickedTarotCardId, setClickedTarotCardId] = useState(null); // Ahora controla el volteo en la misma pantalla
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
