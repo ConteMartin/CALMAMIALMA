@@ -77,6 +77,7 @@ class UserResponse(BaseModel):
     email: str
     name: str
     is_premium: bool = False
+    is_admin: bool = False
     created_at: datetime
     subscription_expires: Optional[datetime] = None
     last_tarot_reading: Optional[datetime] = None
