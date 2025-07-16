@@ -533,6 +533,9 @@ const AppContent = () => {
                 <a href="#courses" onClick={() => { handleViewChange('home'); toggleMobileMenu(); }} className="text-texto-claro-white hover:text-white transition">Cursos</a>
                 <a href="#" onClick={() => { handleViewChange('calendar'); toggleMobileMenu(); }} className="text-texto-claro-white hover:text-white transition">Mi Calendario</a>
                 <a href="#" onClick={() => { handleViewChange('my-courses'); toggleMobileMenu(); }} className="text-texto-claro-white hover:text-white transition">Mis Cursos</a>
+                {isAdmin() && (
+                  <a href="#" onClick={() => { handleViewChange('admin'); toggleMobileMenu(); }} className="text-texto-claro-white hover:text-white transition">Admin</a>
+                )}
               </>
             )}
             <a href="#contact" onClick={() => { handleViewChange('home'); toggleMobileMenu(); }} className="text-texto-claro-white hover:text-white transition">Contacto</a>
