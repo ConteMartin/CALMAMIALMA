@@ -1,29 +1,47 @@
 /* 1. Importa las fuentes de Google Fonts (deben ir al principio) */
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..12,400&family=Montserrat:wght@300;400;500;600&family=Raleway:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500;1,600;1,700&family=Sora:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 /* 2. Importa las directivas base de Tailwind CSS (después de los `@import` de fuentes) */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 3. Define tus variables CSS personalizadas en el selector `:root` */
+/* 3. Define tus variables CSS personalizadas para los colores */
 :root {
-  --color-fondo-claro: #ede0fa;
-  --color-fondo-oscuro: #171717;
-  --color-degradado-inicio: #c5c7ee;
-  --color-degradado-fin: #c2bae5;
-  --color-fondo-tarot-contacto-nuevo: #e9e1f9;
-  --color-fondo-card-servicios: #f6f4f9;
-  --color-fondo-membresia-seccion: #eae0f8;
-  --color-gris-palido-btn: #f0f0f0;
-  --color-gris-btn-hover: #dcdcdc;
-  --color-btn-servicios-gradient-start: #c7c7ea;
-  --color-btn-servicios-gradient-end: #c5bce7;
-  --color-btn-servicios-texto: #000000;
-  --color-texto-principal-dark: #333333;
-  --color-texto-secundario-dark: #666666;
-  --color-texto-claro-white: #ffffff;
-  --color-acento-claro: #e0e0e0;
+  /* Paleta de Colores */
+  --color-lino: #f8f7f4; /* Blanco o marfil muy claro */
+  --color-terracota: #af6c66; /* rgba(175,108,102,255) */
+  --color-gray-selected: #acacac; /* Gris para estado seleccionado/activo */
+  --color-pink-section-bg: #F0CFC3; /* Nuevo fondo para secciones específicas */
+  --color-detail-accent: #F0739A; /* Nuevo color de detalle para 30% off, etc. */
+  --color-pure-white: #ffffff; /* Nuevo color para blanco puro */
+
+  --color-negro-gris-oscuro: #1a1a1a; /* Negro/Gris muy oscuro para el texto */
+  --color-gris-claro-detalle: #e0e0e0; /* Detalles en gris claro */
+  --color-texto-claro-white: #ffffff; /* Texto blanco */
+  --color-texto-secundario-dark: #666666; /* Gris medio para texto secundario */
+
+  /* Mapeo a nombres de variables existentes o nuevos */
+  --color-fondo-claro: var(--color-lino); /* Fondo general claro */
+  --color-fondo-oscuro: var(--color-negro-gris-oscuro); /* Para elementos oscuros como el header */
+
+  --color-acento-principal: var(--color-terracota); /* Color de acento principal (#af6c66) */
+  --color-acento-secundario: var(--color-pink-section-bg); /* Para fondos de secciones específicas */
+  --color-acento-detalle: var(--color-detail-accent); /* Para pequeños detalles (#F0739A) */
+
+  /* Estilos de botones generales */
+  --color-btn-bg-default: var(--color-lino);
+  --color-btn-text-default: var(--color-negro-gris-oscuro);
+  --color-btn-bg-hover: var(--color-terracota);
+  --color-btn-text-hover: var(--color-texto-claro-white);
+  --color-btn-bg-selected: var(--color-gray-selected);
+  --color-btn-text-selected: var(--color-negro-gris-oscuro);
+
+  /* Colores específicos para tarjetas de servicio */
+  --color-service-card-bg: var(--color-terracota);
+  --color-service-card-text: var(--color-texto-claro-white);
+  --color-service-card-btn-bg: var(--color-lino);
+  --color-service-card-btn-text: var(--color-negro-gris-oscuro);
 }
 
 /* Estilos globales */
@@ -32,57 +50,100 @@ html {
 }
 
 body {
-  font-family: 'Montserrat', 'Raleway', 'Poppins', sans-serif;
-  background-color: var(--color-fondo-claro);
+  font-family: 'Inter', sans-serif; /* Usar Inter como fuente principal sans-serif */
+  background-color: var(--color-fondo-claro); /* Fondo general lino */
   color: var(--color-texto-principal-dark);
-  overflow-x: hidden;
+  overflow-x: hidden; /* Evita el scroll horizontal */
 }
 
-/* Tipografía para títulos: Bodoni Moda, lo más fina posible */
-h1, h2, h3, h4, h5, h6, .font-bodoni-moda {
-  font-family: 'Bodoni Moda', serif;
-  font-weight: 400;
+/* Tipografía para títulos: Cormorant Garamond Italic */
+h1, h2, h3, h4, h5, h6, .font-cormorant-garamond {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 400; /* Para el estilo más fino */
 }
+
+/* Tipografía sans-serif bold para subtítulos y bloques llamativos */
+.font-sora { font-family: 'Sora', sans-serif; }
+.font-dm-sans { font-family: 'DM Sans', sans-serif; }
+.font-space-grotesk { font-family: 'Space Grotesk', sans-serif; }
+.font-inter { font-family: 'Inter', sans-serif; } /* Ya es la base del body */
+
 
 /* Mapeo de clases de Tailwind a las nuevas variables CSS para usarlas en React */
-/* Estas clases deben usarse en los componentes React para aplicar los nuevos colores */
 .bg-fondo-claro { background-color: var(--color-fondo-claro); }
 .text-fondo-claro { color: var(--color-fondo-claro); }
 
 .bg-fondo-oscuro { background-color: var(--color-fondo-oscuro); }
 .text-fondo-oscuro { color: var(--color-fondo-oscuro); }
 
-.text-texto-principal-dark { color: var(--color-texto-principal-dark); }
+.text-texto-principal-dark { color: var(--color-negro-gris-oscuro); }
 .text-texto-secundario-dark { color: var(--color-texto-secundario-dark); }
 .text-texto-claro-white { color: var(--color-texto-claro-white); }
 
-.bg-acento-claro { background-color: var(--color-acento-claro); }
-.text-acento-claro { color: var(--color-acento-claro); }
+/* Clases para los nuevos colores */
+.bg-lino { background-color: var(--color-lino); }
+.text-lino { color: var(--color-lino); }
+.bg-terracota { background-color: var(--color-terracota); }
+.text-terracota { color: var(--color-terracota); }
+.bg-gray-selected { background-color: var(--color-gray-selected); }
+.text-gray-selected { color: var(--color-gray-selected); }
+.bg-pink-section { background-color: var(--color-pink-section-bg); }
+.text-pink-section { color: var(--color-pink-section-bg); }
+.bg-detail-accent { background-color: var(--color-detail-accent); }
+.text-detail-accent { color: var(--color-detail-accent); }
+.bg-white { background-color: var(--color-pure-white); } /* Pure white */
 
-.bg-gris-palido-btn { background-color: var(--color-gris-palido-btn); }
-.hover\:bg-gris-btn-hover:hover { background-color: var(--color-gris-btn-hover); }
 
-/* Nuevas clases de fondo */
-.bg-fondo-tarot-contacto-nuevo { background-color: var(--color-fondo-tarot-contacto-nuevo); }
-.bg-fondo-card-servicios { background-color: var(--color-fondo-card-servicios); }
-.bg-fondo-membresia-seccion { background-color: var(--color-membresia-seccion); }
+/* Mapeos de acentos */
+.bg-acento-claro { background-color: var(--color-acento-principal); } /* #af6c66 */
+.text-acento-claro { color: var(--color-acento-principal); } /* #af6c66 */
+.bg-acento-secundario { background-color: var(--color-acento-detalle); } /* #F0739A */
+.text-acento-secundario { color: var(--color-acento-detalle); } /* #F0739A */
 
-/* Clases de gradiente para las secciones intermedias */
-.bg-gradient-main-sections {
-  background-image: linear-gradient(to bottom right, var(--color-degradado-inicio), var(--color-degradado-fin));
+/* Clase para el color #af6c66 en texto, fondo y borde */
+.text-acento-personalizado { color: var(--color-acento-principal); }
+.bg-acento-personalizado { background-color: var(--color-acento-principal); }
+.border-acento-personalizado { border-color: var(--color-acento-principal); }
+
+
+/* Estilos de botones generales */
+.btn-general {
+  background-color: var(--color-btn-bg-default);
+  color: var(--color-btn-text-default);
+  border-radius: 0.75rem; /* rounded-btn */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.btn-general:hover {
+  background-color: var(--color-btn-bg-hover);
+  color: var(--color-btn-text-hover);
+}
+.btn-general.selected {
+  background-color: var(--color-btn-bg-selected);
+  color: var(--color-btn-text-selected);
 }
 
-/* Clases para los botones de tarjetas de servicios */
-.bg-gradient-btn-servicios {
-  background-image: linear-gradient(to right, var(--color-btn-servicios-gradient-start), var(--color-btn-servicios-gradient-end));
+/* Estilos específicos para el botón dentro de las tarjetas de servicio */
+.btn-service-card {
+  background-color: var(--color-service-card-btn-bg);
+  color: var(--color-service-card-btn-text);
+  border-radius: 0.75rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
-.text-btn-servicios-texto {
-  color: var(--color-btn-servicios-texto);
+.btn-service-card:hover {
+  background-color: var(--color-terracota); /* Hover a terracota */
+  color: var(--color-texto-claro-white); /* Texto blanco en hover */
+}
+
+/* Fondo y texto de las tarjetas de servicio */
+.service-card-bg {
+  background-color: var(--color-service-card-bg); /* Terracota */
+  color: var(--color-service-card-text); /* Blanco */
 }
 
 /* Ajustes de botones: menos redondeados y con el nuevo color */
 .rounded-btn {
-  border-radius: 0.5rem; /* Asegúrate de que este valor coincida con `borderRadius.btn` en `tailwind.config.js` */
+  border-radius: 0.75rem; /* Ajustado para ser más redondeado */
 }
 
 /* Contenedor para los iconos flotantes dentro de una sección */
@@ -94,7 +155,7 @@ h1, h2, h3, h4, h5, h6, .font-bodoni-moda {
   height: 100%;
   overflow: hidden;
   pointer-events: none;
-  z-index: -1;
+  z-index: 1; /* Asegura que estén visibles detrás del contenido principal */
 }
 
 .floating-icon {
@@ -122,21 +183,20 @@ video.absolute {
 
 /* Clases específicas para el tarot (mantenidas con ajustes finos) */
 .tarot-card {
-  width: 180px;
-  height: 300px;
+  width: 150px; /* Reducido a la mitad */
+  height: 175px; /* Reducido a la mitad */
   background-color: transparent;
-  border-radius: 10px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem; /* Más redondeado para coincidir con el estilo */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Sombra más sutil */
   position: absolute;
   transform-style: preserve-3d;
   transition: transform 0.6s ease-out, box-shadow 0.6s ease-out; 
-  overflow: visible; /* Para que el contenido no se corte al salir */
+  overflow: hidden; /* Para que el contenido no se corte al salir */
 }
 
 .tarot-card:hover {
-  box-shadow: 0 51px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15); /* Sombra al pasar el ratón */
   cursor: pointer;
-  /* Eliminado: z-index: 100; para evitar conflictos */
 }
 
 /* La clase selected-for-reveal ahora maneja el volteo, centrado y escalado */
@@ -156,7 +216,7 @@ video.absolute {
   width: 100%;
   height: 100%;
   backface-visibility: hidden; /* Crucial para que una cara se oculte al voltear */
-  border-radius: 10px;
+  border-radius: 0.3rem; /* Más redondeado para las caras de la carta */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -169,54 +229,41 @@ video.absolute {
   width: 100%;
   height: 100%;
   background-color: transparent; 
-  border-radius: 10px;
+  border-radius: 0.3rem;
   transform-style: preserve-3d;
   transform: rotateY(0deg); /* La cara frontal siempre mira hacia adelante */
 }
 
 .tarot-card .back {
-  background-color: var(--color-fondo-oscuro); 
+  background-color: var(--color-fondo-oscuro); /* Usar el color oscuro de la nueva paleta */
   transform: rotateY(180deg); /* La cara trasera está inicialmente volteada 180 grados para estar oculta */
 }
 
 /* Estilos para las tarjetas de servicio, blog, modales, etc. */
-.service-card {
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+.service-card, .blog-card, .course-card, .video-card { /* Añadidas clases para consistencia */
+  border-radius: 1.5rem; /* Más redondeado */
+  padding: 2rem; /* Más padding para airear */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Sombra más sutil */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   color: var(--color-texto-principal-dark);
 }
 
-.service-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+.service-card:hover, .blog-card:hover, .course-card:hover, .video-card:hover {
+  transform: translateY(-0.5rem); /* Movimiento sutil al pasar el ratón */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12); /* Sombra al pasar el ratón */
 }
 
 .discount-badge {
   position: absolute;
-  top: -10px;
-  right: -10px;
-  background-color: var(--color-acento-claro);
-  color: var(--color-texto-principal-dark);
-  border-radius: 50px;
-  padding: 5px 10px;
-  font-size: 12px;
-  font-weight: bold;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.blog-card {
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-  background-color: var(--color-fondo-claro);
-  color: var(--color-texto-principal-dark);
-}
-
-.blog-card:hover {
-  transform: translateY(-10px);
+  top: 1rem; /* Ajustado para estar dentro del padding */
+  right: 1rem; /* Ajustado para estar dentro del padding */
+  background-color: var(--color-acento-detalle); /* Uses #F0739A */
+  color: var(--color-negro-gris-oscuro);
+  border-radius: 9999px; /* Full rounded */
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .modal {
@@ -226,7 +273,7 @@ video.absolute {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.4); /* Fondo más claro para los modales */
   z-index: 1000;
   justify-content: center;
   align-items: center;
@@ -234,61 +281,88 @@ video.absolute {
 
 .modal-content {
   background-color: var(--color-fondo-claro);
-  border-radius: 15px;
+  border-radius: 1.5rem; /* Más redondeado */
   width: 90%;
   max-width: 500px;
-  padding: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  padding: 2.5rem; /* Más padding */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Sombra más sutil */
   position: relative;
   color: var(--color-texto-principal-dark);
 }
+.circular-text {
+  margin: 0 auto;
+  border-radius: 50%;
+  width: 200px;
+  position: relative;
+  height: 200px;
+  font-weight: bold;
+  color: #fff;
+  font-weight: 900;
+  text-align: center;
+  cursor: pointer;
+  transform-origin: 50% 50%;
+  -webkit-transform-origin: 50% 50%;
+}
 
+.circular-text span {
+  position: absolute;
+  display: inline-block;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  font-size: 24px;
+  transition: all 0.5s cubic-bezier(0, 0, 0, 1);
+}
 .close-modal {
   position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 24px;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-size: 2rem;
   cursor: pointer;
+  color: #888;
 }
 
 .zodiac-selector {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  margin-top: 20px;
+  gap: 1rem; /* Usar rem para consistencia */
+  margin-top: 1.5rem;
 }
 
 .zodiac-icon {
-  background-color: var(--color-acento-claro);
+  background-color: var(--color-acento-principal); /* Uses #af6c66 */
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  width: 4rem; /* Usar rem */
+  height: 4rem; /* Usar rem */
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: var(--color-texto-principal-dark);
+  color: var(--color-negro-gris-oscuro);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .zodiac-icon:hover {
-  background-color: var(--color-fondo-oscuro);
+  background-color: var(--color-acento-principal); /* Uses #af6c66 */
   transform: scale(1.1);
   color: var(--color-texto-claro-white);
 }
 
 .zodiac-icon.selected {
-  background-color: var(--color-fondo-oscuro);
+  background-color: var(--color-acento-principal); /* Uses #af6c66 */
   color: var(--color-texto-claro-white);
 }
 
 .natal-chart-result {
   display: none; /* Controlado por estado React */
-  margin-top: 30px;
-  padding: 20px;
-  border-radius: 15px;
-  background-color: var(--color-degradado-fin);
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 1.5rem; /* Más redondeado */
+  background-color: var(--color-acento-principal); /* Uses #af6c66 */
   color: var(--color-texto-principal-dark);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 @keyframes pulse {
@@ -305,14 +379,14 @@ video.absolute {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 200px;
+  min-height: 10rem; /* Usar rem */
 }
 
 .loading span {
-  width: 20px;
-  height: 20px;
-  margin: 0 5px;
-  background-color: var(--color-fondo-oscuro);
+  width: 1.25rem; /* Usar rem */
+  height: 1.25rem; /* Usar rem */
+  margin: 0 0.3rem; /* Usar rem */
+  background-color: var(--color-acento-principal); /* Uses #af6c66 */
   border-radius: 50%;
   display: inline-block;
   animation: loading 1.4s ease-in-out infinite both;

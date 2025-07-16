@@ -3,18 +3,21 @@ import React, { useEffect, useRef, useCallback } from 'react';
 /**
  * Componente FloatingIconsBackground
  * Genera y anima iconos flotantes en el fondo de un contenedor.
- * Los iconos se mueven libremente y reaccionan al pasar el cursor sobre ellos.
+ * Los iconos se mueven libremente y tienen una opacidad variada para un efecto de "destello".
  *
- * @param {number} numberOfIcons - El número de iconos a generar (por defecto 30).
- * @param {string} iconFilterStyle - Estilo CSS 'filter' a aplicar a los iconos (ej. "brightness(0)" para negro).
+ * @param {number} numberOfIcons - El número de iconos a generar (por defecto 70).
+ * @param {string} iconFilterStyle - Estilo CSS 'filter' a aplicar a los iconos (ej. "invert(1)" para blanco, "brightness(0.9)" para más oscuro).
  */
-const FloatingIconsBackground = ({ numberOfIcons = 30, iconFilterStyle }) => {
+const FloatingIconsBackground = ({ numberOfIcons = 70, iconFilterStyle }) => {
   const containerRef = useRef(null);
   const animationFrameId = useRef(null);
   const iconsState = useRef([]); // Usar useRef para mantener el estado mutable de los iconos sin re-renderizar
 
   const createAndAnimateIcons = useCallback(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current) {
+      console.log("Container ref is null, cannot create icons.");
+      return;
+    }
 
     // Rutas de los iconos del 1.png al 9.png
     // Asegúrate de que estas rutas sean correctas en tu proyecto (ej. en la carpeta 'public/iconos')
@@ -39,14 +42,26 @@ const FloatingIconsBackground = ({ numberOfIcons = 30, iconFilterStyle }) => {
     const containerWidth = containerRect.width;
     const containerHeight = containerRect.height;
 
+    if (containerWidth === 0 || containerHeight === 0) {
+        console.warn("FloatingIconsBackground container has zero dimensions. Icons might not be visible.");
+        // Si las dimensiones son cero, no tiene sentido crear iconos, salimos.
+        return;
+    }
+
     for (let i = 0; i < numberOfIcons; i++) {
       const icon = document.createElement('img');
       icon.src = iconUrls[Math.floor(Math.random() * iconUrls.length)];
       icon.classList.add('floating-icon');
-      // pointer-events: auto ya está en CSS, permite el hover
+      
+      // Manejo de errores para la carga de imágenes
+      icon.onerror = () => {
+        console.error(`Error al cargar el icono: ${icon.src}. Usando marcador de posición.`);
+        icon.src = `https://placehold.co/100x100/CCCCCC/333333?text=Error`;
+        icon.style.filter = 'none'; // Asegura que el marcador de posición sea visible
+      };
 
       // Algunos iconos el doble de grandes
-      const baseSize = Math.random() * 80 + 50; // Rango base de 50px a 130px
+      const baseSize = Math.random() * 100 + 70; // Rango base de 70px a 170px
       const size = Math.random() < 0.2 ? baseSize * 2 : baseSize; // 20% de probabilidad de ser el doble
       icon.style.width = `${size}px`;
       icon.style.height = `${size}px`;
@@ -55,7 +70,8 @@ const FloatingIconsBackground = ({ numberOfIcons = 30, iconFilterStyle }) => {
       let x, y;
       let attempts = 0;
       const maxAttempts = 100;
-      const minDistance = size * 0.8; // Distancia mínima entre iconos
+      // Distancia mínima entre iconos para una mejor dispersión inicial
+      const minDistance = size * 0.1; 
 
       // Intenta encontrar una posición sin solapamiento inicial
       do {
@@ -69,35 +85,38 @@ const FloatingIconsBackground = ({ numberOfIcons = 30, iconFilterStyle }) => {
         return Math.sqrt(dx * dx + dy * dy) < minDistance;
       }));
 
+      const finalScale = 0.5 + Math.random() * 0.5; // Escala final entre 0.5 y 1.0
+      const finalOpacity = 0.3 + Math.random() * 0.4; // Opacidad final entre 0.3 y 0.7
+
       const iconData = {
         x: x,
         y: y,
-        vx: (Math.random() - 0.5) * 0.7, // Velocidad horizontal
-        vy: (Math.random() - 0.5) * 0.7, // Velocidad vertical
+        // Velocidad horizontal y vertical ligeramente ajustada para un movimiento suave
+        vx: (Math.random() - 0.5) * 0.7, 
+        vy: (Math.random() - 0.5) * 0.7, 
         size: size,
+        finalScale: finalScale, // Guardar la escala final
+        finalOpacity: finalOpacity, // Guardar la opacidad final
         element: icon // Referencia al elemento DOM
       };
       iconsState.current.push(iconData);
 
-      // Opacidad ajustada para que sean más visibles (0.3 a 0.8)
-      icon.style.opacity = (Math.random() * 0.5 + 0.3).toString();
+      // Establecer estilos iniciales para la animación de aparición
+      icon.style.transform = `translate(${x}px, ${y}px) scale(0.1)`; // Empieza pequeño
+      icon.style.opacity = '0'; // Empieza invisible
 
       // Aplicar el filtro de color si se proporciona
       if (iconFilterStyle) {
         icon.style.filter = iconFilterStyle;
       }
 
-      // Eventos para el hover (movimiento al pasar el cursor)
-      icon.onmouseenter = () => {
-        icon.classList.add('hover-move');
-      };
-      icon.onmouseleave = () => {
-        icon.classList.remove('hover-move');
-        // Asegurarse de que vuelve a la posición de la animación de fondo
-        icon.style.transform = `translate(${iconData.x}px, ${iconData.y}px)`;
-      };
-
       containerRef.current.appendChild(icon);
+
+      // Activar la transición después de un pequeño retraso para asegurar que los estilos iniciales se apliquen
+      setTimeout(() => {
+        icon.style.transform = `translate(${x}px, ${y}px) scale(${finalScale})`;
+        icon.style.opacity = `${finalOpacity}`;
+      }, 50); // Pequeño retraso
     }
 
     const animateLoop = () => {
@@ -106,7 +125,7 @@ const FloatingIconsBackground = ({ numberOfIcons = 30, iconFilterStyle }) => {
 
       iconsState.current.forEach(iconData => {
         const iconElement = iconData.element;
-        if (!iconElement || iconElement.classList.contains('hover-move')) return; // No mover si está en hover
+        if (!iconElement) return; 
 
         iconData.x += iconData.vx;
         iconData.y += iconData.vy;
@@ -121,7 +140,8 @@ const FloatingIconsBackground = ({ numberOfIcons = 30, iconFilterStyle }) => {
           iconData.y = Math.max(0, Math.min(iconData.y, parentHeight - iconData.size));
         }
 
-        iconElement.style.transform = `translate(${iconData.x}px, ${iconData.y}px)`;
+        // Aplicar la transformación manteniendo la escala final
+        iconElement.style.transform = `translate(${iconData.x}px, ${iconData.y}px) scale(${iconData.finalScale})`;
       });
 
       animationFrameId.current = requestAnimationFrame(animateLoop);
@@ -167,20 +187,15 @@ const FloatingIconsBackground = ({ numberOfIcons = 30, iconFilterStyle }) => {
           width: 100%;
           height: 100%;
           overflow: hidden; /* Asegura que los iconos no se desborden del contenedor */
-          z-index: 0; /* Asegura que esté detrás del contenido principal */
+          z-index: 1; /* Asegura que esté detrás del contenido principal, pero encima del fondo de la sección */
+          pointer-events: none; /* Deshabilita eventos de ratón en el contenedor para que no interfiera con el contenido */
         }
 
         .floating-icon {
           position: absolute;
-          opacity: 0.5; /* Opacidad inicial para un efecto sutil */
-          pointer-events: auto; /* Permite interacciones de ratón */
-          transition: transform 0.1s ease-out; /* Transición para el movimiento al pasar el cursor */
+          pointer-events: none; /* Deshabilita eventos de ratón en los iconos para que no interfiera con el contenido */
+          transition: transform 1.5s ease-out, opacity 1.5s ease-out; /* Transición para la animación de aparición */
           will-change: transform, opacity; /* Optimización de rendimiento */
-        }
-
-        .floating-icon.hover-move {
-          transform: scale(1.1) rotate(5deg) !i mportant; /* Más grande y rotado al pasar el cursor */
-          filter: brightness(1.2); /* Más brillante al pasar el pasar el cursor */
         }
       `}</style>
     </div>
