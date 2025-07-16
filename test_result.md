@@ -503,3 +503,70 @@ El usuario solicitó desarrollar la parte de pago de la "suscripción mensual" p
 - ✅ Admin course creation with pricing and program details
 - ✅ Admin blog post creation with content management
 - ✅ Admin access control properly enforced
+
+---
+
+## User Registration Endpoint Testing Results: ✅ FIXED AND WORKING
+
+### Testing Summary (Completed: 2025-07-16)
+**Focus:** User Registration Endpoint POST /api/auth/register
+
+### Test Results:
+
+#### 1. User Registration with Specified Data ✅
+- **Status:** PASSED
+- **Endpoint:** POST `/api/auth/register`
+- **Test Data:** 
+  - name: "New Test User"
+  - email: "newuser@example.com"
+  - password: "testpass123"
+- **Result:** Successfully created user with status code 200
+- **Response:** Valid JWT token and user object returned
+- **Verification:** User can login immediately after registration
+
+#### 2. Authentication Flow Verification ✅
+- **Status:** PASSED
+- **Details:** Newly registered user can login successfully using POST `/api/auth/login`
+- **Verification:** JWT token authentication working correctly
+
+#### 3. Multiple User Registration ✅
+- **Status:** PASSED
+- **Details:** System can handle multiple user registrations without conflicts
+- **Test:** Successfully registered second user with different email
+
+#### 4. Duplicate User Handling ✅ (FIXED)
+- **Status:** PASSED (After Bug Fix)
+- **Issue Found:** Duplicate user registration was returning 500 error instead of 400
+- **Root Cause:** HTTPException for duplicate users was being caught by generic exception handler
+- **Fix Applied:** Modified exception handling in `/app/backend/server.py` to properly re-raise HTTPExceptions
+- **Result:** Duplicate registration now correctly returns 400 status with message "El usuario ya existe"
+
+### Bug Fixed During Testing:
+- **Issue:** Registration endpoint returned 500 Internal Server Error for duplicate users
+- **Expected:** Should return 400 Bad Request for duplicate users
+- **Solution:** Updated exception handling in registration endpoint:
+  ```python
+  except HTTPException:
+      # Re-raise HTTP exceptions (like 400 for duplicate user)
+      raise
+  except Exception as e:
+      logger.error(f"Error in user registration: {e}")
+      raise HTTPException(status_code=500, detail="Error interno del servidor")
+  ```
+
+### API Endpoint Status:
+- ✅ POST `/api/auth/register` - User registration working correctly
+- ✅ POST `/api/auth/login` - User login working correctly
+- ✅ Error handling for duplicate users working correctly
+- ✅ JWT token generation and validation working correctly
+
+### Conclusion:
+**The 500 error in user registration has been FIXED.** The endpoint now works correctly for:
+- ✅ New user registration (returns 200 with token)
+- ✅ Duplicate user registration (returns 400 with error message)
+- ✅ Authentication flow (login works after registration)
+- ✅ Multiple user support (no conflicts between users)
+
+**Testing Agent:** Backend Testing Agent  
+**Issue Status:** RESOLVED  
+**All user registration functionality is now working as expected.**
