@@ -1446,6 +1446,15 @@ const AppContent = () => {
           onPurchaseSuccess={handleCoursePurchased}
         />
       )}
+
+      {/* Tarot Card Modal */}
+      {isTarotModalOpen && tarotReading && (
+        <TarotCardModal
+          isOpen={isTarotModalOpen}
+          onClose={() => closeModal(setIsTarotModalOpen)}
+          tarotReading={tarotReading}
+        />
+      )}
     </div>
   );
 };
