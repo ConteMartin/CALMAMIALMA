@@ -302,10 +302,14 @@ async def get_current_admin_user(current_user: UserResponse = Depends(get_curren
         )
     return current_user
 
-async def get_current_user_optional(token: str = Depends(oauth2_scheme)):
+async def get_current_user_optional(request: Request):
     """Función para obtener el usuario actual, pero permite continuar sin autenticación"""
-    if not token:
+    authorization = request.headers.get("Authorization")
+    scheme, token = get_authorization_scheme_param(authorization)
+    
+    if not authorization or scheme.lower() != "bearer":
         return None
+    
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
