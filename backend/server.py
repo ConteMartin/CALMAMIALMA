@@ -1162,6 +1162,7 @@ async def create_test_user():
             "name": "Usuario de Prueba",
             "password": get_password_hash("password123"),
             "is_premium": False,
+            "is_admin": False,
             "created_at": datetime.utcnow(),
             "subscription_expires": None
         }
