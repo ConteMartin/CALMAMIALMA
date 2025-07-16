@@ -94,6 +94,7 @@ class TarotCard(BaseModel):
     description: str
     meaning: str
     image_url: Optional[str] = None
+    practice_text: Optional[str] = None
 
 class TarotReading(BaseModel):
     id: str
