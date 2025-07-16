@@ -14,7 +14,7 @@ import './components/TarotCardDisplay.css';
 
 // Componente principal de la aplicación que ahora usa autenticación real
 const AppContent = () => {
-  const { user, loginWithGoogle, login, logout, isLoggedIn, isPremium, loading, error } = useAuth();
+  const { user, loginWithGoogle, login, logout, isLoggedIn, isPremium, isAdmin, loading, error } = useAuth();
 
   // Estados para la visibilidad de los modales
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
