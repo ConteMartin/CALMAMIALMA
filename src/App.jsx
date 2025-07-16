@@ -658,18 +658,18 @@ const AppContent = () => {
                         }}
                       >
                         {/* El ProfileCard con SpotlightCard solo se renderiza si la carta está volteada */}
-                        {clickedTarotCardId === card.id && ( 
+                        {clickedTarotCardId === card.id && tarotReading && ( 
                           <SpotlightCard 
                             className="custom-spotlight-card" 
                             spotlightColor="rgba(0, 229, 255, 0.2)"
                           >
                             <ProfileCard
-                              mainTitle={card.title}
-                              mainText={card.mainText}
-                              practiceText={card.practiceText}
-                              avatarUrl={card.imageUrlBack}
+                              mainTitle={tarotReading.card.title}
+                              mainText={tarotReading.card.description}
+                              practiceText={tarotReading.card.practice_text}
+                              avatarUrl={tarotReading.card.image_url}
                               enableTilt={false}
-                              cardBackground="transparent"
+                              cardBackground={`url(${tarotReading.card.image_url})`}
                               className="tarot-profile-card"
                             />
                           </SpotlightCard>
