@@ -1,22 +1,20 @@
-/* TarotCardModal.css */
-
 .tarot-modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(231, 221, 221, 0.1);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(05px);
 }
 
 .tarot-modal-container {
   position: relative;
-  width: 90vw;
+  width: 30vw;
   max-width: 800px;
   height: 80vh;
   max-height: 600px;
@@ -33,10 +31,10 @@
   right: 10px;
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(71, 70, 70, 0.1);
   border: none;
   border-radius: 50%;
-  color: white;
+  color: rgb(240, 243, 220);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -68,14 +66,15 @@
 
 /* Ajustes específicos para el ProfileCard en el modal */
 .tarot-modal-card .pc-card {
-  background-color: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  background-color: #f8f7f4;
+  border: 5px solid rgba(255, 253, 253, 0.1);
+  box-shadow: 0 20px 40px rgba(207, 218, 192, 0.6);
+  position: relative;
 }
 
 .tarot-modal-card .pc-inside {
-  background-color: rgba(26, 26, 26, 0.95);
-  background-image: linear-gradient(145deg, #1a1a1a 0%, #2a2a2a 100%);
+  background-color: rgba(0, 0, 0, 0.95);
+  background-image: linear-gradient(145deg, #e9a7e0 0%, #f87ee8 100%);
 }
 
 .tarot-modal-card .pc-avatar-content {
@@ -104,35 +103,38 @@
   padding: 20px;
   color: white;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
 .tarot-modal-card .pc-details h3 {
-  color: white;
-  background: none;
-  -webkit-text-fill-color: white;
+  color: rgb(255, 255, 255);
   font-size: 1.8rem;
   font-weight: 600;
+  margin-top: 20px;
   margin-bottom: 15px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  text-shadow: 1px 1px 2px black;
 }
 
 .tarot-modal-card .pc-details p {
-  color: rgba(255, 255, 255, 0.9);
-  background: none;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.9);
+  color: rgb(255, 255, 255);
   font-size: 1.1rem;
   line-height: 1.6;
-  margin-bottom: 20px;
+  margin-bottom: auto;
+  text-shadow: 1px 1px 2px black;
 }
 
 .tarot-modal-card .pc-practice-text {
-  color: rgba(255, 255, 255, 0.8);
+  color: white;
   font-size: 1rem;
   font-style: italic;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
   padding-top: 15px;
   margin-top: 15px;
+  text-shadow: 1px 1px 5px black;
 }
 
 /* Efectos holográficos específicos para el modal */
@@ -168,19 +170,19 @@
     width: 95vw;
     height: 85vh;
   }
-  
+
   .tarot-modal-card .pc-details h3 {
     font-size: 1.5rem;
   }
-  
+
   .tarot-modal-card .pc-details p {
     font-size: 1rem;
   }
-  
+
   .tarot-modal-card .pc-practice-text {
     font-size: 0.9rem;
   }
-  
+
   .tarot-modal-card .pc-avatar-content .avatar {
     max-width: 150px;
     max-height: 200px;
@@ -192,15 +194,15 @@
     width: 100vw;
     height: 90vh;
   }
-  
+
   .tarot-modal-card .pc-details h3 {
     font-size: 1.3rem;
   }
-  
+
   .tarot-modal-card .pc-details p {
     font-size: 0.9rem;
   }
-  
+
   .tarot-modal-card .pc-practice-text {
     font-size: 0.8rem;
   }

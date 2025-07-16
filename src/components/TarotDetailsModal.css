@@ -1,0 +1,173 @@
+/* src/components/TarotDetailsModal.css */
+
+.tarot-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.tarot-modal-content {
+  background-color: #1A1A1A; /* Fondo oscuro para el modal */
+  border-radius: 15px;
+  padding: 20px;
+  width: 90vw; /* Ancho del modal */
+  max-width: 900px; /* Ancho máximo para escritorio, aumentado */
+  height: 85vh; /* Alto del modal, aumentado */
+  max-height: 600px; /* Alto máximo para escritorio, aumentado */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: fadeInScale 0.3s ease-out forwards;
+  color: #FFFFFF; /* Color de texto por defecto */
+}
+
+.tarot-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 2em;
+  color: #FFFFFF;
+  cursor: pointer;
+  z-index: 10;
+  transition: color 0.2s ease;
+}
+
+.tarot-modal-close:hover {
+  color: #FFD700; /* Color dorado al pasar el ratón */
+}
+
+.tarot-modal-body {
+  display: flex;
+  flex-direction: row; /* Lado a lado en escritorio */
+  gap: 25px; /* Espacio entre la tarjeta y el texto, aumentado */
+  height: 100%;
+  padding-top: 20px; /* Espacio para el botón de cerrar */
+}
+
+.tarot-modal-card-container {
+  flex-shrink: 0; /* No encoge el contenedor de la tarjeta */
+  width: 250px; /* Ancho fijo para la tarjeta, AUMENTADO */
+  height: 400px; /* Alto fijo para la tarjeta, AUMENTADO */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.tarot-modal-profile-card {
+  width: 100%;
+  height: 100%;
+}
+
+.tarot-modal-text-container {
+  flex-grow: 1; /* El contenedor de texto ocupa el espacio restante */
+  overflow-y: auto; /* Desplazamiento para texto largo */
+  padding-right: 10px; /* Espacio para la barra de desplazamiento */
+}
+
+.tarot-modal-text-title {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 2.2em; /* Tamaño de título aumentado */
+  font-weight: 600;
+  margin-bottom: 20px; /* Margen aumentado */
+  color: #FFD700; /* Color dorado para el título */
+}
+
+.tarot-modal-main-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1em; /* Tamaño de texto principal aumentado */
+  line-height: 1.7; /* Interlineado mejorado */
+  margin-bottom: 20px; /* Margen aumentado */
+  color: #E0E0E0;
+}
+
+.tarot-modal-practice-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9em; /* Tamaño de texto de práctica aumentado */
+  line-height: 1.6;
+  padding-top: 15px; /* Padding superior aumentado */
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  color: #B0B0B0;
+}
+
+/* Animaciones */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .tarot-modal-content {
+    width: 95vw;
+    height: 90vh;
+    max-width: none;
+    max-height: none;
+    padding: 15px;
+  }
+
+  .tarot-modal-body {
+    flex-direction: column; /* Apila verticalmente en móvil */
+    align-items: center;
+    padding-top: 10px;
+    gap: 15px; /* Espacio reducido en móvil */
+  }
+
+  .tarot-modal-card-container {
+    width: 150px; /* Tarjeta más pequeña en móvil */
+    height: 250px;
+    margin-bottom: 0; /* No hay margen inferior si se apilan */
+  }
+
+  .tarot-modal-text-container {
+    padding-right: 0; /* Sin relleno para la barra de desplazamiento en móvil si es demasiado ajustado */
+  }
+
+  .tarot-modal-text-title {
+    font-size: 1.8em; /* Ajustado para móvil */
+    margin-bottom: 10px;
+  }
+
+  .tarot-modal-main-text,
+  .tarot-modal-practice-text {
+    font-size: 0.85em; /* Ajustado para móvil */
+  }
+}
+
+/* Barra de desplazamiento personalizada para tarot-modal-text-container */
+.tarot-modal-text-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tarot-modal-text-container::-webkit-scrollbar-track {
+  background: #333;
+  border-radius: 3px;
+}
+
+.tarot-modal-text-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 3px;
+}
+
+.tarot-modal-text-container::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}

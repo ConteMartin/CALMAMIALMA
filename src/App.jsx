@@ -607,7 +607,7 @@ const AppContent = () => {
             <FloatingIconsBackground numberOfIcons={30} iconFilterStyle="brightness(0.9)" />
             <div className="w-full mx-auto relative z-20 py-32 px-4">
               <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-16">Oráculo Diario</h2>
-              <div className="relative h-[400px] flex justify-center items-center w-[80vw] mx-auto"> {/* Changed h-[275px] to h-[400px] */}
+              <div className="relative h-[200px] flex justify-center items-center w-[80vw] mx-auto"> {/* Changed h-[275px] to h-[400px] */}
                 {baseTarotCardsData.map((card, index) => {
                   const cardStyle = calculateTarotCardStyle(index, baseTarotCardsData.length, hoveredCardId === card.id);
                   
