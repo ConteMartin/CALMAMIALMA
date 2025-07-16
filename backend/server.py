@@ -844,14 +844,14 @@ async def get_blog_posts(current_user: Optional[UserResponse] = Depends(get_curr
     return blog_posts
 
 @app.get("/api/blog/posts/{post_id}", response_model=BlogPostResponse)
-async def get_blog_post(post_id: str, current_user: UserResponse = Depends(get_current_user)):
+async def get_blog_post(post_id: str, current_user: Optional[UserResponse] = Depends(get_current_user_optional)):
     post = await database.blog_posts.find_one({"_id": post_id})
     
     if not post:
         raise HTTPException(status_code=404, detail="Post no encontrado")
     
     # Para usuarios gratuitos, mostrar solo las primeras 3 líneas
-    if not current_user.is_premium:
+    if not current_user or not current_user.is_premium:
         content_lines = post["content"].split('\n')
         limited_content = '\n'.join(content_lines[:3])
         if len(content_lines) > 3:
