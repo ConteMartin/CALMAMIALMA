@@ -1478,6 +1478,130 @@ async def create_subscription(
             client_secret=str(e)
         )
 
+# Endpoints de administración
+@app.post("/api/admin/videos", response_model=VideoResponse)
+async def create_video(
+    video_request: AdminVideoRequest,
+    current_admin: UserResponse = Depends(get_current_admin_user)
+):
+    """Crear nuevo video (solo admin)"""
+    try:
+        video_data = {
+            "_id": str(uuid.uuid4()),
+            "title": video_request.title,
+            "description": video_request.description,
+            "youtube_url": video_request.youtube_url,
+            "category": video_request.category,
+            "thumbnail_url": video_request.thumbnail_url,
+            "duration": video_request.duration,
+            "is_premium": video_request.is_premium,
+            "created_at": datetime.utcnow(),
+            "created_by": current_admin.id
+        }
+        
+        await database.videos.insert_one(video_data)
+        
+        return VideoResponse(
+            id=video_data["_id"],
+            title=video_data["title"],
+            description=video_data["description"],
+            youtube_url=video_data["youtube_url"],
+            category=video_data["category"],
+            thumbnail_url=video_data["thumbnail_url"],
+            duration=video_data["duration"],
+            is_premium=video_data["is_premium"]
+        )
+        
+    except Exception as e:
+        logger.error(f"Error creating video: {e}")
+        raise HTTPException(status_code=500, detail="Error al crear video")
+
+@app.post("/api/admin/courses", response_model=CourseResponse)
+async def create_course(
+    course_request: AdminCourseRequest,
+    current_admin: UserResponse = Depends(get_current_admin_user)
+):
+    """Crear nuevo curso (solo admin)"""
+    try:
+        course_data = {
+            "_id": str(uuid.uuid4()),
+            "title": course_request.title,
+            "description": course_request.description,
+            "price": course_request.price,
+            "duration": course_request.duration,
+            "level": course_request.level,
+            "image_url": course_request.image_url,
+            "youtube_url": course_request.youtube_url,
+            "program": course_request.program,
+            "created_at": datetime.utcnow(),
+            "created_by": current_admin.id
+        }
+        
+        await database.courses.insert_one(course_data)
+        
+        return CourseResponse(
+            id=course_data["_id"],
+            title=course_data["title"],
+            description=course_data["description"],
+            price=course_data["price"],
+            duration=course_data["duration"],
+            level=course_data["level"],
+            image_url=course_data["image_url"]
+        )
+        
+    except Exception as e:
+        logger.error(f"Error creating course: {e}")
+        raise HTTPException(status_code=500, detail="Error al crear curso")
+
+@app.get("/api/admin/videos", response_model=List[VideoResponse])
+async def get_admin_videos(current_admin: UserResponse = Depends(get_current_admin_user)):
+    """Obtener todos los videos para admin"""
+    try:
+        videos = await database.videos.find().to_list(length=None)
+        admin_videos = []
+        
+        for video in videos:
+            admin_videos.append(VideoResponse(
+                id=video["_id"],
+                title=video["title"],
+                description=video["description"],
+                youtube_url=video["youtube_url"],
+                category=video["category"],
+                thumbnail_url=video.get("thumbnail_url"),
+                duration=video.get("duration"),
+                is_premium=video["is_premium"]
+            ))
+        
+        return admin_videos
+        
+    except Exception as e:
+        logger.error(f"Error getting admin videos: {e}")
+        raise HTTPException(status_code=500, detail="Error al obtener videos")
+
+@app.get("/api/admin/courses", response_model=List[CourseResponse])
+async def get_admin_courses(current_admin: UserResponse = Depends(get_current_admin_user)):
+    """Obtener todos los cursos para admin"""
+    try:
+        courses = await database.courses.find().to_list(length=None)
+        admin_courses = []
+        
+        for course in courses:
+            admin_courses.append(CourseResponse(
+                id=course["_id"],
+                title=course["title"],
+                description=course["description"],
+                price=course["price"],
+                duration=course["duration"],
+                level=course["level"],
+                image_url=course.get("image_url")
+            ))
+        
+        return admin_courses
+        
+    except Exception as e:
+        logger.error(f"Error getting admin courses: {e}")
+        raise HTTPException(status_code=500, detail="Error al obtener cursos")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
