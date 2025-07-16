@@ -230,6 +230,35 @@ class ApiService {
   async healthCheck() {
     return await this.request('/api/health');
   }
+
+  // Métodos de administración
+  async createVideo(videoData) {
+    return await this.request('/api/admin/videos', {
+      method: 'POST',
+      body: JSON.stringify(videoData),
+    });
+  }
+
+  async createCourse(courseData) {
+    return await this.request('/api/admin/courses', {
+      method: 'POST',
+      body: JSON.stringify(courseData),
+    });
+  }
+
+  async getAdminVideos() {
+    return await this.request('/api/admin/videos');
+  }
+
+  async getAdminCourses() {
+    return await this.request('/api/admin/courses');
+  }
+
+  async createAdminUser() {
+    return await this.request('/api/auth/create-admin-user', {
+      method: 'POST',
+    });
+  }
 }
 
 // Crear instancia global
