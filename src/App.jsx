@@ -188,51 +188,44 @@ const AppContent = () => {
     }
   };
 
-  // Manejador del clic en las cartas del tarot (AHORA VOLTEA EN LUGAR)
+  // Manejador del clic en las cartas del tarot (USA LA API DEL BACKEND)
   const handleTarotCardClick = async (cardData) => {
     if (!isLoggedIn()) {
       openModal(setIsLoginModalOpen);
       return;
     }
 
-    // COMENTADO TEMPORALMENTE PARA PRUEBAS:
-    // if (!isPremium()) {
-    //     const lastReadDateStr = localStorage.getItem(LAST_TAROT_READ_KEY);
-    //     let canRead = true;
-    //     let nextReadDate = null;
-
-    //     if (lastReadDateStr) {
-    //         const lastReadDate = new Date(lastReadDateStr);
-    //         const now = new Date();
-    //         const diffTime = Math.abs(now.getTime() - lastReadDate.getTime()); // Usar getTime() para comparar milisegundos
-    //         const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // Usar floor para días completos
-
-    //         if (diffDays < TAROT_COOLDOWN_DAYS) {
-    //             canRead = false;
-    //             nextReadDate = new Date(lastReadDate);
-    //             nextReadDate.setDate(lastReadDate.getDate() + TAROT_COOLDOWN_DAYS);
-    //         }
-    //     }
-
-    //     if (!canRead) {
-    //         alert(`Como usuario gratuito, puedes obtener una lectura de tarot cada ${TAROT_COOLDOWN_DAYS} días. Tu próxima lectura estará disponible el ${nextReadDate.toLocaleDateString('es-ES')}.`);
-    //         return; // Previene el volteo de la carta
-    //     }
-    // }
-
-    // Si la misma carta ya está volteada, la voltea de nuevo (oculta el contenido)
-    if (clickedTarotCardId === cardData.id) {
-      setClickedTarotCardId(null);
-    } else {
-      // Voltea la nueva carta
+    try {
+      // Llamar a la API del backend para obtener la lectura del tarot
+      const reading = await apiService.getDailyTarot();
+      
+      // Verificar si hay restricciones
+      if (reading.error) {
+        // Mostrar mensaje de restricción
+        const days = isPremium() ? 1 : 3;
+        const nextAvailable = isPremium() ? 'mañana' : 'en 3 días';
+        alert(`Como usuario ${isPremium() ? 'premium' : 'gratuito'}, puedes obtener una lectura cada ${days} día${days > 1 ? 's' : ''}. Tu próxima lectura estará disponible ${nextAvailable}.`);
+        return;
+      }
+      
+      // Actualizar los datos del tarot con la respuesta del backend
+      setTarotReading(reading);
+      
+      // Voltear la carta seleccionada
       setClickedTarotCardId(cardData.id);
-      // Solo actualiza la fecha de la última lectura si es una nueva tirada para un usuario no premium
-      // COMENTADO TEMPORALMENTE PARA PRUEBAS:
-      // if (!isPremium()) {
-      //     localStorage.setItem(LAST_TAROT_READ_KEY, new Date().toISOString());
-      // }
+      
+      console.log('Tarot reading obtained from API:', reading);
+      
+    } catch (error) {
+      console.error('Error getting tarot reading:', error);
+      
+      // Verificar si es un error de restricción de tiempo
+      if (error.message.includes('lectura cada')) {
+        alert(error.message);
+      } else {
+        setApiError('Error al obtener la lectura del tarot: ' + error.message);
+      }
     }
-    console.log('Tarot card clicked. Flipped ID:', cardData.id);
   };
 
   // Manejador del formulario de horóscopo
