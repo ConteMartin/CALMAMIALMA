@@ -654,42 +654,25 @@ const AppContent = () => {
                         />
                       </div>
 
-                      {/* Back Face (ilustración de la carta y contenido) */}
+                      {/* Back Face (ProfileCard component) */}
                       <div
                         className="absolute w-full h-full rounded-xl backface-hidden overflow-hidden back"
                         style={{
                             transform: 'rotateY(180deg)', // Rotación inicial para la cara trasera
-                            backgroundColor: '#1A1A1A', // Fondo oscuro para la cara trasera
-                            color: '#FFFFFF', // Texto blanco para contraste
-                            padding: '15px', // Añadir padding
-                            boxSizing: 'border-box',
                             zIndex: clickedTarotCardId === card.id ? 2 : 1
                         }}
                       >
-                        {/* El contenido de la cara trasera solo se renderiza si la carta está volteada */}
+                        {/* El ProfileCard solo se renderiza si la carta está volteada */}
                         {clickedTarotCardId === card.id && ( 
-                          <div className="tarot-card-back-content">
-                            <h3 className="tarot-back-title">{card.title}</h3>
-                            {card.imageUrlBack && (
-                              <img
-                                src={card.imageUrlBack}
-                                alt={card.title}
-                                className="tarot-back-image"
-                                onError={(e) => {
-                                  e.target.style.display = 'none';
-                                  console.error(`Error loading back image for card ${card.id}: ${card.imageUrlBack}`);
-                                }}
-                              />
-                            )}
-                            <div className="tarot-back-main-text custom-scrollbar">
-                              {card.mainText}
-                            </div>
-                            {card.practiceText && (
-                              <div className="tarot-back-practice-text">
-                                {card.practiceText}
-                              </div>
-                            )}
-                          </div>
+                          <ProfileCard
+                            mainTitle={card.title}
+                            mainText={card.mainText}
+                            practiceText={card.practiceText}
+                            avatarUrl={card.imageUrlBack}
+                            enableTilt={false}
+                            cardBackground="#1A1A1A"
+                            className="tarot-profile-card"
+                          />
                         )}
                       </div>
                     </div>
