@@ -188,6 +188,60 @@ El usuario solicitó desarrollar la parte de pago de la "suscripción mensual" p
 **Results File:** `/app/backend_test_results.json`  
 **All critical backend functionality is working as expected.**
 
+## Latest Backend Testing Results: ✅ ALL TESTS PASSED
+
+### Additional Testing Summary (Completed: 2025-07-16)
+**Total Tests:** 16/16 passed (100% success rate)
+
+### New Tests Added:
+#### 11. Admin User Creation and Login ✅
+- **Status:** PASSED
+- **Details:** Admin user "Administrador" created successfully with email "admin@calmamialma.com" and password "admin123"
+- **Verification:** User has is_admin=True and can access admin endpoints
+
+#### 12. Admin Video Creation ✅
+- **Status:** PASSED
+- **Endpoint:** POST `/api/admin/videos`
+- **Details:** Admin can successfully create videos with YouTube URLs, categories, and premium restrictions
+- **Verification:** Video created with all required fields and proper admin authentication
+
+#### 13. Admin Course Creation ✅
+- **Status:** PASSED
+- **Endpoint:** POST `/api/admin/courses`
+- **Details:** Admin can successfully create courses with pricing, duration, and program content
+- **Verification:** Course created with all required fields and proper admin authentication
+
+#### 14. Admin Blog Post Creation ✅
+- **Status:** PASSED
+- **Endpoint:** POST `/api/blog/posts`
+- **Details:** Admin can successfully create blog posts with content, excerpts, and images
+- **Verification:** Blog post created with proper field mapping and admin authentication
+
+#### 15. Videos Access Control ✅
+- **Status:** PASSED
+- **Details:** Premium users get YouTube URLs, free users get restricted access message
+- **Verification:** Different response format based on user premium status
+
+#### 16. Blog Content Restrictions ✅
+- **Status:** PASSED
+- **Details:** Free users get limited content (excerpt only), premium users get full content
+- **Verification:** Content restriction works correctly based on user status
+
+### Admin Features Verified:
+- ✅ Admin user creation and authentication
+- ✅ Video management with YouTube URLs and categories
+- ✅ Course creation with pricing and content
+- ✅ Blog post creation and management
+- ✅ Proper access control for all admin endpoints
+- ✅ Content restrictions based on user membership level
+
+### Key Bug Fixed During Testing:
+- **Blog Post Creation Bug:** Fixed field mapping from "_id" to "id" in BlogPostResponse model
+- **Error:** BlogPostResponse model expected "id" field but received "_id" from database
+- **Solution:** Added proper field mapping in blog post creation endpoint
+
+**All admin functionality is now fully operational and tested.**
+
 ---
 
 ## Updated Backend Testing Results: ✅ ALL TESTS PASSED (16/16)
