@@ -893,7 +893,18 @@ async def create_blog_post(
     
     await database.blog_posts.insert_one(post_data)
     
-    return BlogPostResponse(**post_data)
+    # Create response with correct field mapping
+    response_data = {
+        "id": post_data["_id"],
+        "title": post_data["title"],
+        "content": post_data["content"],
+        "excerpt": post_data["excerpt"],
+        "image_url": post_data["image_url"],
+        "published_date": post_data["published_date"],
+        "author": post_data["author"]
+    }
+    
+    return BlogPostResponse(**response_data)
 
 # Rutas para cursos comprados
 @app.post("/api/courses/purchase", response_model=PurchasedCourseResponse)
