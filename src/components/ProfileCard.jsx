@@ -261,7 +261,7 @@ const ProfileCardComponent = ({
               <img
                 className="avatar"
                 src={avatarUrl}
-                alt={mainTitle || "Tarot Card"}
+                alt={name || mainTitle || "Tarot Card"}
                 loading="lazy"
                 onError={(e) => {
                   const target = e.target;
