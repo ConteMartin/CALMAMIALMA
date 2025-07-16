@@ -1147,37 +1147,38 @@ async def create_test_user():
         logger.error(f"Error creating test user: {e}")
         raise HTTPException(status_code=500, detail="Error al crear usuario de prueba")
 
-@app.post("/api/auth/create-premium-user")
-async def create_premium_user():
+@app.post("/api/auth/create-admin-user")
+async def create_admin_user():
     try:
-        # Crear usuario premium específico como solicitado
-        existing_user = await database.users.find_one({"email": "premium@calmamialma.com"})
+        # Crear usuario admin específico
+        existing_user = await database.users.find_one({"email": "admin@calmamialma.com"})
         if existing_user:
-            return {"message": "Usuario premium ya existe", "email": "premium@calmamialma.com"}
+            return {"message": "Usuario admin ya existe", "email": "admin@calmamialma.com"}
         
-        # Crear usuario PREMIUM Vane
-        premium_user = {
+        # Crear usuario ADMIN
+        admin_user = {
             "_id": str(uuid.uuid4()),
-            "email": "premium@calmamialma.com",
-            "name": "PREMIUM Vane",
-            "password": get_password_hash("asd123"),
+            "email": "admin@calmamialma.com",
+            "name": "Administrador",
+            "password": get_password_hash("admin123"),
             "is_premium": True,
+            "is_admin": True,
             "created_at": datetime.utcnow(),
-            "subscription_expires": datetime.utcnow() + timedelta(days=365)  # 1 año
+            "subscription_expires": datetime.utcnow() + timedelta(days=36500)  # 100 años
         }
         
-        await database.users.insert_one(premium_user)
+        await database.users.insert_one(admin_user)
         
         return {
-            "message": "Usuario premium PREMIUM Vane creado exitosamente",
-            "email": "premium@calmamialma.com",
-            "password": "asd123",
-            "note": "Usuario premium listo para probar funcionalidades"
+            "message": "Usuario administrador creado exitosamente",
+            "email": "admin@calmamialma.com",
+            "password": "admin123",
+            "note": "Usuario admin listo para gestionar contenido"
         }
         
     except Exception as e:
-        logger.error(f"Error creating premium user: {e}")
-        raise HTTPException(status_code=500, detail="Error al crear usuario premium")
+        logger.error(f"Error creating admin user: {e}")
+        raise HTTPException(status_code=500, detail="Error al crear usuario administrador")
 
 # Rutas de Tarot
 @app.get("/api/tarot/daily", response_model=TarotReading)
