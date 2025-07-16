@@ -173,6 +173,26 @@ class PurchasedCourseResponse(BaseModel):
     payment_status: str
     access_granted: bool = True
 
+# Modelos para administración
+class AdminVideoRequest(BaseModel):
+    title: str
+    description: str
+    youtube_url: str
+    category: str  # MEDITACION, YOGA, COMUNIDAD
+    thumbnail_url: Optional[str] = None
+    duration: Optional[str] = None
+    is_premium: bool = False
+
+class AdminCourseRequest(BaseModel):
+    title: str
+    description: str
+    price: float
+    duration: str
+    level: str
+    image_url: Optional[str] = None
+    youtube_url: Optional[str] = None
+    program: Optional[str] = None
+
 # Modelos para calendario
 class CalendarRoutineRequest(BaseModel):
     weekly_routine: Dict[str, List[str]]  # {"monday": ["yoga", "meditation"], "tuesday": ["breathing"]}
