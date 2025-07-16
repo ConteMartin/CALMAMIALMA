@@ -45,8 +45,15 @@ const ProfileCardComponent = ({
   mainTitle = "",
   mainText = "",
   practiceText = "",
+  // Props para uso con el modal del tarot
+  name = "",
+  title = "",
   // Prop para controlar el fondo principal de la tarjeta
   cardBackground,
+  // Nueva prop para ocultar user info
+  showUserInfo = true,
+  // Prop para callback de contacto
+  onContactClick,
 }) => {
   const wrapRef = useRef(null);
   const cardRef = useRef(null);
