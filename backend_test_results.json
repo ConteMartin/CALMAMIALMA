@@ -4,125 +4,167 @@
     "success": true,
     "message": "Backend is running and healthy",
     "details": null,
-    "timestamp": "2025-07-16T11:08:26.237843"
+    "timestamp": "2025-07-16T21:43:07.030528"
   },
   {
     "test": "Premium User Creation",
     "success": true,
     "message": "Premium user created successfully: PREMIUM Vane",
     "details": null,
-    "timestamp": "2025-07-16T11:08:26.241459"
+    "timestamp": "2025-07-16T21:43:07.262686"
   },
   {
     "test": "Premium User Login",
     "success": true,
     "message": "Premium user logged in successfully: PREMIUM Vane",
     "details": null,
-    "timestamp": "2025-07-16T11:08:26.498725"
-  },
-  {
-    "test": "Course Details API",
-    "success": true,
-    "message": "Course details retrieved successfully. Premium discount applied: True",
-    "details": null,
-    "timestamp": "2025-07-16T11:08:26.502781"
-  },
-  {
-    "test": "Course Purchase API",
-    "success": true,
-    "message": "Course purchased successfully. Payment status: completed",
-    "details": null,
-    "timestamp": "2025-07-16T11:08:26.506999"
-  },
-  {
-    "test": "Purchased Courses API",
-    "success": true,
-    "message": "Retrieved 2 purchased courses",
-    "details": null,
-    "timestamp": "2025-07-16T11:08:26.511047"
-  },
-  {
-    "test": "Calendar Routine GET",
-    "success": true,
-    "message": "Calendar routine retrieved successfully. Days configured: 7",
-    "details": null,
-    "timestamp": "2025-07-16T11:08:26.514882"
-  },
-  {
-    "test": "Calendar Routine UPDATE",
-    "success": true,
-    "message": "Calendar routine updated successfully",
-    "details": null,
-    "timestamp": "2025-07-16T11:08:26.519943"
-  },
-  {
-    "test": "Google Calendar Sync",
-    "success": true,
-    "message": "Google Calendar sync configured successfully",
-    "details": null,
-    "timestamp": "2025-07-16T11:08:26.523051"
-  },
-  {
-    "test": "Tarot Restrictions",
-    "success": true,
-    "message": "Premium user can access tarot reading successfully",
-    "details": null,
-    "timestamp": "2025-07-16T11:08:26.526655"
-  },
-  {
-    "test": "Tarot Daily Limit",
-    "success": true,
-    "message": "Premium daily limit working correctly",
-    "details": null,
-    "timestamp": "2025-07-16T11:08:26.530137"
+    "timestamp": "2025-07-16T21:43:07.496212"
   },
   {
     "test": "Free User Tarot",
     "success": true,
     "message": "Free user can access tarot reading (3-day limit applies)",
     "details": null,
-    "timestamp": "2025-07-16T11:08:26.777500"
+    "timestamp": "2025-07-16T21:43:07.973479"
   },
   {
     "test": "Admin User Login",
     "success": true,
     "message": "Admin user logged in successfully",
     "details": null,
-    "timestamp": "2025-07-16T11:08:27.019476"
+    "timestamp": "2025-07-16T21:43:08.441703"
+  },
+  {
+    "test": "Tarot Basic Functionality",
+    "success": true,
+    "message": "Premium tarot working - Card: LA CULPA",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.448239"
+  },
+  {
+    "test": "Tarot Daily Restriction",
+    "success": true,
+    "message": "Premium daily limit working - same reading returned",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.452472"
+  },
+  {
+    "test": "Free User Tarot Access",
+    "success": true,
+    "message": "Free user tarot working - Card: CARTA 22",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.456521"
+  },
+  {
+    "test": "Free User 3-Day Restriction",
+    "success": true,
+    "message": "Free user 3-day limit working - same reading returned",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.460350"
+  },
+  {
+    "test": "Tarot Same Day Consistency",
+    "success": true,
+    "message": "All same-day calls returned same card: LA CULPA",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.477516"
+  },
+  {
+    "test": "Tarot Card Range",
+    "success": true,
+    "message": "Card ID 11 is within expected range 1-40",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.477548"
+  },
+  {
+    "test": "Tarot 40-Card Structure",
+    "success": true,
+    "message": "Card has proper structure for 40-card system",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.477557"
+  },
+  {
+    "test": "Admin Blog Creation",
+    "success": true,
+    "message": "Admin can create blog posts successfully",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.481703"
+  },
+  {
+    "test": "Premium Blog Restriction",
+    "success": true,
+    "message": "Premium user correctly blocked from creating blog posts",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.484517"
+  },
+  {
+    "test": "Course Details API",
+    "success": true,
+    "message": "Course details retrieved successfully. Premium discount applied: True",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.487369"
+  },
+  {
+    "test": "Course Purchase API",
+    "success": true,
+    "message": "Course purchased successfully. Payment status: completed",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.492000"
+  },
+  {
+    "test": "Purchased Courses API",
+    "success": true,
+    "message": "Retrieved 2 purchased courses",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.495847"
+  },
+  {
+    "test": "Calendar Routine GET",
+    "success": true,
+    "message": "Calendar routine retrieved successfully. Days configured: 7",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.500352"
+  },
+  {
+    "test": "Calendar Routine UPDATE",
+    "success": true,
+    "message": "Calendar routine updated successfully",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.504937"
+  },
+  {
+    "test": "Google Calendar Sync",
+    "success": true,
+    "message": "Google Calendar sync configured successfully",
+    "details": null,
+    "timestamp": "2025-07-16T21:43:08.508017"
   },
   {
     "test": "Admin Video Creation",
     "success": true,
     "message": "Video created successfully: Test Meditation Video",
     "details": null,
-    "timestamp": "2025-07-16T11:08:27.024481"
+    "timestamp": "2025-07-16T21:43:08.511918"
   },
   {
     "test": "Admin Course Creation",
     "success": true,
     "message": "Course created successfully: Test Reiki Course",
     "details": null,
-    "timestamp": "2025-07-16T11:08:27.028550"
+    "timestamp": "2025-07-16T21:43:08.515826"
   },
   {
     "test": "Admin Blog Post Creation",
     "success": true,
     "message": "Blog post created successfully: Test Blog Post",
     "details": null,
-    "timestamp": "2025-07-16T11:08:27.032399"
+    "timestamp": "2025-07-16T21:43:08.519508"
   },
   {
     "test": "Videos Access Control",
     "success": true,
     "message": "Video access control working correctly - premium users get URLs, free users don't",
     "details": null,
-    "timestamp": "2025-07-16T11:08:27.038329"
-  },
-  {
-    "test": "Blog Content Restrictions",
-    "success": true,
-    "message": "Blog content restrictions working - Free users get limited content: True",
-    "details": null,
-    "timestamp": "2025-07-16T11:08:27.045755"
+    "timestamp": "2025-07-16T21:43:08.525263"
   }
 ]
