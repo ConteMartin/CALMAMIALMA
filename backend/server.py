@@ -1373,7 +1373,8 @@ async def get_daily_tarot(current_user: UserResponse = Depends(get_current_user)
         title=selected_card["title"],
         description=description,
         meaning=practice_text or "",
-        image_url=selected_card["image_url"]
+        image_url=selected_card["image_url"],
+        practice_text=practice_text
     )
     
     reading_data = {
