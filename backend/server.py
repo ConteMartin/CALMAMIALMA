@@ -710,7 +710,7 @@ async def get_courses(current_user: Optional[UserResponse] = Depends(get_current
 @app.get("/api/courses/{course_id}/details")
 async def get_course_details(
     course_id: str,
-    current_user: UserResponse = Depends(get_current_user)
+    current_user: Optional[UserResponse] = Depends(get_current_user_optional)
 ):
     """Obtener detalles completos de un curso incluyendo video de YouTube"""
     courses_data = [
@@ -757,6 +757,17 @@ async def get_course_details(
             "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Yoga+Prenatal",
             "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             "program": "Semana 1-2: Adaptaciones para el embarazo\nSemana 3-4: Fortalecimiento y flexibilidad\nSemana 5-6: Preparación para el parto\nSemana 7-8: Relajación y conexión madre-bebé"
+        },
+        {
+            "id": "5",
+            "title": "Introducción a la Meditación",
+            "description": "Curso gratuito para aprender los fundamentos de la meditación",
+            "price": 0.0,
+            "duration": "2 semanas",
+            "level": "Principiante",
+            "image_url": "https://placehold.co/400x200/e0e0e0/333333?text=Meditación+Gratis",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "program": "Semana 1: Fundamentos de la meditación\nSemana 2: Técnicas de relajación"
         }
     ]
     
@@ -765,7 +776,7 @@ async def get_course_details(
         raise HTTPException(status_code=404, detail="Curso no encontrado")
     
     # Aplicar descuento del 30% para usuarios premium
-    if current_user.is_premium:
+    if current_user and current_user.is_premium and course["price"] > 0:
         course["discounted_price"] = course["price"] * 0.7
     
     return course
