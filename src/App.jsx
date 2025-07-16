@@ -1129,8 +1129,8 @@ const AppContent = () => {
                 ))}
               </div>
 
-              {/* Blog Creation for Premium Users */}
-              {isPremium() && (
+              {/* Blog Creation for Admin Users Only */}
+              {isAdmin() && (
                 <div className="bg-fondo-claro p-8 rounded-2xl shadow-lg">
                   <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-6">
                     Crear Nuevo Artículo
