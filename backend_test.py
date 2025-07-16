@@ -951,8 +951,10 @@ class BackendTester:
             return False
     
     def run_all_tests(self):
-        """Run all backend tests"""
-        print("🚀 Starting Backend API Tests for Calma Mi Alma Premium Features")
+        """Run all backend tests with focus on review requirements"""
+        print("🚀 Starting Backend API Tests for Calma Mi Alma - REVIEW FOCUSED")
+        print("=" * 70)
+        print("FOCUS: Tarot 40-card system, Anti-repetition, Blog permissions")
         print("=" * 70)
         
         # Health check first
@@ -960,24 +962,33 @@ class BackendTester:
             print("\n❌ Backend server is not running. Please start the backend service.")
             return False
         
-        # Test sequence
+        # Test sequence - focused on review requirements
         tests = [
+            # User setup
             self.test_premium_user_creation,
             self.test_login_premium_user,
+            self.create_free_user_and_test_tarot,  # Creates free user
+            self.test_admin_user_creation_and_login,
+            
+            # MAIN FOCUS: Tarot functionality (40 cards, restrictions, anti-repetition)
+            self.test_tarot_comprehensive_functionality,
+            self.test_tarot_free_user_restrictions,
+            self.test_tarot_anti_repetition_multiple_calls,
+            
+            # MAIN FOCUS: Blog post permissions (only admin, not premium)
+            self.test_blog_post_permissions,
+            
+            # Additional functionality verification
             self.test_course_details_api,
             self.test_course_purchase_api,
             self.test_purchased_courses_api,
             self.test_calendar_routine_get,
             self.test_calendar_routine_update,
             self.test_google_calendar_sync,
-            self.test_tarot_restrictions,
-            self.create_free_user_and_test_tarot,
-            self.test_admin_user_creation_and_login,
             self.test_admin_video_creation,
             self.test_admin_course_creation,
             self.test_admin_blog_post_creation,
             self.test_videos_access_control,
-            self.test_blog_content_restrictions
         ]
         
         passed = 0
@@ -995,14 +1006,43 @@ class BackendTester:
         print(f"📊 TEST SUMMARY: {passed}/{total} tests passed")
         print("=" * 70)
         
+        # Focus on critical failures
+        critical_tests = [
+            "test_tarot_comprehensive_functionality",
+            "test_tarot_free_user_restrictions", 
+            "test_tarot_anti_repetition_multiple_calls",
+            "test_blog_post_permissions"
+        ]
+        
+        critical_failures = []
         failed_tests = [result for result in self.test_results if not result["success"]]
+        
+        for test in failed_tests:
+            if any(critical in test['test'] for critical in critical_tests):
+                critical_failures.append(test)
+        
+        if critical_failures:
+            print("\n🚨 CRITICAL FAILURES (Review Focus):")
+            for test in critical_failures:
+                print(f"   - {test['test']}: {test['message']}")
+        
         if failed_tests:
-            print("\n❌ FAILED TESTS:")
+            print("\n❌ ALL FAILED TESTS:")
             for test in failed_tests:
                 print(f"   - {test['test']}: {test['message']}")
         
         success_rate = (passed / total) * 100
         print(f"\n✅ Success Rate: {success_rate:.1f}%")
+        
+        # Special focus on review requirements
+        tarot_tests_passed = sum(1 for result in self.test_results 
+                               if result["success"] and "tarot" in result["test"].lower())
+        blog_tests_passed = sum(1 for result in self.test_results 
+                              if result["success"] and "blog" in result["test"].lower() and "permission" in result["test"].lower())
+        
+        print(f"\n🎯 REVIEW FOCUS RESULTS:")
+        print(f"   - Tarot Tests Passed: {tarot_tests_passed}/3")
+        print(f"   - Blog Permission Tests Passed: {blog_tests_passed}/1")
         
         return passed == total
 
