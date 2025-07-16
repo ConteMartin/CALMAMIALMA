@@ -112,15 +112,18 @@ h1, h2, h3, h4, h5, h6, .font-cormorant-garamond {
   background-color: var(--color-btn-bg-default);
   color: var(--color-btn-text-default);
   border-radius: 0.75rem; /* rounded-btn */
-  transition: background-color 0.3s ease, color 0.3s ease;
+  border: 1px solid black; /* Borde negro fino */
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 .btn-general:hover {
   background-color: var(--color-btn-bg-hover);
   color: var(--color-btn-text-hover);
+  border-color: var(--color-lino); /* Borde lino en hover terracota */
 }
 .btn-general.selected {
   background-color: var(--color-btn-bg-selected);
   color: var(--color-btn-text-selected);
+  border-color: black;
 }
 
 /* Estilos específicos para el botón dentro de las tarjetas de servicio */
@@ -128,11 +131,27 @@ h1, h2, h3, h4, h5, h6, .font-cormorant-garamond {
   background-color: var(--color-service-card-btn-bg);
   color: var(--color-service-card-btn-text);
   border-radius: 0.75rem;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  border: 1px solid black; /* Borde negro fino */
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 .btn-service-card:hover {
   background-color: var(--color-terracota); /* Hover a terracota */
   color: var(--color-texto-claro-white); /* Texto blanco en hover */
+  border-color: var(--color-lino); /* Borde lino en hover terracota */
+}
+
+/* Estilo específico para botones de contacto */
+.btn-contact {
+  background-color: var(--color-btn-bg-default);
+  color: var(--color-btn-text-default);
+  border-radius: 0.75rem;
+  border: 1px solid black;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.btn-contact:hover {
+  background-color: var(--color-terracota);
+  color: var(--color-texto-claro-white);
+  border-color: var(--color-lino);
 }
 
 /* Fondo y texto de las tarjetas de servicio */
