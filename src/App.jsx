@@ -412,21 +412,15 @@ const AppContent = () => {
     };
   };
 
-  // Datos de las 40 cartas del tarot (se mostrarán randomizadas)
-  const baseTarotCardsData = Array.from({ length: 40 }, (_, i) => {
-    const isSpecialCard = i === 0; // Card with ID 1 will be the special one (index 0)
+  // Datos de las 40 cartas del tarot (ahora usando tarotData.js)
+  const baseTarotCardsData = getAllTarotTexts().map((cardData, index) => {
     return {
-      id: i + 1,
-      // Contenido específico para la primera carta
-      title: isSpecialCard ? "ERES SUFICIENTE, TAL COMO ERES" : `Carta ${i + 1}`,
-      mainText: isSpecialCard
-        ? "carta te invita a recordarte una verdad esencial: no necesitas demostrar nada. Tu valor no depende de tus logros, tu apariencia o de la aprobación externa. Eres suficiente desde el primer latido de tu corazón."
-        : `El significado de la Carta ${i + 1} es un mensaje de introspección y nuevos comienzos. Reflexiona sobre tus pasos y prepárate para un cambio positivo.`,
-      practiceText: isSpecialCard
-        ? "✨ Práctica sugerida: Párate frente al espejo, mírate a los ojos y repite tres veces: “Soy suficiente. Me amo tal como soy. Hoy me honro.” Respira hondo y permite que ese mensaje llegue a tu corazón."
-        : null, // Solo la carta especial tiene texto de práctica
-      imageUrlFront: '/carta-tarot-dorso-3.png', // Ruta para la imagen del dorso actualizada
-      imageUrlBack: isSpecialCard ? '/tarot1.png' : `https://placehold.co/120x200/c2bae5/171717?text=ILUSTRACION+CARTA+${i + 1}` // Imagen específica para la primera carta
+      id: cardData.id,
+      title: cardData.title,
+      mainText: cardData.description,
+      practiceText: cardData.practiceText,
+      imageUrlFront: '/carta-tarot-dorso-3.png', // Ruta para la imagen del dorso
+      imageUrlBack: cardData.imageUrl // Usa la imageUrl de tarotData.js
     };
   });
 
