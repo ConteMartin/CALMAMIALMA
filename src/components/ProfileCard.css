@@ -88,16 +88,16 @@
   background-position: 0 0, 0 0, 50% 50%, 0 0; /* Ajustado para el holograma */
   overflow: hidden;
 
-  /* Reintroduciendo los gradientes del holograma original de ProfileCard, pero con colores rosa/lila */
+  /* Gradientes del holograma con colores dorado, lino y blanco */
   background-image: 
     radial-gradient(farthest-side circle at var(--pointer-x) var(--pointer-y), 
-      rgba(255, 192, 203, var(--card-opacity)) 4%, /* Light Pink */
-      rgba(221, 160, 221, calc(var(--card-opacity)*0.75)) 10%, /* Plum (Lila) */
-      rgba(255, 192, 203, calc(var(--card-opacity)*0.5)) 50%, 
+      rgba(255, 215, 0, var(--card-opacity)) 4%, /* Gold */
+      rgba(250, 240, 230, calc(var(--card-opacity)*0.75)) 10%, /* Linen */
+      rgba(255, 255, 255, calc(var(--card-opacity)*0.5)) 50%, /* White */
       transparent 100%), /* Se desvanece a transparente */
-    radial-gradient(35% 52% at 55% 20%, rgba(255, 192, 203, 0.5) 0%, transparent 100%), /* Light Pink */
-    radial-gradient(100% 100% at 50% 50%, rgba(221, 160, 221, 0.5) 1%, transparent 76%), /* Plum (Lila) */
-    conic-gradient(from 124deg at 50% 50%, rgba(255, 192, 203, 0.5) 0%, rgba(221, 160, 221, 0.5) 40%, rgba(221, 160, 221, 0.5) 60%, rgba(255, 192, 203, 0.5) 100%); /* Pink to Lila */
+    radial-gradient(35% 52% at 55% 20%, rgba(255, 215, 0, 0.6) 0%, transparent 100%), /* Gold */
+    radial-gradient(100% 100% at 50% 50%, rgba(250, 240, 230, 0.4) 1%, transparent 76%), /* Linen */
+    conic-gradient(from 124deg at 50% 50%, rgba(255, 215, 0, 0.5) 0%, rgba(250, 240, 230, 0.4) 40%, rgba(255, 255, 255, 0.3) 60%, rgba(255, 215, 0, 0.5) 100%); /* Gold to Linen to White */
 }
 
 .pc-card:hover,
