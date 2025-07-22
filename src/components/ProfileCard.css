@@ -237,7 +237,7 @@
   text-align: center; /* Centra el texto */
 }
 
-/* 2. Pseudo-elemento para el efecto holográfico (rosa claro a lila) */
+/* 2. Pseudo-elemento para el efecto holográfico (dorado, lino y blanco) */
 /* Este es el holograma principal que se superpone a la imagen de fondo */
 .pc-card-inner::after {
   content: '';
@@ -245,18 +245,18 @@
   inset: 0; /* Cubre todo el pc-card-inner */
   background: conic-gradient(
     from 0deg,
-    rgba(255, 192, 203, 0.2) 0%, /* Light Pink */
-    rgba(221, 160, 221, 0.2) 45deg, /* Plum (Lila) */
-    rgba(255, 192, 203, 0.2) 90deg,
-    rgba(221, 160, 221, 0.2) 135deg,
-    rgba(255, 192, 203, 0.2) 180deg,
-    rgba(221, 160, 221, 0.2) 225deg,
-    rgba(255, 192, 203, 0.2) 270deg,
-    rgba(221, 160, 221, 0.2) 315deg,
-    rgba(255, 192, 203, 0.2) 360deg
+    rgba(255, 215, 0, 0.3) 0%, /* Gold */
+    rgba(250, 240, 230, 0.2) 45deg, /* Linen */
+    rgba(255, 255, 255, 0.1) 90deg, /* White */
+    rgba(255, 215, 0, 0.3) 135deg, /* Gold */
+    rgba(250, 240, 230, 0.2) 180deg, /* Linen */
+    rgba(255, 255, 255, 0.1) 225deg, /* White */
+    rgba(255, 215, 0, 0.3) 270deg, /* Gold */
+    rgba(250, 240, 230, 0.2) 315deg, /* Linen */
+    rgba(255, 215, 0, 0.3) 360deg /* Gold */
   );
   border-radius: inherit;
-  opacity: 0.7; /* Opacidad del holograma */
+  opacity: 0.8; /* Opacidad del holograma */
   animation: rotate 15s linear infinite; /* Animación de rotación */
   z-index: 1; /* Por encima de la imagen de fondo */
   mix-blend-mode: screen; /* Mezcla el gradiente con el fondo para un efecto de luz */
