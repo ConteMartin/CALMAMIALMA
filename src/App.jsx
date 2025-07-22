@@ -12,8 +12,7 @@ import FloatingIconsBackground from './components/FloatingIcons.jsx';
 import ProfileCard from './components/ProfileCard.jsx'; 
 // Importa el componente SpotlightCard para el efecto holograma
 import SpotlightCard from './components/SpotlightCard.jsx';
-// Importa el nuevo CSS para el display de las cartas de tarot
-import './components/TarotCardDisplay.css';
+import { getAllTarotTexts } from './data/tarotData.js';
 
 
 // Componente principal de la aplicación que ahora usa autenticación real
