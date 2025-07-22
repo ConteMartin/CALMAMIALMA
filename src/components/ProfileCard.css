@@ -226,7 +226,7 @@
   background-size: cover; /* ¡Cubre toda la tarjeta! */
   background-position: center; /* Centra la imagen */
   background-repeat: no-repeat; /* Evita la repetición */
-  background-color: #F5F5DC; /* Fondo color lino si la imagen no carga o es transparente */
+  background-color: #FAF0E6; /* Fondo color lino (linen) si la imagen no carga o es transparente */
 
   /* Propiedades Flexbox para el layout del contenido (solo título) */
   display: flex;
