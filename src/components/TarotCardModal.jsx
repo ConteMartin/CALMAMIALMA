@@ -1,14 +1,38 @@
+// src/components/TarotCardModal.jsx
 import React from 'react';
-import ProfileCard from './ProfileCard';
-import './TarotCardModal.css';
+import ProfileCard from './ProfileCard'; // Importa el ProfileCard actualizado
+import { useAuth } from '../hooks/useAuth'; // Importa useAuth para verificar si es premium
+import './TarotCardModal.css'; // Importa el CSS consolidado para el modal
 
 const TarotCardModal = ({ isOpen, onClose, tarotReading }) => {
   if (!isOpen || !tarotReading) return null;
 
+  const { isPremium } = useAuth(); // Obtener el estado premium del usuario
+
   const handleBackdropClick = (e) => {
+    // Cierra el modal solo si se hace clic directamente en el fondo
     if (e.target === e.currentTarget) {
       onClose();
     }
+  };
+
+  // Determinar el color del spotlight (el brillo que sigue al ratón)
+  // Puedes ajustar estos colores a tu gusto
+  const spotlightColor = tarotReading.is_premium ? 'rgba(255, 223, 0, 0.2)' : 'rgba(100, 100, 255, 0.2)';
+
+  // Contenido para la hoja de papel
+  const getPaperSheetContent = () => {
+    let content = '';
+    // Para usuarios Premium: description, full_meaning, practice_text
+    if (isPremium()) {
+      content += tarotReading.card.description ? `Descripción: ${tarotReading.card.description}\n\n` : '';
+      content += tarotReading.card.full_meaning ? `Significado Completo: ${tarotReading.card.full_meaning}\n\n` : '';
+      content += tarotReading.card.practice_text ? `Práctica Sugerida: ${tarotReading.card.practice_text}` : '';
+    } else {
+      // Para usuarios NO Premium: solo description
+      content += tarotReading.card.description ? `Descripción: ${tarotReading.card.description}` : '';
+    }
+    return content.trim(); // Elimina espacios extra al inicio/final
   };
 
   return (
@@ -23,19 +47,25 @@ const TarotCardModal = ({ isOpen, onClose, tarotReading }) => {
         </button>
         
         <div className="tarot-modal-content">
-          <ProfileCard
-            name={tarotReading.card.title}
-            title={tarotReading.card.description}
-            practiceText={tarotReading.card.practice_text}
-            avatarUrl={tarotReading.card.image_url}
-            showUserInfo={false}
-            enableTilt={true}
-            className="tarot-modal-card"
-            // Configuración para fondo holográfico negro
-            behindGradient="radial-gradient(farthest-side circle at var(--pointer-x) var(--pointer-y),hsla(0,0%,20%,var(--card-opacity)) 4%,hsla(0,0%,15%,calc(var(--card-opacity)*0.75)) 10%,hsla(0,0%,10%,calc(var(--card-opacity)*0.5)) 50%,hsla(0,0%,5%,0) 100%),radial-gradient(35% 52% at 55% 20%,#333333c4 0%,#00000000 100%),radial-gradient(100% 100% at 50% 50%,#666666ff 1%,#00000000 76%),conic-gradient(from 124deg at 50% 50%,#444444ff 0%,#222222ff 40%,#222222ff 60%,#444444ff 100%)"
-            innerGradient="linear-gradient(145deg,#1a1a1a 0%,#2a2a2a 100%)"
-            onContactClick={() => {}}
-          />
+          {/* Columna de la carta holográfica */}
+          <div className="tarot-card-column">
+            <ProfileCard
+              // Pasamos la URL de la imagen de la carta como avatarUrl (ahora se usará como fondo)
+              avatarUrl={tarotReading.card.image_url} 
+              // Solo pasamos el título a la carta
+              mainTitle={tarotReading.card.title} 
+              className="tarot-modal-card" // Clases CSS para el estilo específico del modal
+              spotlightColor={spotlightColor} // Pasa el color del spotlight al SpotlightCard
+            />
+          </div>
+
+          {/* Columna de la hoja de papel con el texto completo */}
+          <div className="paper-sheet-column">
+            <div className="paper-sheet-content">
+              <h3 className="paper-sheet-title">{tarotReading.card.title}</h3>
+              <p className="paper-sheet-text">{getPaperSheetContent()}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

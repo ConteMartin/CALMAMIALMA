@@ -5,7 +5,7 @@ import CourseModal from './components/CourseModal.jsx';
 import CalendarSection from './components/CalendarSection.jsx';
 import MyCourses from './components/MyCourses.jsx';
 import AdminDashboard from './components/AdminDashboard.jsx';
-import TarotCardModal from './components/TarotCardModal.jsx';
+import TarotCardModal from './components/TarotCardModal.jsx'; // Importa el nuevo TarotCardModal
 // Importa el componente FloatingIconsBackground desde su nuevo archivo
 import FloatingIconsBackground from './components/FloatingIcons.jsx'; 
 // Importa el NUEVO componente ProfileCard (aunque ya no se usa para el tarot)
@@ -20,12 +20,21 @@ import './components/TarotCardDisplay.css';
 const AppContent = () => {
   const { user, loginWithGoogle, login, logout, isLoggedIn, isPremium, isAdmin, loading, error } = useAuth();
 
+  // DEBUG: Log the isAdmin status whenever it changes
+  useEffect(() => {
+    console.log("isAdmin status:", isAdmin());
+    if (user) {
+      console.log("Current user object:", user);
+    }
+  }, [isAdmin, user]);
+
+
   // Estados para la visibilidad de los modales
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
-  const [isTarotModalOpen, setIsTarotModalOpen] = useState(false);
+  const [isTarotModalOpen, setIsTarotModalOpen] = useState(false); // Estado para el modal de la carta de tarot
   const [isLoadingHoroscope, setIsLoadingHoroscope] = useState(false);
   const [clickedTarotCardId, setClickedTarotCardId] = useState(null); // Ahora controla el volteo en la misma pantalla
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -38,7 +47,7 @@ const AppContent = () => {
   const [animationStarted, setAnimationStarted] = useState(false); 
 
   // Estados para datos del backend
-  const [tarotReading, setTarotReading] = useState(null); // Mantener para futura lógica si se necesita la API de tarot
+  const [tarotReading, setTarotReading] = useState(null); // Almacena la lectura del tarot obtenida del backend
   const [horoscope, setHoroscope] = useState(null);
   const [videos, setVideos] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -205,7 +214,7 @@ const AppContent = () => {
       if (reading.error) {
         // Mostrar mensaje de restricción
         const days = isPremium() ? 1 : 3;
-        const nextAvailable = isPremium() ? 'mañana' : 'en 3 días';
+        const nextAvailable = 'en ' + reading.error.split('en ')[1]; // Extrae el "en X días" del mensaje
         alert(`Como usuario ${isPremium() ? 'premium' : 'gratuito'}, puedes obtener una lectura cada ${days} día${days > 1 ? 's' : ''}. Tu próxima lectura estará disponible ${nextAvailable}.`);
         return;
       }
@@ -412,7 +421,7 @@ const AppContent = () => {
       // Contenido específico para la primera carta
       title: isSpecialCard ? "ERES SUFICIENTE, TAL COMO ERES" : `Carta ${i + 1}`,
       mainText: isSpecialCard
-        ? "carta te invita a recordarte una verdad esencial: no necesitas demostrar nada. Tu valor no depende de tus logros, tu apariencia o de la aprobación externa. Eres suficiente desde el primer latido de tu corazón. Mírate con ternura, con esa mirada compasiva que tanto ofreces a los demás. Abre espacio para aceptar tus imperfecciones, porque incluso ellas forman parte de tu magia."
+        ? "carta te invita a recordarte una verdad esencial: no necesitas demostrar nada. Tu valor no depende de tus logros, tu apariencia o de la aprobación externa. Eres suficiente desde el primer latido de tu corazón."
         : `El significado de la Carta ${i + 1} es un mensaje de introspección y nuevos comienzos. Reflexiona sobre tus pasos y prepárate para un cambio positivo.`,
       practiceText: isSpecialCard
         ? "✨ Práctica sugerida: Párate frente al espejo, mírate a los ojos y repite tres veces: “Soy suficiente. Me amo tal como soy. Hoy me honro.” Respira hondo y permite que ese mensaje llegue a tu corazón."
@@ -759,7 +768,7 @@ const AppContent = () => {
           </section>
 
           {/* Courses Section */}
-          <section id="courses" className="bg-white overflow-hidden"> {/* Changed bg-[#f8f7f4] to bg-white */}
+          <section id="courses" className="bg-white overflow-hidden"> {/* Changed bg-main-white to bg-white */}
             <div className="max-w-6xl mx-auto py-12 px-4">
               <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-16">Cursos Especializados</h2>
               
@@ -814,7 +823,7 @@ const AppContent = () => {
               </div>
               
               {!isPremium() && (
-                <div className="mt-12 p-6 bg-lino text-texto-principal-dark rounded-lg text-center font-montserrat"> {/* Changed bg-white to bg-lino */}
+                <div className="mt-12 p-6 bg-white text-texto-principal-dark rounded-lg text-center font-montserrat"> {/* Changed bg-main-white to bg-white */}
                   <p className="mb-4 text-lg">¿Quieres un 30% de descuento en todos los cursos?</p>
                   <button
                     onClick={() => openModal(setIsUpgradeModalOpen)}
@@ -866,7 +875,7 @@ const AppContent = () => {
                 ))}
               </div>
               {!isPremium() && (
-                <div className="mt-12 p-6 bg-lino text-texto-principal-dark rounded-lg text-center font-montserrat"> {/* Changed bg-white to bg-lino */}
+                <div className="mt-12 p-6 bg-white text-texto-principal-dark rounded-lg text-center font-montserrat"> {/* Changed bg-[#f8f7f4] to bg-white */}
                   <p className="mb-4 text-lg">¿Quieres un 30% de descuento en todos los servicios?</p>
                   <button
                     onClick={() => openModal(setIsUpgradeModalOpen)}
@@ -886,113 +895,111 @@ const AppContent = () => {
             </div>
           </section>
 
-          {/* Membership Section - Solo mostrar para usuarios NO premium */}
-          {!isPremium() && (
-            <section id="membership" className="bg-white overflow-hidden"> {/* Changed bg-[#f8f7f4] to bg-white */}
-              <div className="max-w-6xl mx-auto py-12 px-4">
-                <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-16">Beneficios de Membresía</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                  {/* Membresía Gratuita */}
-                  <div className="bg-fondo-claro p-10 rounded-2xl shadow-lg text-texto-principal-dark">
-                    <div className="text-center mb-8">
-                      <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-2">Membresía Gratuita</h3>
-                      <p className="font-montserrat text-texto-secundario-dark">Comienza tu viaje de bienestar</p>
-                      <p className="text-2xl text-acento-principal mt-4 font-raleway">$0 / mes</p> {/* Changed text-acento-personalizado to text-acento-principal */}
-                    </div>
-                    <ul className="space-y-4 font-montserrat">
-                      <li className="flex items-center">
-                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                        <span>Lectura de tarot cada 3 días</span>
-                      </li>
-                      <li className="flex items-center">
-                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                        <span>Acceso a videos de la comunidad</span>
-                      </li>
-                      <li className="flex items-center">
-                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                        <span>Acceso limitado al blog</span>
-                      </li>
-                      <li className="flex items-center text-texto-secundario-dark">
-                        <i className="fas fa-times mr-3"></i>
-                        <span>30% de descuento en servicios y cursos</span>
-                      </li>
-                      <li className="flex items-center text-texto-secundario-dark">
-                        <i className="fas fa-times mr-3"></i>
-                        <span>Horóscopo diario personalizado</span>
-                      </li>
-                      <li className="flex items-center text-texto-secundario-dark">
-                        <i className="fas fa-times mr-3"></i>
-                        <span>Acceso completo a videos de yoga y meditación</span>
-                      </li>
-                      <li className="flex items-center text-texto-secundario-dark">
-                        <i className="fas fa-times mr-3"></i>
-                        <span>Contenido completo del blog</span>
-                      </li>
-                      <li className="flex items-center text-texto-secundario-dark">
-                        <i className="fas fa-times mr-3"></i>
-                        <span>Regalo de bienestar mensual</span>
-                      </li>
-                    </ul>
-                    <button
-                      onClick={() => !isLoggedIn() ? openModal(setIsLoginModalOpen) : alert('¡Ya tienes membresía gratuita!')}
-                      className="btn-general w-full mt-8 font-montserrat"
-                    >
-                      {isLoggedIn() ? 'Membresía Actual' : 'Únete Gratis'}
-                    </button>
+          {/* Membership Section */}
+          <section id="membership" className="bg-white overflow-hidden"> {/* Changed bg-[#f8f7f4] to bg-white */}
+            <div className="max-w-6xl mx-auto py-12 px-4">
+              <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-16">Beneficios de Membresía</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                {/* Membresía Gratuita */}
+                <div className="bg-fondo-claro p-10 rounded-2xl shadow-lg text-texto-principal-dark">
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-2">Membresía Gratuita</h3>
+                    <p className="font-montserrat text-texto-secundario-dark">Comienza tu viaje de bienestar</p>
+                    <p className="text-2xl text-acento-principal mt-4 font-raleway">$0 / mes</p> {/* Changed text-acento-personalizado to text-acento-principal */}
                   </div>
+                  <ul className="space-y-4 font-montserrat">
+                    <li className="flex items-center">
+                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                      <span>Lectura de tarot cada 3 días</span>
+                    </li>
+                    <li className="flex items-center">
+                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                      <span>Acceso a videos de la comunidad</span>
+                    </li>
+                    <li className="flex items-center">
+                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                      <span>Acceso limitado al blog</span>
+                    </li>
+                    <li className="flex items-center text-texto-secundario-dark">
+                      <i className="fas fa-times mr-3"></i>
+                      <span>30% de descuento en servicios y cursos</span>
+                    </li>
+                    <li className="flex items-center text-texto-secundario-dark">
+                      <i className="fas fa-times mr-3"></i>
+                      <span>Horóscopo diario personalizado</span>
+                    </li>
+                    <li className="flex items-center text-texto-secundario-dark">
+                      <i className="fas fa-times mr-3"></i>
+                      <span>Acceso completo a videos de yoga y meditación</span>
+                    </li>
+                    <li className="flex items-center text-texto-secundario-dark">
+                      <i className="fas fa-times mr-3"></i>
+                      <span>Contenido completo del blog</span>
+                    </li>
+                    <li className="flex items-center text-texto-secundario-dark">
+                      <i className="fas fa-times mr-3"></i>
+                      <span>Regalo de bienestar mensual</span>
+                    </li>
+                  </ul>
+                  <button
+                    onClick={() => !isLoggedIn() ? openModal(setIsLoginModalOpen) : alert('¡Ya tienes membresía gratuita!')}
+                    className="btn-general w-full mt-8 font-montserrat"
+                  >
+                    {isLoggedIn() ? 'Membresía Actual' : 'Únete Gratis'}
+                  </button>
+                </div>
 
-                  {/* Membresía Premium */}
-                  <div className="bg-terracota p-10 rounded-2xl shadow-lg relative overflow-hidden text-texto-claro-white"> {/* Changed bg-pink-section to bg-terracota and text-texto-principal-dark to text-texto-claro-white */}
-                    <div className="absolute top-0 right-0 bg-detail-accent text-texto-principal-dark py-1 px-4 text-sm font-medium rounded-bl-lg">Más Popular</div> {/* Changed bg-acento-secundario to bg-detail-accent */}
-                    <div className="text-center mb-8">
-                      <h3 className="text-2xl font-bodoni-moda font-medium text-texto-claro-white mb-2">Membresía Premium</h3> {/* Changed text-texto-principal-dark to text-texto-claro-white */}
-                      <p className="font-montserrat text-lino">Experiencia de bienestar completa</p> {/* Changed text-acento-principal to text-lino */}
-                      <p className="text-2xl text-lino mt-4 font-raleway">$19.99 / mes</p> {/* Changed text-acento-principal to text-lino */}
-                    </div>
-                    <ul className="space-y-4 font-montserrat">
-                      <li className="flex items-center">
-                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                        <span>Lectura diaria de tarot (insights premium)</span>
-                      </li>
-                      <li className="flex items-center">
-                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                        <span>30% de descuento en todos los servicios y cursos</span>
-                      </li>
-                      <li className="flex items-center">
-                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                        <span>Horóscopo diario personalizado con IA</span>
-                      </li>
-                      <li className="flex items-center">
-                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                        <span>Acceso completo a todos los videos</span>
-                      </li>
-                      <li className="flex items-center">
-                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                        <span>Contenido completo del blog</span>
-                      </li>
-                      <li className="flex items-center">
-                        <i className="fas fa-check text-fondo-oscuro mr-3"></i>
-                        <span>Regalo de bienestar mensual</span>
-                      </li>
-                    </ul>
-                    <button
-                      onClick={() => isPremium() ? alert('¡Ya eres usuario Premium!') : openModal(setIsUpgradeModalOpen)}
-                      className="btn-general w-full mt-8 font-montserrat"
-                    >
-                      {isPremium() ? 'Ya eres Premium' : 'Actualizar Ahora'}
-                    </button>
+                {/* Membresía Premium */}
+                <div className="bg-terracota p-10 rounded-2xl shadow-lg relative overflow-hidden text-texto-claro-white"> {/* Changed bg-pink-section to bg-terracota and text-texto-principal-dark to text-texto-claro-white */}
+                  <div className="absolute top-0 right-0 bg-detail-accent text-texto-principal-dark py-1 px-4 text-sm font-medium rounded-bl-lg">Más Popular</div> {/* Changed bg-acento-secundario to bg-detail-accent */}
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-bodoni-moda font-medium text-texto-claro-white mb-2">Membresía Premium</h3> {/* Changed text-texto-principal-dark to text-texto-claro-white */}
+                    <p className="font-montserrat text-lino">Experiencia de bienestar completa</p> {/* Changed text-acento-principal to text-lino */}
+                    <p className="text-2xl text-lino mt-4 font-raleway">$19.99 / mes</p> {/* Changed text-acento-principal to text-lino */}
                   </div>
+                  <ul className="space-y-4 font-montserrat">
+                    <li className="flex items-center">
+                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                      <span>Lectura diaria de tarot (insights premium)</span>
+                    </li>
+                    <li className="flex items-center">
+                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                      <span>30% de descuento en todos los servicios y cursos</span>
+                    </li>
+                    <li className="flex items-center">
+                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                      <span>Horóscopo diario personalizado con IA</span>
+                    </li>
+                    <li className="flex items-center">
+                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                      <span>Acceso completo a todos los videos</span>
+                    </li>
+                    <li className="flex items-center">
+                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                      <span>Contenido completo del blog</span>
+                    </li>
+                    <li className="flex items-center">
+                      <i className="fas fa-check text-fondo-oscuro mr-3"></i>
+                      <span>Regalo de bienestar mensual</span>
+                    </li>
+                  </ul>
+                  <button
+                    onClick={() => isPremium() ? alert('¡Ya eres usuario Premium!') : openModal(setIsUpgradeModalOpen)}
+                    className="btn-general w-full mt-8 font-montserrat"
+                  >
+                    {isPremium() ? 'Ya eres Premium' : 'Actualizar Ahora'}
+                  </button>
                 </div>
               </div>
-              {/* Onda al final de la sección Membresía */}
-              <div className="absolute bottom-0 left-0 w-full h-24 overflow-hidden">
-                <svg className="w-full h-full" viewBox="0 0 100 96" preserveAspectRatio="none">
-                  {/* La onda de Membresía ahora rellena con el color de la sección Horóscopo/Blog */}
-                  <path d={wavePath} fill="white"></path> 
-                </svg>
-              </div>
-            </section>
-          )}
+            </div>
+            {/* Onda al final de la sección Membresía */}
+            <div className="absolute bottom-0 left-0 w-full h-24 overflow-hidden">
+              <svg className="w-full h-full" viewBox="0 0 100 96" preserveAspectRatio="none">
+                {/* La onda de Membresía ahora rellena con el color de la sección Horóscopo/Blog */}
+                <path d={wavePath} fill="white"></path> 
+              </svg>
+            </div>
+          </section>
 
           {/* Horoscope Section (Solo Premium) */}
           {isPremium() && (
@@ -1190,7 +1197,7 @@ const AppContent = () => {
           </section>
 
           {/* Contact & Social Section */}
-          <section id="contact" className="bg-white relative py-12 px-4" ref={contactSectionRef}> {/* Changed bg-lino to bg-white */}
+          <section id="contact" className="bg-lino relative py-12 px-4" ref={contactSectionRef}> {/* Changed bg-pink-section to bg-lino */}
             <FloatingIconsBackground numberOfIcons={30} iconFilterStyle="brightness(0.5)" /> 
             <div className="max-w-6xl mx-auto relative z-20 text-texto-principal-dark">
               <h2 className="text-4xl font-bodoni-moda font-light text-texto-principal-dark text-center mb-16">Conecta Con Nosotros</h2>
@@ -1199,22 +1206,22 @@ const AppContent = () => {
                   <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-6">Envíanos un Mensaje</h3>
                   <form onSubmit={handleContactSubmit}>
                     <div className="mb-4">
-                      <label htmlFor="name" className="block text-texto-principal-dark mb-2 font-montserrat">Tu Nombre</label> {/* Changed text-acento-principal to text-texto-principal-dark */}
-                      <input type="text" id="name" name="name" required className="w-full p-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-lino text-texto-principal-dark"/> {/* Changed border-acento-principal to border-black and bg-fondo-claro to bg-lino */}
+                      <label htmlFor="name" className="block text-acento-principal mb-2 font-montserrat">Tu Nombre</label> {/* Changed text-acento-personalizado to text-acento-principal */}
+                      <input type="text" id="name" name="name" required className="w-full p-3 border border-acento-principal rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"/> {/* Changed border-acento-personalizado to border-acento-principal */}
                     </div>
                     <div className="mb-4">
-                      <label htmlFor="email" className="block text-texto-principal-dark mb-2 font-montserrat">Correo Electrónico</label> {/* Changed text-acento-principal to text-texto-principal-dark */}
-                      <input type="email" id="email" name="email" required className="w-full p-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-lino text-texto-principal-dark"/> {/* Changed border-acento-principal to border-black and bg-fondo-claro to bg-lino */}
+                      <label htmlFor="email" className="block text-acento-principal mb-2 font-montserrat">Correo Electrónico</label> {/* Changed text-acento-personalizado to text-acento-principal */}
+                      <input type="email" id="email" name="email" required className="w-full p-3 border border-acento-principal rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"/> {/* Changed border-acento-personalizado to border-acento-principal */}
                     </div>
                     <div className="mb-4">
-                      <label htmlFor="subject" className="block text-texto-principal-dark mb-2 font-montserrat">Asunto</label> {/* Changed text-acento-principal to text-texto-principal-dark */}
-                      <input type="text" id="subject" name="subject" required className="w-full p-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-lino text-texto-principal-dark"/> {/* Changed border-acento-principal to border-black and bg-fondo-claro to bg-lino */}
+                      <label htmlFor="subject" className="block text-acento-principal mb-2 font-montserrat">Asunto</label> {/* Changed text-acento-personalizado to text-acento-principal */}
+                      <input type="text" id="subject" name="subject" required className="w-full p-3 border border-acento-principal rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"/> {/* Changed border-acento-personalizado to border-acento-principal */}
                     </div>
                     <div className="mb-6">
-                      <label htmlFor="message" className="block text-texto-principal-dark mb-2 font-montserrat">Tu Mensaje</label> {/* Changed text-acento-principal to text-texto-principal-dark */}
-                      <textarea id="message" name="message" rows="4" required className="w-full p-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-lino text-texto-principal-dark"></textarea> {/* Changed border-acento-principal to border-black and bg-fondo-claro to bg-lino */}
+                      <label htmlFor="message" className="block text-acento-principal mb-2 font-montserrat">Tu Mensaje</label> {/* Changed text-acento-personalizado to text-acento-principal */}
+                      <textarea id="message" name="message" rows="4" required className="w-full p-3 border border-acento-principal rounded-lg focus:outline-none focus:ring-2 focus:ring-fondo-oscuro bg-fondo-claro text-texto-principal-dark"></textarea> {/* Changed border-acento-personalizado to border-acento-principal */}
                     </div>
-                    <button type="submit" className="btn-general px-6 py-3 font-montserrat border border-black">
+                    <button type="submit" className="btn-general px-6 py-3 font-montserrat">
                       Enviar Mensaje
                     </button>
                   </form>
@@ -1223,29 +1230,29 @@ const AppContent = () => {
                 <div>
                   <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-6">Síguenos</h3>
                   <div className="flex space-x-4 mb-10">
-                    <a href="#" className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-white hover:bg-terracota transition"> {/* Changed bg-acento-claro to bg-gray-600 and hover:bg-gris-palido-btn to hover:bg-terracota */}
+                    <a href="#" className="w-12 h-12 bg-acento-claro rounded-full flex items-center justify-center text-texto-principal-dark hover:bg-gris-palido-btn hover:text-texto-principal-dark transition">
                       <i className="fab fa-instagram text-xl"></i>
                     </a>
-                    <a href="#" className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-white hover:bg-terracota transition"> {/* Changed bg-acento-claro to bg-gray-600 and hover:bg-gris-palido-btn to hover:bg-terracota */}
+                    <a href="#" className="w-12 h-12 bg-acento-claro rounded-full flex items-center justify-center text-texto-principal-dark hover:bg-gris-palido-btn hover:text-texto-principal-dark transition">
                       <i className="fab fa-facebook-f text-xl"></i>
                     </a>
-                    <a href="#" className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-white hover:bg-terracota transition"> {/* Changed bg-acento-claro to bg-gray-600 and hover:bg-gris-palido-btn to hover:bg-terracota */}
+                    <a href="#" className="w-12 h-12 bg-acento-claro rounded-full flex items-center justify-center text-texto-principal-dark hover:bg-gris-palido-btn hover:text-texto-principal-dark transition">
                       <i className="fab fa-twitter text-xl"></i>
                     </a>
-                    <a href="#" className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-white hover:bg-terracota transition"> {/* Changed bg-acento-claro to bg-gray-600 and hover:bg-gris-palido-btn to hover:bg-terracota */}
+                    <a href="#" className="w-12 h-12 bg-acento-claro rounded-full flex items-center justify-center text-texto-principal-dark hover:bg-gris-palido-btn hover:text-texto-principal-dark transition">
                       <i className="fab fa-pinterest text-xl"></i>
                     </a>
                   </div>
 
                   <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-6">Visítanos</h3>
-                  <address className="not-italic font-montserrat text-texto-principal-dark mb-6"> {/* Changed text-acento-principal to text-texto-principal-dark */}
+                  <address className="not-italic font-montserrat text-acento-principal mb-6"> {/* Changed text-acento-personalizado to text-acento-principal */}
                     <p className="mb-2">123 Serenity Lane</p>
                     <p className="mb-2">Harmony Hills, CA 90210</p>
                     <p className="mb-2">Estados Unidos</p>
                   </address>
 
                   <h3 className="text-2xl font-bodoni-moda font-medium text-texto-principal-dark mb-6">Información de Contacto</h3>
-                  <div className="font-montserrat text-texto-principal-dark"> {/* Changed text-acento-principal to text-texto-principal-dark */}
+                  <div className="font-montserrat text-acento-principal"> {/* Changed text-acento-personalizado to text-acento-principal */}
                     <p className="mb-2">Email: hola@calmamialma.com</p>
                     <p>Teléfono: (555) 123-4567</p>
                   </div>

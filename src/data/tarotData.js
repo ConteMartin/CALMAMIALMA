@@ -1,29 +1,31 @@
-// Archivo editable para los textos del tarot
-// Aquí se pueden agregar o modificar los textos de las cartas
+// src/data/tarotData.js
+
+// Archivo editable para los textos y datos de las cartas del tarot en el frontend.
+// Aquí se pueden agregar o modificar los textos y URLs de imágenes de las cartas.
 
 export const tarotTexts = [
   {
     id: "1",
     title: "ERES SUFICIENTE, TAL COMO ERES",
-    description: "A veces el mundo insiste en que debemos hacer más, tener más, lograr más… pero esta carta te invita a recordarte una verdad esencial: no necesitas demostrar nada. Tu valor no depende de tus logros, tu apariencia o de la aprobación externa. Eres suficiente desde el primer latido de tu corazón.",
+    description: "Esta carta te invita a recordarte una verdad esencial: no necesitas demostrar nada. Tu valor no depende de tus logros, tu apariencia o de la aprobación externa. Eres suficiente desde el primer latido de tu corazón.",
     fullText: "A veces el mundo insiste en que debemos hacer más, tener más, lograr más… pero esta carta te invita a recordarte una verdad esencial: no necesitas demostrar nada. Tu valor no depende de tus logros, tu apariencia o de la aprobación externa. Eres suficiente desde el primer latido de tu corazón.\n\nMírate con ternura, con esa mirada compasiva que tanto ofreces a los demás. Abre espacio para aceptar tus imperfecciones, porque incluso ellas forman parte de tu magia.",
-    practiceText: "✨ Práctica sugerida:\n Párate frente al espejo, mírate a los ojos y repite tres veces:\n \"Soy suficiente. Me amo tal como soy. Hoy me honro.\"\n Respira hondo y permite que ese mensaje llegue a tu corazón.",
-    imageUrl: "/tarot1.png"
+    practiceText: "✨ Práctica sugerida: Párate frente al espejo, mírate a los ojos y repite tres veces:\n \"Soy suficiente. Me amo tal como soy. Hoy me honro.\"\n Respira hondo y permite que ese mensaje llegue a tu corazón.",
+    imageUrl: "/tarot1.png" // URL de la imagen de la ilustración de la carta
   },
   {
     id: "2",
-    title: "TU PAZ POR ENCIMA DE TODO",
-    description: "Hay momentos en que el ruido exterior intenta arrastrarme hacia la prisa, la ansiedad o el caos. Esta carta te invita a hacer una elección consciente: elegir tu paz, incluso si eso significa decir \"no\", poner límites, o retirarte a tu propio espacio interior.",
-    fullText: "Hay momentos en que el ruido exterior intenta arrastrarme hacia la prisa, la ansiedad o el caos. Esta carta te invita a hacer una elección consciente: elegir tu paz, incluso si eso significa decir \"no\", poner límites, o retirarte a tu propio espacio interior.\n\nLa paz no siempre está en lo que ocurre fuera, esperando que todo se tranquilice, para poder estar en calma con nosotros mismos. La paz está en cómo decides recibir las situaciones que te brinda la vida. Hoy puedes hacer de tu energía un santuario.",
-    practiceText: "✨ Práctica sugerida:\n Cierra los ojos, respira profundo tres veces y visualiza una burbuja de luz blanca suave envolviendote. Dentro de esa esfera hay silencio, calma, seguridad. Quédate ahí unos instantes. Luego, abre los ojos y lleva esa paz contigo.",
+    title: "NUEVA ESPERANZA RENACE",
+    description: "Los ciclos terminan para dar paso a nuevos comienzos. Esta carta anuncia que después de un período de pausa o dificultad, llega la renovación y las oportunidades frescas.",
+    fullText: "El universo está conspirando a tu favor. Las semillas que plantaste en silencio están germinando. Es momento de confiar en el proceso y abrirte a recibir las bendiciones que están por llegar. Tu fe será recompensada.",
+    practiceText: "✨ Práctica sugerida: Escribe en un papel tres cosas que quieres manifestar en tu vida. Luego, siéntate en silencio, cierra los ojos y visualiza cada una de ellas ya cumplida. Siente la gratitud en tu corazón.",
     imageUrl: "/tarot2.png"
   },
   {
     id: "3",
-    title: "TU CORAZÓN ES EL GUÍA DE TU CAMINO",
-    description: "En medio de las dudas, el miedo o la confusión, siempre hay una voz silenciosa dentro de ti que sabe la respuesta. Tu corazón guarda una sabiduría ancestral, profunda, intuitiva. Tu corazón guarda tu más preciado tesoro, tu verdadera esencia.",
-    fullText: "En medio de las dudas, el miedo o la confusión, siempre hay una voz silenciosa dentro de ti que sabe la respuesta. Tu corazón guarda una sabiduría ancestral, profunda, intuitiva. Tu corazón guarda tu más preciado tesoro, tu verdadera esencia.\n\nEscuchar el corazón requiere valentía: implica soltar lo que \"deberías\" y honrar lo que \"sientes\". No siempre será fácil, pero siempre será verdadero.",
-    practiceText: "✨ Práctica sugerida:\n Lleva ambas manos al centro de tu pecho. Cierra los ojos y pregúntate:\n \"¿Qué me está pidiendo mi corazón hoy?\"\n Quédate en silencio unos minutos. No fuerces la respuesta. Solo escucha. Confía.",
+    title: "EL CAMINO SE ACLARA",
+    description: "La confusión se disipa y la claridad mental llega a tu vida. Las decisiones que has estado posponiendo encontrarán su respuesta natural.",
+    fullText: "Tu intuición está especialmente activa hoy. Confía en esas corazonadas que surgen sin explicación lógica. Los sincronismos y las señales del universo te guiarán hacia la dirección correcta. Mantén los ojos abiertos a los mensajes sutiles.",
+    practiceText: "✨ Práctica sugerida: Dedica 10 minutos a meditar en silencio. Pregúntale a tu corazón: '¿Qué necesito saber hoy?' Escucha sin juzgar las primeras impresiones que lleguen a tu mente.",
     imageUrl: "/tarot3.png"
   },
   {
@@ -145,6 +147,183 @@ export const tarotTexts = [
     fullText: "No estás soñando demasiado. Estás recordando lo que es posible. A veces, te han hecho creer que pedir es egoísta, que desear es exagerado… Pero no.\n\nMereces una vida donde te sientas amada, vista, plena. No por lo que haces. Sino por quien eres. Mereces que todo el amor que brindas, vuelva a tí multiplicado. Mereces relaciones sanas, que te aporten crecimiento.",
     practiceText: "✨ Práctica sugerida:\n Escribe: \"Merezco…\" y completa con 5 afirmaciones. Léalas cada día durante una semana. Deja que tu sistema se acostumbre a esta verdad.",
     imageUrl: "/tarot18.png"
+  },
+  // --- Cartas Placeholder (19-40) ---
+  {
+    id: "19",
+    title: "LA FUERZA INTERIOR",
+    description: "Esta carta te recuerda la inmensa fuerza y coraje que residen dentro de ti. Es momento de confiar en tu capacidad para superar cualquier desafío.",
+    fullText: "La Fuerza Interior te invita a conectar con tu poder personal. No se trata de dominación, sino de la fortaleza que nace de la compasión y la paciencia. Usa tu energía con sabiduría para influir en tu entorno de manera positiva.",
+    practiceText: "✨ Práctica sugerida: Enfócate en una situación que te cause estrés. Visualízate enfrentándola con calma y determinación, sintiendo cómo tu fuerza interior te guía. Repite: 'Soy fuerte, soy valiente, soy capaz.'",
+    imageUrl: "/tarot19.png"
+  },
+  {
+    id: "20",
+    title: "LA RUEDA DE LA FORTUNA",
+    description: "Simboliza los ciclos de la vida, el cambio y el destino. Prepárate para giros inesperados y nuevas oportunidades.",
+    fullText: "La Rueda de la Fortuna indica que estás en un punto de inflexión. Acepta los cambios con optimismo, ya que te llevarán a un nuevo nivel de crecimiento. Recuerda que la suerte favorece a quienes están preparados.",
+    practiceText: "✨ Práctica sugerida: Reflexiona sobre los ciclos de tu vida. ¿Qué patrones se repiten? ¿Qué puedes aprender de ellos? Abre tu mente a lo inesperado y fluye con el cambio.",
+    imageUrl: "/tarot20.png"
+  },
+  {
+    id: "21",
+    title: "LA JUSTICIA",
+    description: "Representa el equilibrio, la verdad y la equidad. Es un llamado a la honestidad y a tomar decisiones justas.",
+    fullText: "La Justicia te pide imparcialidad y objetividad. Evalúa las situaciones con lógica y compasión. Es un buen momento para buscar la verdad y actuar con integridad en todas tus interacciones.",
+    practiceText: "✨ Práctica sugerida: Antes de tomar una decisión importante, respira profundamente y pregúntate: '¿Qué es lo más justo y equilibrado para todos los involucrados?' Confía en tu juicio.",
+    imageUrl: "/tarot21.png"
+  },
+  {
+    id: "22",
+    title: "EL COLGADO",
+    description: "Simboliza la suspensión, la perspectiva y el sacrificio voluntario. A veces, es necesario detenerse para ver las cosas desde otro ángulo.",
+    fullText: "El Colgado te invita a la introspección y a la entrega. Suelta el control y permítete ver la vida desde una nueva perspectiva. Este período de pausa te traerá revelaciones importantes y un crecimiento espiritual profundo.",
+    practiceText: "✨ Práctica sugerida: Dedica tiempo a la quietud. Puedes meditar, caminar en la naturaleza o simplemente sentarte en silencio. Permite que las respuestas lleguen a ti sin forzarlas.",
+    imageUrl: "/tarot22.png"
+  },
+  {
+    id: "23",
+    title: "LA MUERTE",
+    description: "Representa la transformación, el fin de un ciclo y el renacimiento. No temas los finales, son oportunidades para un nuevo comienzo.",
+    fullText: "La carta de la Muerte no es un presagio de muerte física, sino de una transformación profunda e inevitable. Es el momento de dejar ir lo viejo para dar paso a lo nuevo. Abraza este cambio con valentía, pues te llevará a una versión más auténtica de ti mismo.",
+    practiceText: "✨ Práctica sugerida: Identifica algo en tu vida que ya no te sirve (un hábito, una creencia, una relación). Escribe en un papel 'Libero [eso]' y luego quémalo simbólicamente, visualizando la transformación.",
+    imageUrl: "/tarot23.png"
+  },
+  {
+    id: "24",
+    title: "LA TEMPLANZA",
+    description: "Simboliza el equilibrio, la moderación y la armonía. Encuentra el punto medio en todas las áreas de tu vida.",
+    fullText: "La Templanza te aconseja paciencia y equilibrio. Mezcla diferentes aspectos de tu vida con sabiduría y moderación. Es un momento ideal para la sanación y la integración de tus experiencias.",
+    practiceText: "✨ Práctica sugerida: Busca el equilibrio en tu día. Si trabajas mucho, dedica tiempo al descanso. Si te sientes estresado, busca actividades que te calmen. Encuentra tu centro.",
+    imageUrl: "/tarot24.png"
+  },
+  {
+    id: "25",
+    title: "EL DIABLO",
+    description: "Representa las ataduras, las adicciones y las obsesiones. Es un llamado a reconocer y liberarte de aquello que te limita.",
+    fullText: "El Diablo te confronta con tus sombras y tus apegos. Reconoce aquello que te encadena, ya sean miedos, hábitos destructivos o relaciones tóxicas. Tienes el poder de liberarte; la clave está en la auto-conciencia y la voluntad.",
+    practiceText: "✨ Práctica sugerida: Identifica un apego o un miedo que te esté dominando. Escríbelo y luego visualízate cortando los lazos con esa energía. Afirma: 'Soy libre y elijo mi poder.'",
+    imageUrl: "/tarot25.png"
+  },
+  {
+    id: "26",
+    title: "LA TORRE",
+    description: "Simboliza la revelación, la destrucción de estructuras falsas y el despertar. Aunque pueda ser abrupto, es un cambio necesario para tu crecimiento.",
+    fullText: "La Torre indica una ruptura repentina con lo establecido. Aunque inicialmente pueda sentirse caótico, es una liberación necesaria para construir algo más auténtico y sólido. Confía en que este evento te llevará a una mayor verdad.",
+    practiceText: "✨ Práctica sugerida: Si estás experimentando un cambio drástico, permítete sentir las emociones. Luego, visualiza cómo, de los escombros, surge una nueva y más fuerte estructura para tu vida.",
+    imageUrl: "/tarot26.png"
+  },
+  {
+    id: "27",
+    title: "LA ESTRELLA",
+    description: "Representa la esperanza, la inspiración y la renovación espiritual. Es un signo de bendiciones y guía divina.",
+    fullText: "La Estrella te trae un mensaje de optimismo y fe. Después de un período de desafíos, la luz de la esperanza brilla intensamente. Sigue tu intuición y permite que la inspiración te guíe hacia tus sueños. Eres bendecido.",
+    practiceText: "✨ Práctica sugerida: Pasa tiempo bajo las estrellas o en la naturaleza. Conecta con la energía del universo y pide guía. Siente cómo la esperanza y la inspiración llenan tu ser.",
+    imageUrl: "/tarot27.png"
+  },
+  {
+    id: "28",
+    title: "LA LUNA",
+    description: "Simboliza la intuición, los sueños, las ilusiones y los miedos ocultos. Es un llamado a explorar tu subconsciente.",
+    fullText: "La Luna te invita a navegar por las profundidades de tu inconsciente. Presta atención a tus sueños, intuiciones y emociones. Puede haber ilusiones o miedos que necesitan ser revelados para que puedas avanzar con claridad.",
+    practiceText: "✨ Práctica sugerida: Lleva un diario de sueños. Antes de dormir, establece la intención de recordar tus sueños. Al despertar, anota todo lo que recuerdes. Busca patrones o mensajes ocultos.",
+    imageUrl: "/tarot28.png"
+  },
+  {
+    id: "29",
+    title: "EL SOL",
+    description: "Representa la alegría, la vitalidad, el éxito y la iluminación. Es un período de claridad, felicidad y realización.",
+    fullText: "El Sol brilla sobre ti, trayendo consigo alegría, vitalidad y éxito. Es un momento de claridad, donde la verdad se revela y tus esfuerzos son recompensados. Disfruta de este período de plenitud y comparte tu luz con el mundo.",
+    practiceText: "✨ Práctica sugerida: Pasa tiempo al sol (con protección). Siente su energía cálida y vibrante. Visualiza cómo esa luz llena cada célula de tu cuerpo, trayendo alegría y vitalidad.",
+    imageUrl: "/tarot29.png"
+  },
+  {
+    id: "30",
+    title: "EL JUICIO",
+    description: "Simboliza la resurrección, la evaluación y el llamado a despertar. Es un momento para perdonar y avanzar.",
+    fullText: "El Juicio te llama a una profunda auto-evaluación y a perdonar. Es un momento de despertar espiritual, donde te liberas de cargas pasadas y te preparas para un nuevo capítulo. Escucha el llamado de tu alma y avanza con propósito.",
+    practiceText: "✨ Práctica sugerida: Reflexiona sobre tus acciones pasadas sin juzgarte. Perdónate a ti mismo y a los demás. Visualiza un nuevo comienzo, libre de arrepentimientos.",
+    imageUrl: "/tarot30.png"
+  },
+  {
+    id: "31",
+    title: "EL MUNDO",
+    description: "Representa la realización, la plenitud y la culminación de un ciclo. Has alcanzado un nivel de maestría y éxito.",
+    fullText: "El Mundo es la carta de la totalidad y la realización. Has completado un ciclo importante y has alcanzado tus metas. Celebra tus logros y prepárate para un nuevo viaje, llevando contigo la sabiduría adquirida.",
+    practiceText: "✨ Práctica sugerida: Tómate un momento para celebrar tus logros, grandes y pequeños. Reconoce tu crecimiento y el camino que has recorrido. Siente la plenitud y la gratitud.",
+    imageUrl: "/tarot31.png"
+  },
+  {
+    id: "32",
+    title: "EL LOCO",
+    description: "Simboliza el inicio de un nuevo viaje, la espontaneidad y la libertad. Confía en lo desconocido y da el primer paso.",
+    fullText: "El Loco te invita a dar un salto de fe hacia lo desconocido. Abraza la aventura y la espontaneidad. Confía en que el universo te guiará en este nuevo camino, incluso si no tienes todas las respuestas.",
+    practiceText: "✨ Práctica sugerida: Sal de tu zona de confort hoy. Haz algo que nunca hayas hecho antes, aunque sea pequeño. Siente la emoción de la novedad y la libertad.",
+    imageUrl: "/tarot32.png"
+  },
+  {
+    id: "33",
+    title: "EL EMPERADOR",
+    description: "Representa la autoridad, la estructura y el control. Es un llamado a tomar las riendas de tu vida con disciplina.",
+    fullText: "El Emperador te insta a establecer orden y estructura en tu vida. Asume tu autoridad y toma decisiones con firmeza. Es un momento para liderar con sabiduría y construir bases sólidas para el futuro.",
+    practiceText: "✨ Práctica sugerida: Organiza un área de tu vida que se sienta caótica. Puede ser tu espacio físico, tus finanzas o tu agenda. Siente cómo el orden te brinda claridad y control.",
+    imageUrl: "/tarot33.png"
+  },
+  {
+    id: "34",
+    title: "LA EMPERATRIZ",
+    description: "Simboliza la creatividad, la abundancia y la fertilidad. Conecta con tu lado femenino y nutre tus proyectos.",
+    fullText: "La Emperatriz te invita a abrazar tu creatividad y a nutrir tus ideas. Es un momento de abundancia y fertilidad en todos los aspectos de tu vida. Conecta con la naturaleza y permite que tu intuición te guíe en la creación.",
+    practiceText: "✨ Práctica sugerida: Dedica tiempo a una actividad creativa que disfrutes (pintar, escribir, cocinar). Conecta con la energía de la creación y permite que fluya a través de ti.",
+    imageUrl: "/tarot34.png"
+  },
+  {
+    id: "35",
+    title: "EL ENAMORADO",
+    description: "Representa las elecciones, las relaciones y la armonía. Es un momento para tomar decisiones importantes desde el corazón.",
+    fullText: "El Enamorado te confronta con decisiones importantes, especialmente en el ámbito de las relaciones. Escucha a tu corazón y elige aquello que te brinde mayor armonía y crecimiento. Confía en tu capacidad para tomar la decisión correcta.",
+    practiceText: "✨ Práctica sugerida: Si te enfrentas a una decisión, haz una lista de pros y contras. Luego, cierra los ojos y siente cuál opción resuena más con tu verdad interior.",
+    imageUrl: "/tarot35.png"
+  },
+  {
+    id: "36",
+    title: "EL CARRO",
+    description: "Simboliza la victoria, el control y la determinación. Avanza con confianza hacia tus metas.",
+    fullText: "El Carro te impulsa hacia el éxito. Con determinación y autodisciplina, superarás cualquier obstáculo. Mantén tu enfoque y avanza con confianza hacia tus objetivos, sabiendo que la victoria está cerca.",
+    practiceText: "✨ Práctica sugerida: Establece una meta clara para hoy. Visualízate alcanzándola y siente la emoción del éxito. Toma acciones concretas para acercarte a ella.",
+    imageUrl: "/tarot36.png"
+  },
+  {
+    id: "37",
+    title: "LA ERMITA",
+    description: "Representa la introspección, la soledad y la búsqueda de la verdad interior. Es un momento para la reflexión profunda.",
+    fullText: "La Ermita te invita a retirarte del ruido exterior y a buscar respuestas en tu interior. Este período de soledad y reflexión te brindará claridad y sabiduría. Confía en tu propia guía interna.",
+    practiceText: "✨ Práctica sugerida: Busca un espacio tranquilo donde puedas estar a solas contigo mismo. Medita, escribe en un diario o simplemente siéntate en silencio. Escucha lo que tu alma tiene que decirte.",
+    imageUrl: "/tarot37.png"
+  },
+  {
+    id: "38",
+    title: "LA SACERDOTISA",
+    description: "Simboliza la intuición, los secretos y el conocimiento oculto. Confía en tu voz interior y presta atención a tus sueños y señales.",
+    fullText: "La Sacerdotisa te insta a escuchar tu sabiduría interior. Hay verdades ocultas que necesitan ser reveladas. Presta atención a tus sueños, a las sincronicidades y a tu intuición, ya que te guiarán hacia un conocimiento más profundo.",
+    practiceText: "✨ Práctica sugerida: Antes de dormir, haz una pregunta a tu subconsciente. Al despertar, anota cualquier imagen, sensación o idea que surja. Confía en que la respuesta se manifestará.",
+    imageUrl: "/tarot38.png"
+  },
+  {
+    id: "39",
+    title: "EL SUMO SACERDOTE",
+    description: "Representa la tradición, la sabiduría y la guía espiritual. Busca el conocimiento y la orientación en fuentes confiables.",
+    fullText: "El Sumo Sacerdote te invita a buscar la sabiduría en la tradición y en la guía espiritual. Es un momento para aprender, para conectar con tus valores y para encontrar un mentor o una comunidad que te apoye en tu camino.",
+    practiceText: "✨ Práctica sugerida: Investiga una tradición espiritual o una filosofía que te interese. Lee un libro, escucha un podcast o busca un maestro que te inspire. Abre tu mente al conocimiento ancestral.",
+    imageUrl: "/tarot39.png"
+  },
+  {
+    id: "40",
+    title: "LA JUSTICIA DIVINA",
+    description: "Esta carta te asegura que el equilibrio y la verdad prevalecerán. Confía en que todo se resolverá de manera justa y equitativa.",
+    fullText: "La Justicia Divina te recuerda que el universo siempre busca el equilibrio. Si has actuado con integridad, serás recompensado. Si hay desequilibrios, se corregirán. Confía en el proceso cósmico y en que la verdad siempre sale a la luz.",
+    practiceText: "✨ Práctica sugerida: Si te sientes en una situación injusta, respira profundamente y visualiza una balanza equilibrándose. Afirma: 'Confío en la justicia divina. Todo se resuelve para mi mayor bien.'",
+    imageUrl: "/tarot40.png"
   }
 ];
 
@@ -158,22 +337,21 @@ export const getAllTarotTexts = () => {
   return tarotTexts;
 };
 
-// Función para obtener textos aleatorios
+// Función para obtener textos aleatorios (útil para la visualización inicial de las cartas)
 export const getRandomTarotTexts = (count = 40) => {
   const shuffled = [...tarotTexts];
-  
-  // Si hay menos textos que los solicitados, rellenar con placeholders
-  while (shuffled.length < count) {
-    const placeholderIndex = shuffled.length + 1;
-    shuffled.push({
-      id: placeholderIndex.toString(),
-      title: `CARTA ${placeholderIndex}`,
-      description: `Descripción básica de la carta ${placeholderIndex} que verán todos los usuarios. Esta carta trae un mensaje de reflexión y crecimiento personal.`,
-      fullText: `Descripción básica de la carta ${placeholderIndex} que verán todos los usuarios. Esta carta trae un mensaje de reflexión y crecimiento personal.`,
-      practiceText: `✨ Práctica sugerida: Meditación y reflexión específica para la carta ${placeholderIndex}. Dedica tiempo a conectar con la energía de esta carta.`,
-      imageUrl: `/tarot${placeholderIndex}.png`
-    });
-  }
-  
+  // No es necesario rellenar con placeholders aquí si el array ya tiene 40 elementos.
+  // Si en el futuro tienes menos de 40 cartas reales, esta lógica podría ser útil:
+  // while (shuffled.length < count) {
+  //   const placeholderIndex = shuffled.length + 1;
+  //   shuffled.push({
+  //     id: placeholderIndex.toString(),
+  //     title: `CARTA ${placeholderIndex}`,
+  //     description: `Descripción básica de la carta ${placeholderIndex} que verán todos los usuarios.`,
+  //     fullText: `Descripción extendida de la carta ${placeholderIndex}.`,
+  //     practiceText: `Práctica para la carta ${placeholderIndex}.`,
+  //     imageUrl: `https://placehold.co/120x200/c2bae5/171717?text=CARTA+${placeholderIndex}`
+  //   });
+  // }
   return shuffled.slice(0, count);
 };

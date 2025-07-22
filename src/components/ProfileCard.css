@@ -1,43 +1,47 @@
 /* src/components/ProfileCard.css */
 
+/* Variables CSS */
 :root {
+  --pc-card-width: 300px;
+  --pc-card-height: 450px;
+  --card-opacity: 0.7; /* Opacidad base para los gradientes */
+  --pc-border-radius: 1rem;
+  --pc-card-bg-color: #f8f7f4; /* Color de fondo de la tarjeta */
+  --pc-text-color-dark: #333333; /* Color de texto oscuro */
+  --pc-text-color-light: #ffffff; /* Color de texto claro */
+  --pc-accent-color: #d1b48c; /* Color de acento */
+
+  /* Variables para el efecto de inclinación (tilt) y brillo (shine/glare) */
   --pointer-x: 50%;
   --pointer-y: 50%;
   --pointer-from-center: 0;
   --pointer-from-top: 0.5;
   --pointer-from-left: 0.5;
-  --card-opacity: 0;
   --rotate-x: 0deg;
   --rotate-y: 0deg;
   --background-x: 50%;
   --background-y: 50%;
-  --grain: none;
-  --icon: none;
-  --behind-gradient: none;
-  --inner-gradient: none;
-  --sunpillar-1: hsl(2, 100%, 73%);
-  --sunpillar-2: hsl(53, 100%, 69%);
-  --sunpillar-3: hsl(93, 100%, 69%);
-  --sunpillar-4: hsl(176, 100%, 76%);
-  --sunpillar-5: hsl(228, 100%, 74%);
-  --sunpillar-6: hsl(283, 100%, 73%);
-  --sunpillar-clr-1: var(--sunpillar-1);
-  --sunpillar-clr-2: var(--sunpillar-2);
-  --sunpillar-clr-3: var(--sunpillar-3);
-  --sunpillar-clr-4: var(--sunpillar-4);
-  --sunpillar-clr-5: var(--sunpillar-5);
-  --sunpillar-clr-6: var(--sunpillar-6);
-  --card-radius: 30px;
-  --card-main-background: none; /* Nueva variable para el fondo principal */
+  --grain: none; /* No se usa directamente en este diseño de tarot, pero se mantiene */
+  --icon: none; /* No se usa directamente en este diseño de tarot, pero se mantiene */
+  --behind-gradient: none; /* Se desactiva para usar la imagen de fondo */
+  --inner-gradient: none; /* Se desactiva para usar la imagen de fondo */
+  --card-main-background: none; /* Se desactiva para usar la imagen de fondo */
 }
 
+/* Estilos para el contenedor principal de la tarjeta (maneja la perspectiva y el tilt) */
 .pc-card-wrapper {
   perspective: 500px;
   transform: translate3d(0, 0, 0.1px);
   position: relative;
   touch-action: none;
+  width: var(--pc-card-width); /* Definido en el componente o por defecto */
+  height: var(--pc-card-height); /* Definido en el componente o por defecto */
+  border-radius: var(--pc-border-radius);
+  overflow: hidden; /* Asegura que los contenidos no se desborden */
+  z-index: 10; /* Asegura que esté por encima de otros elementos */
 }
 
+/* Pseudo-elemento para el efecto de "detrás" de la tarjeta (puede ser un halo sutil) */
 .pc-card-wrapper::before {
   content: '';
   position: absolute;
@@ -52,6 +56,10 @@
   background-image: var(--behind-gradient);
 }
 
+.pc-card-wrapper.active {
+  transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
+}
+
 .pc-card-wrapper:hover,
 .pc-card-wrapper.active {
   --card-opacity: 1;
@@ -63,22 +71,33 @@
   transform: scale(0.9) translate3d(0, 0, 0.1px);
 }
 
+/* Estilos para la tarjeta SpotlightCard (el componente que envuelve el contenido) */
+/* Este es el contenedor real de la carta visible */
 .pc-card {
-  height: 80svh;
-  max-height: 540px;
+  height: 100%; /* Ocupa el 100% del wrapper */
+  width: 100%; /* Ocupa el 100% del wrapper */
   display: grid;
-  aspect-ratio: 0.718;
-  border-radius: var(--card-radius);
+  aspect-ratio: 0.718; /* Mantiene la proporción de una carta de tarot si el height del wrapper lo permite */
+  border-radius: var(--pc-border-radius); /* Usa la variable de radio de borde */
   position: relative;
-  background-blend-mode: color-dodge, normal, normal, normal;
-  animation: glow-bg 12s linear infinite;
+  background-blend-mode: normal; /* Asegura que la imagen de fondo se vea bien */
   box-shadow: rgba(0, 0, 0, 0.8) calc((var(--pointer-from-left) * 10px) - 3px) calc((var(--pointer-from-top) * 20px) - 6px) 20px -5px;
   transition: transform 1s ease;
   transform: translate3d(0, 0, 0.1px) rotateX(0deg) rotateY(0deg);
   background-size: 100% 100%;
-  /* Usa la nueva variable para el fondo principal */
-  background-image: var(--card-main-background); 
+  background-position: 0 0, 0 0, 50% 50%, 0 0; /* Ajustado para el holograma */
   overflow: hidden;
+
+  /* Reintroduciendo los gradientes del holograma original de ProfileCard, pero con colores rosa/lila */
+  background-image: 
+    radial-gradient(farthest-side circle at var(--pointer-x) var(--pointer-y), 
+      rgba(255, 192, 203, var(--card-opacity)) 4%, /* Light Pink */
+      rgba(221, 160, 221, calc(var(--card-opacity)*0.75)) 10%, /* Plum (Lila) */
+      rgba(255, 192, 203, calc(var(--card-opacity)*0.5)) 50%, 
+      transparent 100%), /* Se desvanece a transparente */
+    radial-gradient(35% 52% at 55% 20%, rgba(255, 192, 203, 0.5) 0%, transparent 100%), /* Light Pink */
+    radial-gradient(100% 100% at 50% 50%, rgba(221, 160, 221, 0.5) 1%, transparent 76%), /* Plum (Lila) */
+    conic-gradient(from 124deg at 50% 50%, rgba(255, 192, 203, 0.5) 0%, rgba(221, 160, 221, 0.5) 40%, rgba(221, 160, 221, 0.5) 60%, rgba(255, 192, 203, 0.5) 100%); /* Pink to Lila */
 }
 
 .pc-card:hover,
@@ -90,7 +109,7 @@
 .pc-card * {
   display: grid;
   grid-area: 1/-1;
-  border-radius: var(--card-radius);
+  border-radius: var(--pc-border-radius); /* Usar pc-border-radius para consistencia */
   transform: translate3d(0, 0, 0.1px);
   pointer-events: none;
 }
@@ -98,11 +117,13 @@
 .pc-inside {
   inset: 1px;
   position: absolute;
-  background-image: var(--inner-gradient);
-  background-color: rgba(0, 0, 0, 0.9);
+  /* Este gradiente interno se mantiene para el efecto original, pero el fondo principal es la imagen */
+  background-image: var(--inner-gradient); 
+  background-color: transparent; /* Asegura que no tape la imagen de fondo */
   transform: translate3d(0, 0, 0.01px);
 }
 
+/* pc-shine y pc-glare se mantienen para el efecto original de la base de ProfileCard */
 .pc-shine {
   mask-image: var(--icon);
   mask-mode: luminance;
@@ -125,7 +146,8 @@
   background: transparent;
   background-size: cover;
   background-position: center;
-  background-image: repeating-linear-gradient(0deg, var(--sunpillar-clr-1) calc(var(--space) * 1), var(--sunpillar-clr-2) calc(var(--space) * 2), var(--sunpillar-clr-3) calc(var(--space) * 3), var(--sunpillar-clr-4) calc(var(--space) * 4), var(--sunpillar-clr-5) calc(var(--space) * 5), var(--sunpillar-clr-6) calc(var(--space) * 6), var(--sunpillar-clr-1) calc(var(--space) * 7)), repeating-linear-gradient(var(--angle), #0e152e 0%, hsl(180, 10%, 60%) 3.8%, hsl(180, 29%, 66%) 4.5%, hsl(180, 10%, 60%) 5.2%, #0e152e 10%, #0e152e 12%), radial-gradient(farthest-corner circle at var(--pointer-x) var(--pointer-y), hsla(0, 0%, 0%, 0.1) 12%, hsla(0, 0%, 0%, 0.15) 20%, hsla(0, 0%, 0%, 0.25) 120%);
+  /* Ajustar colores de sunpillar a rosa/lila si se desea que afecten el shine */
+  background-image: repeating-linear-gradient(0deg, rgba(255, 192, 203, 0.5) calc(var(--space) * 1), rgba(221, 160, 221, 0.5) calc(var(--space) * 2), rgba(255, 192, 203, 0.5) calc(var(--space) * 3), rgba(221, 160, 221, 0.5) calc(var(--space) * 4), rgba(255, 192, 203, 0.5) calc(var(--space) * 5), rgba(221, 160, 221, 0.5) calc(var(--space) * 6), rgba(255, 192, 203, 0.5) calc(var(--space) * 7)), repeating-linear-gradient(var(--angle), #0e152e 0%, hsl(180, 10%, 60%) 3.8%, hsl(180, 29%, 66%) 4.5%, hsl(180, 10%, 60%) 5.2%, #0e152e 10%, #0e152e 12%), radial-gradient(farthest-corner circle at var(--pointer-x) var(--pointer-y), hsla(0, 0%, 0%, 0.1) 12%, hsla(0, 0%, 0%, 0.15) 20%, hsla(0, 0%, 0%, 0.25) 120%);
   background-position: 0 var(--background-y), var(--background-x) var(--background-y), center;
   background-blend-mode: color, hard-light;
   background-size: 500% 500%, 300% 300%, 200% 200%;
@@ -155,7 +177,8 @@
 }
 
 .pc-shine::before {
-  background-image: linear-gradient(45deg, var(--sunpillar-4), var(--sunpillar-5), var(--sunpillar-6), var(--sunpillar-1), var(--sunpillar-2), var(--sunpillar-3)), radial-gradient(circle at var(--pointer-x) var(--pointer-y), hsl(0, 0%, 70%) 0%, hsla(0, 0%, 30%, 0.2) 90%), var(--grain);
+  /* Ajustar colores de sunpillar a rosa/lila si se desea que afecten el shine */
+  background-image: linear-gradient(45deg, rgba(255, 192, 203, 0.5), rgba(221, 160, 221, 0.5), rgba(255, 192, 203, 0.5), rgba(221, 160, 221, 0.5), rgba(255, 192, 203, 0.5), rgba(221, 160, 221, 0.5)), radial-gradient(circle at var(--pointer-x) var(--pointer-y), hsl(0, 0%, 70%) 0%, hsla(0, 0%, 30%, 0.2) 90%), var(--grain);
   background-size: 250% 250%, 100% 100%, 220px 220px;
   background-position: var(--pointer-x) var(--pointer-y), center, calc(var(--pointer-x) * 0.01) calc(var(--pointer-y) * 0.01);
   background-blend-mode: color-dodge;
@@ -173,38 +196,16 @@
 .pc-glare {
   transform: translate3d(0, 0, 1.1px);
   overflow: hidden;
-  background-image: radial-gradient(farthest-corner circle at var(--pointer-x) var(--pointer-y), hsl(248, 25%, 80%) 12%, hsla(207, 40%, 30%, 0.8) 90%);
+  /* Ajustar colores a rosa/lila */
+  background-image: radial-gradient(farthest-corner circle at var(--pointer-x) var(--pointer-y), rgba(255, 192, 203, 0.5) 12%, rgba(221, 160, 221, 0.5) 90%);
   mix-blend-mode: overlay;
   filter: brightness(0.8) contrast(1.2);
   z-index: 4;
 }
 
+/* pc-avatar-content se usaba para la imagen superpuesta, ahora la imagen es background */
 .pc-avatar-content {
-  mix-blend-mode: screen;
-  overflow: hidden;
-}
-
-.pc-avatar-content .avatar {
-  width: 100%;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%) scale(1);
-  bottom: 2px;
-  opacity: calc(1.75 - var(--pointer-from-center));
-}
-
-.pc-avatar-content::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  backdrop-filter: blur(30px);
-  mask: linear-gradient(to bottom,
-        rgba(0, 0, 0, 0) 0%,
-        rgba(0, 0, 0, 0) 60%,
-        rgba(0, 0, 0, 1) 90%,
-        rgba(0, 0, 0, 1) 100%);
-  pointer-events: none;
+  display: none; /* Oculta este div ya que la imagen es ahora background */
 }
 
 /* Ocultar pc-user-info por defecto para esta tarjeta de tarot */
@@ -212,153 +213,143 @@
   display: none; 
 }
 
-.pc-content {
-  max-height: 100%;
-  overflow: hidden;
-  text-align: center;
+/* Estilos para el contenido interno de la tarjeta (la sección principal) */
+.pc-card-inner {
   position: relative;
-  transform: translate3d(calc(var(--pointer-from-left) * -6px + 3px), calc(var(--pointer-from-top) * -6px + 3px), 0.1px) !important;
-  z-index: 5;
-  mix-blend-mode: luminosity;
-  display: flex; /* Asegura que el contenido se organice en columna */
-  flex-direction: column;
-  justify-content: space-between; /* Empuja el texto de práctica hacia abajo */
-  padding: 20px; /* Añade padding para el contenido */
-}
-
-.pc-details {
   width: 100%;
-  position: relative; /* Cambiado de absolute para flujo normal */
-  top: 0; /* Eliminado el offset negativo */
+  height: 100%;
+  border-radius: inherit; /* Hereda el border-radius del padre */
+  overflow: hidden; /* Asegura que los fondos y overlays se recorten */
+
+  /* 1. Ilustración de la carta como fondo principal */
+  background-image: var(--card-illustration-url);
+  background-size: cover; /* ¡Cubre toda la tarjeta! */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita la repetición */
+  background-color: #F5F5DC; /* Fondo color lino si la imagen no carga o es transparente */
+
+  /* Propiedades Flexbox para el layout del contenido (solo título) */
   display: flex;
-  flex-direction: column;
-  align-items: center; /* Centra el texto */
-  margin-bottom: 20px; /* Espacio entre el texto principal y la práctica */
-}
-
-.pc-details h3 {
-  font-weight: 600;
-  margin: 0;
-  font-size: min(5svh, 2.5em); /* Ajustado para ser un poco más pequeño */
-  background-image: linear-gradient(to bottom, #fff, #b3b3b3); /* Colores más neutros */
-  background-size: 1em 1.5em;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
-  line-height: 1.2; /* Ajustado para títulos largos */
-  margin-bottom: 10px; /* Espacio debajo del título */
-}
-
-.pc-details p {
-  font-weight: 400; /* Menos negrita para el texto principal */
-  position: relative;
-  top: 0; /* Eliminado el offset negativo */
-  white-space: normal; /* Permite que el texto se envuelva */
-  font-size: min(2.5svh, 1.1em); /* Ajustado para el texto principal */
-  margin: 0 auto;
-  width: 100%; /* Ocupa el ancho completo */
-  background-image: linear-gradient(to bottom, #fff, #999); /* Colores más neutros */
-  background-size: 1em 1.5em;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
-  line-height: 1.6; /* Mejor legibilidad para el cuerpo de texto */
+  flex-direction: column; /* Apila los elementos verticalmente */
+  justify-content: flex-end; /* Empuja el contenido (título) hacia abajo */
+  align-items: center; /* Centra el contenido horizontalmente */
+  padding: 0; /* Eliminamos el padding aquí y lo manejamos en .pc-content */
   text-align: center; /* Centra el texto */
 }
 
-.pc-practice-text {
+/* 2. Pseudo-elemento para el efecto holográfico (rosa claro a lila) */
+/* Este es el holograma principal que se superpone a la imagen de fondo */
+.pc-card-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0; /* Cubre todo el pc-card-inner */
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 192, 203, 0.2) 0%, /* Light Pink */
+    rgba(221, 160, 221, 0.2) 45deg, /* Plum (Lila) */
+    rgba(255, 192, 203, 0.2) 90deg,
+    rgba(221, 160, 221, 0.2) 135deg,
+    rgba(255, 192, 203, 0.2) 180deg,
+    rgba(221, 160, 221, 0.2) 225deg,
+    rgba(255, 192, 203, 0.2) 270deg,
+    rgba(221, 160, 221, 0.2) 315deg,
+    rgba(255, 192, 203, 0.2) 360deg
+  );
+  border-radius: inherit;
+  opacity: 0.7; /* Opacidad del holograma */
+  animation: rotate 15s linear infinite; /* Animación de rotación */
+  z-index: 1; /* Por encima de la imagen de fondo */
+  mix-blend-mode: screen; /* Mezcla el gradiente con el fondo para un efecto de luz */
+}
+
+/* 3. Pseudo-elemento para el fondo negro del texto (solo título) */
+.pc-card-inner::before {
+  content: '';
+  position: absolute;
+  bottom: 0; /* Posicionado en la parte inferior */
+  left: 0;
   width: 100%;
-  position: relative; /* Permite posicionamiento relativo en el flujo */
-  margin-top: auto; /* Empuja este div hacia el final del contenedor flex */
+  height: 20%; /* Ajusta esta altura para controlar el área del fondo negro del título */
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo negro semi-transparente */
+  z-index: 2; /* Por encima del holograma, debajo del texto */
+  border-radius: 0 0 var(--pc-border-radius) var(--pc-border-radius); /* Bordes redondeados solo abajo */
+}
+
+/* Contenedor del texto (solo h3) */
+.pc-content {
+  position: relative; /* Para asegurar que esté por encima de los pseudo-elementos */
+  z-index: 3; /* El más alto z-index para el texto */
+  width: 100%; /* Ocupa todo el ancho disponible */
+  height: 100%; /* Ocupa toda la altura para que flex-end funcione */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Empuja el texto hacia el final del contenedor */
+  align-items: center;
   text-align: center;
-  padding-top: 15px; /* Espacio superior */
-  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Separador sutil */
-  color: rgba(255, 255, 255, 0.8); /* Color de texto para la práctica */
-  font-size: min(2svh, 0.9em); /* Tamaño de fuente para la práctica */
-  line-height: 1.5;
-  font-weight: 300;
+  padding: 20px; /* Padding para el contenido de texto */
+  box-sizing: border-box; /* Incluye padding en el width/height */
 }
 
-@keyframes glow-bg {
+.pc-details {
+  padding: 0; /* El padding ya está en .pc-content */
+  color: var(--pc-text-color-light); /* Color de texto blanco */
+  font-family: 'Montserrat', sans-serif; /* Fuente para el texto general */
+  flex-shrink: 0; /* Evita que se encoja */
+  width: 100%;
+}
+
+.pc-details h3 {
+  color: var(--pc-text-color-light); /* Texto blanco */
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-top: 0; /* Ajustado */
+  margin-bottom: 0; /* Ajustado */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); /* Sombra para mejor legibilidad */
+  font-family: 'Bodoni Moda', serif; /* Fuente para títulos */
+}
+
+/* Oculta los párrafos de descripción y practiceText en la carta */
+.pc-details p,
+.pc-practice-text {
+  display: none;
+}
+
+
+/* Animación de rotación para el holograma */
+@keyframes rotate {
   0% {
-    --bgrotate: 0deg;
+    transform: rotate(0deg);
   }
-
   100% {
-    --bgrotate: 360deg;
+    transform: rotate(360deg);
   }
 }
 
-@keyframes holo-bg {
-  0% {
-    background-position: 0 var(--background-y), 0 0, center;
-  }
-
-  100% {
-    background-position: 0 var(--background-y), 90% 90%, center;
-  }
-}
-
+/* Ajustes responsivos */
 @media (max-width: 768px) {
-  .pc-card {
-    height: 70svh;
-    max-height: 450px;
+  .pc-card-wrapper {
+    --pc-card-width: 90vw;
+    --pc-card-height: 70vh;
   }
-
-  .pc-details {
-    top: 0;
-  }
-
   .pc-details h3 {
-    font-size: min(4svh, 2em);
+    font-size: 1.5rem;
   }
-
-  .pc-details p {
-    font-size: min(2svh, 1em);
-  }
-
-  .pc-practice-text {
-    font-size: min(1.8svh, 0.85em);
-    padding-top: 10px;
+  .pc-card-inner::before {
+    height: 25%; /* Ajuste para móvil */
   }
 }
 
 @media (max-width: 480px) {
-  .pc-card {
-    height: 60svh;
-    max-height: 380px;
+  .pc-card-wrapper {
+    --pc-card-width: 95vw;
+    --pc-card-height: 80vh;
   }
-
   .pc-details h3 {
-    font-size: min(3.5svh, 1.8em);
+    font-size: 1.3rem;
   }
-
-  .pc-details p {
-    font-size: min(1.8svh, 0.9em);
-  }
-
-  .pc-practice-text {
-    font-size: min(1.6svh, 0.8em);
-    padding-top: 8px;
-  }
-}
-
-@media (max-width: 320px) {
-  .pc-card {
-    height: 55svh;
-    max-height: 320px;
-  }
-
-  .pc-details h3 {
-    font-size: min(3svh, 1.5em);
-  }
-
-  .pc-details p {
-    font-size: min(1.5svh, 0.8em);
-  }
-
-  .pc-practice-text {
-    font-size: min(1.4svh, 0.75em);
-    padding-top: 6px;
+  .pc-card-inner::before {
+    height: 30%; /* Ajuste para móvil muy pequeño */
   }
 }

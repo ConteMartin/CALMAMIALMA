@@ -1,7 +1,7 @@
 // apiService.js
 // Configura la URL base de tu backend.
 // ¡Asegúrate de que esta sea la URL de tu backend de Python!
-const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001'; // Esta URL base es correcta ya que tus rutas de backend incluyen '/api'
 
 class ApiService {
   constructor() {
@@ -113,6 +113,8 @@ class ApiService {
     if (!this.token) {
         return null;
     }
+    // El método `request` ya maneja los errores y lanza excepciones,
+    // que serán capturadas por el `useAuth` hook para limpiar el token si es inválido.
     return await this.request('/api/auth/me');
   }
 
@@ -169,25 +171,6 @@ class ApiService {
   // Obtener cursos comprados
   async getPurchasedCourses() {
     return await this.request('/api/courses/purchased');
-  }
-
-  // Métodos de calendario
-  async getCalendarRoutine() {
-    return await this.request('/api/calendar/routine');
-  }
-
-  async updateCalendarRoutine(routineData) {
-    return await this.request('/api/calendar/routine', {
-      method: 'PUT',
-      body: JSON.stringify({ weekly_routine: routineData }),
-    });
-  }
-
-  async syncGoogleCalendar(accessToken) {
-    return await this.request('/api/calendar/sync-google', {
-      method: 'POST',
-      body: JSON.stringify({ access_token: accessToken, sync_enabled: true }),
-    });
   }
 
   // Métodos de blog

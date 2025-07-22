@@ -1215,7 +1215,7 @@ async def create_admin_user():
             "name": "Administrador",
             "password": get_password_hash("admin123"),
             "is_premium": True,
-            "is_admin": True,
+            "is_admin": True,  # Esta línea es la clave para que sea administrador
             "created_at": datetime.utcnow(),
             "subscription_expires": datetime.utcnow() + timedelta(days=36500)  # 100 años
         }
@@ -1341,7 +1341,7 @@ async def get_daily_tarot(current_user: UserResponse = Depends(get_current_user)
             "title": "HONRA TU CUERPO. ES EL TEMPLO DE TU ALMA",
             "description": "Tu cuerpo ha sido casa, refugio y camino. Cada marca, cada curva, cada cicatriz guarda una historia. Honrar tu cuerpo es también un acto de amor propio.",
             "premium_description": "Tu cuerpo ha sido casa, refugio y camino. Cada marca, cada curva, cada cicatriz guarda una historia. Honrar tu cuerpo es también un acto de amor propio.\n\nNo importa cómo se vea a los ojos del mundo. Lo importante es cómo lo tratas, cómo lo escuchas, cómo le hablas, y cómo lo cuidas. Este mensaje es una invitación a reconectar con él no desde la exigencia, sino desde el respeto y la gratitud.",
-            "practice_text": "✨ Práctica sugerida: Hoy, acaricia suavemente cada parte de tu cuerpo al despertar, como un ritual. Agradece en voz alta:\n \"Gracias, cuerpo, por sostenerme. Hoy te cuido, hoy te escucho.\"\n Muévete, estírate, y regálate una sonrisa, que nutra profundamente tu belleza.",
+            "practice_text": "✨ Práctica sugerida:\n Hoy, acaricia suavemente cada parte de tu cuerpo al despertar, como un ritual. Agradece en voz alta:\n \"Gracias, cuerpo, por sostenerme. Hoy te cuido, hoy te escucho.\"\n Muévete, estírate, y regálate una sonrisa, que nutra profundamente tu belleza.",
             "image_url": "/tarot4.png"
         },
         {
@@ -1381,7 +1381,7 @@ async def get_daily_tarot(current_user: UserResponse = Depends(get_current_user)
             "title": "LA RESPONSABILIDAD NO ES CARGA, ES PODER",
             "description": "Ser responsable de ti misma no significa cargar con todo, ni controlar lo que escapa a tus manos. Es darte cuenta de que eres la única dueña de tus decisiones, de tus emociones, de tus límites.",
             "premium_description": "Ser responsable de ti misma no significa cargar con todo, ni controlar lo que escapa a tus manos. Es darte cuenta de que eres la única dueña de tus decisiones, de tus emociones, de tus límites. Dejar de culpar al afuera y comenzar a preguntarte: ¿Qué puedo hacer con esto que siento?\n\nLa responsabilidad auténtica no pesa: empodera. Te devuelve el timón de tu vida.",
-            "practice_text": "✨ Práctica sugerida:\n Escribe una situación que estés viviendo hoy. Luego pregúntate: \"¿Qué parte de esto está bajo mi poder de elección o transformación?\" No te exijas. Solo reconoce tu lugar en la historia.",
+            "practice_text": "✨ Práctica sugerida:\n Escribe una situación que estés viviendo hoy. Luego pregúntate: \"¿Qué puedo hacer con esto que siento?\" No te exijas. Solo reconoce tu lugar en la historia.",
             "image_url": "/tarot9.png"
         },
         {

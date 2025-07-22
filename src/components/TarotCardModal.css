@@ -1,3 +1,5 @@
+/* src/components/TarotCardModal.css */
+
 .tarot-modal-backdrop {
   position: fixed;
   top: 0;
@@ -14,10 +16,10 @@
 
 .tarot-modal-container {
   position: relative;
-  width: 30vw;
-  max-width: 800px;
-  height: 80vh;
-  max-height: 600px;
+  width: 70vw; /* Aumentado para acomodar dos columnas */
+  max-width: 1200px; /* Aumentado el máximo */
+  height: 85vh; /* Ajustado el alto */
+  max-height: 700px; /* Ajustado el máximo */
   background: transparent;
   border-radius: 20px;
   display: flex;
@@ -52,158 +54,128 @@
 .tarot-modal-content {
   width: 100%;
   height: 100%;
+  display: flex; /* Habilita Flexbox para las columnas */
+  gap: 30px; /* Espacio entre las columnas */
+  justify-content: center; /* Centra las columnas */
+  align-items: center;
+  padding: 20px; /* Padding interno para el contenido del modal */
+  box-sizing: border-box;
+}
+
+.tarot-card-column {
+  flex: 1; /* Permite que la columna ocupe el espacio disponible */
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
+  max-width: 400px; /* Ancho máximo para la carta */
 }
 
 .tarot-modal-card {
   width: 100%;
   height: 100%;
-  max-width: 700px;
-  max-height: 550px;
+  /* max-width y max-height se controlan mejor desde ProfileCard o tarot-card-column */
 }
 
-/* Ajustes específicos para el ProfileCard en el modal */
-.tarot-modal-card .pc-card {
-  background-color: #f8f7f4;
-  border: 5px solid rgba(255, 253, 253, 0.1);
-  box-shadow: 0 20px 40px rgba(207, 218, 192, 0.6);
-  position: relative;
-}
-
-.tarot-modal-card .pc-inside {
-  background-color: rgba(0, 0, 0, 0.95);
-  background-image: linear-gradient(145deg, #f1f3df 0%, #e79ada 100%);
-}
-
-.tarot-modal-card .pc-avatar-content {
+/* Estilos para la hoja de papel */
+.paper-sheet-column {
+  flex: 1; /* Permite que la columna ocupe el espacio disponible */
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
-}
-
-.tarot-modal-card .pc-avatar-content .avatar {
-  position: relative;
-  width: auto;
-  height: auto;
-  max-width: 200px;
-  max-height: 300px;
-  object-fit: contain;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  opacity: 1;
-  transform: none;
-  bottom: auto;
-  left: auto;
-}
-
-.tarot-modal-card .pc-details {
-  padding: 20px;
-  color: white;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.tarot-modal-card .pc-details h3 {
-  color: white;
+.paper-sheet-content {
+  background-color: #f8f7f4; /* Color de papel claro */
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto; /* Permite scroll si el texto es largo */
+  color: #333333; /* Color de texto oscuro para la hoja */
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1.6;
+  text-align: left; /* Alineación de texto normal */
+}
+
+.paper-sheet-title {
+  font-family: 'Bodoni Moda', serif;
   font-size: 1.8rem;
   font-weight: 600;
-  margin-top: 20px;
-  margin-bottom: 15px;
+  color: #555555;
+  margin-bottom: 20px;
+  text-align: center;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* Sombra negra más pegada */
 }
 
-.tarot-modal-card .pc-details p {
-  color: white;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: auto;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); /* Sombra negra más pegada */
-}
-
-.tarot-modal-card .pc-practice-text {
-  color: white;
+.paper-sheet-text {
   font-size: 1rem;
-  font-style: italic;
-  padding-top: 15px;
-  margin-top: 15px;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); /* Sombra negra más pegada */
-}
-
-/* Efectos holográficos específicos para el modal */
-.tarot-modal-card .pc-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    rgba(255, 255, 255, 0.1) 90deg,
-    transparent 180deg,
-    rgba(255, 255, 255, 0.1) 270deg,
-    transparent 360deg
-  );
-  border-radius: inherit;
-  opacity: 0.5;
-  animation: rotate 10s linear infinite;
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  white-space: pre-wrap; /* Mantiene saltos de línea del texto */
 }
 
 /* Responsive adjustments */
+@media (max-width: 1024px) {
+  .tarot-modal-container {
+    width: 90vw;
+    height: 90vh;
+    max-width: 900px;
+    max-height: 650px;
+  }
+  .tarot-modal-content {
+    flex-direction: column; /* Apila las columnas en pantallas más pequeñas */
+    gap: 20px;
+    padding: 15px;
+  }
+  .tarot-card-column, .paper-sheet-column {
+    width: 100%;
+    max-width: 100%; /* Eliminar restricción de ancho para móvil */
+    height: auto; /* Dejar que el contenido defina la altura */
+  }
+  .tarot-card-column {
+    flex: none; /* No se estira en altura */
+    height: 400px; /* Altura fija para la carta en móvil */
+  }
+  .paper-sheet-column {
+    flex: 1; /* La hoja de papel ocupa el espacio restante */
+  }
+  .paper-sheet-content {
+    padding: 20px;
+  }
+  .paper-sheet-title {
+    font-size: 1.5rem;
+  }
+  .paper-sheet-text {
+    font-size: 0.9rem;
+  }
+}
+
 @media (max-width: 768px) {
   .tarot-modal-container {
     width: 95vw;
-    height: 85vh;
+    height: 95vh;
+    max-width: none;
+    max-height: none;
   }
-
-  .tarot-modal-card .pc-details h3 {
-    font-size: 1.5rem;
-  }
-
-  .tarot-modal-card .pc-details p {
-    font-size: 1rem;
-  }
-
-  .tarot-modal-card .pc-practice-text {
-    font-size: 0.9rem;
-  }
-
-  .tarot-modal-card .pc-avatar-content .avatar {
-    max-width: 150px;
-    max-height: 200px;
+  .tarot-card-column {
+    height: 350px; /* Ajuste para móviles más pequeños */
   }
 }
 
 @media (max-width: 480px) {
-  .tarot-modal-container {
-    width: 100vw;
-    height: 90vh;
+  .tarot-card-column {
+    height: 300px; /* Ajuste para móviles muy pequeños */
   }
-
-  .tarot-modal-card .pc-details h3 {
+  .paper-sheet-content {
+    padding: 15px;
+  }
+  .paper-sheet-title {
     font-size: 1.3rem;
   }
-
-  .tarot-modal-card .pc-details p {
-    font-size: 0.9rem;
-  }
-
-  .tarot-modal-card .pc-practice-text {
-    font-size: 0.8rem;
+  .paper-sheet-text {
+    font-size: 0.85rem;
   }
 }

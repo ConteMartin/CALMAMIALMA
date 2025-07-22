@@ -1,12 +1,9 @@
+// src/components/ProfileCard.jsx
 import React, { useEffect, useRef, useCallback, useMemo } from "react";
 import "./ProfileCard.css"; // Importa el CSS específico para este componente
+import SpotlightCard from './SpotlightCard.jsx'; // Importa el nuevo SpotlightCard
 
-const DEFAULT_BEHIND_GRADIENT =
-  "radial-gradient(farthest-side circle at var(--pointer-x) var(--pointer-y),hsla(266,100%,90%,var(--card-opacity)) 4%,hsla(266,50%,80%,calc(var(--card-opacity)*0.75)) 10%,hsla(266,25%,70%,calc(var(--card-opacity)*0.5)) 50%,hsla(266,0%,60%,0) 100%),radial-gradient(35% 52% at 55% 20%,#00ffaac4 0%,#073aff00 100%),radial-gradient(100% 100% at 50% 50%,#00c1ffff 1%,#073aff00 76%),conic-gradient(from 124deg at 50% 50%,#c137ffff 0%,#07c6ffff 40%,#07c6ffff 60%,#c137ffff 100%)";
-
-const DEFAULT_INNER_GRADIENT =
-  "linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)";
-
+// Configuraciones de animación y utilidades (sin cambios, se mantienen)
 const ANIMATION_CONFIG = {
   SMOOTH_DURATION: 600,
   INITIAL_DURATION: 1500,
@@ -33,31 +30,17 @@ const easeInOutCubic = (x) =>
   x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 
 const ProfileCardComponent = ({
-  avatarUrl = "", // Default to empty string to avoid placeholder if not provided
-  iconUrl = "",   // Default to empty string
-  grainUrl = "",  // Default to empty string
-  behindGradient,
-  innerGradient,
-  showBehindGradient = true,
+  avatarUrl = "", // Este prop ahora se usará como la URL de la ilustración de fondo de la carta
   className = "",
   enableTilt = true,
   // Props para el contenido específico del tarot
-  mainTitle = "",
-  mainText = "",
-  practiceText = "",
-  // Props para uso con el modal del tarot
-  name = "",
-  title = "",
-  // Prop para controlar el fondo principal de la tarjeta
-  cardBackground,
-  // Nueva prop para ocultar user info
-  showUserInfo = true,
-  // Prop para callback de contacto
-  onContactClick,
+  mainTitle = "", // Título de la carta (único texto en la carta ahora)
+  spotlightColor, // Prop para el color del efecto de foco del ratón (SpotlightCard)
 }) => {
   const wrapRef = useRef(null);
   const cardRef = useRef(null);
 
+  // Lógica de animación del tilt (inclinación) de la tarjeta
   const animationHandlers = useMemo(() => {
     if (!enableTilt) return null;
 
@@ -227,65 +210,38 @@ const ProfileCardComponent = ({
     handlePointerLeave,
   ]);
 
+  // Memoiza los estilos CSS personalizados para la tarjeta
   const cardStyle = useMemo(
     () =>
     ({
-      "--icon": iconUrl ? `url(${iconUrl})` : "none",
-      "--grain": grainUrl ? `url(${grainUrl})` : "none",
-      "--behind-gradient": showBehindGradient
-        ? (behindGradient ?? DEFAULT_BEHIND_GRADIENT)
-        : "none",
-      "--inner-gradient": innerGradient ?? DEFAULT_INNER_GRADIENT,
-      "--card-main-background": cardBackground || "none", // Usa la nueva prop
+      // Establece la URL de la ilustración como una variable CSS para el fondo
+      "--card-illustration-url": avatarUrl ? `url(${avatarUrl})` : "none", 
     }),
-    [iconUrl, grainUrl, showBehindGradient, behindGradient, innerGradient, cardBackground]
+    [avatarUrl]
   );
-
-  // No hay botón de contacto en esta versión simplificada para el tarot
-  // const handleContactClick = useCallback(() => {
-  //   onContactClick?.();
-  // }, [onContactClick]);
 
   return (
     <div
       ref={wrapRef}
       className={`pc-card-wrapper ${className}`.trim()}
-      style={cardStyle}
+      style={cardStyle} // Aplica cardStyle aquí para que las variables CSS estén disponibles
     >
-      <section ref={cardRef} className="pc-card">
-        <div className="pc-inside">
+      {/* SpotlightCard envuelve la tarjeta para el efecto de luz que sigue al ratón */}
+      <SpotlightCard className="pc-card" spotlightColor={spotlightColor}>
+        {/* pc-card-inner es el contenedor principal de la carta, donde se aplica la imagen de fondo y el holograma */}
+        <section ref={cardRef} className="pc-card-inner">
+          {/* pc-shine y pc-glare son parte del efecto holográfico del ProfileCard original */}
           <div className="pc-shine" />
           <div className="pc-glare" />
-          <div className="pc-content pc-avatar-content">
-            {avatarUrl && ( // Solo renderiza la imagen si hay una URL
-              <img
-                className="avatar"
-                src={avatarUrl}
-                alt={name || mainTitle || "Tarot Card"}
-                loading="lazy"
-                onError={(e) => {
-                  const target = e.target;
-                  target.style.display = "none"; // Oculta la imagen si falla la carga
-                  console.error(`Error loading avatar image: ${avatarUrl}`);
-                }}
-              />
-            )}
-          </div>
+          
+          {/* pc-content es el contenedor para todo el texto de la carta */}
           <div className="pc-content">
             <div className="pc-details">
-              {/* Usa name si está disponible, si no mainTitle */}
-              {(name || mainTitle) && <h3>{name || mainTitle}</h3>}
-              {/* Usa title si está disponible, si no mainText */}
-              {(title || mainText) && <p>{title || mainText}</p>}
+              <h3>{mainTitle}</h3> {/* Solo el título en la carta */}
             </div>
-            {practiceText && (
-              <div className="pc-practice-text">
-                <p>{practiceText}</p>
-              </div>
-            )}
           </div>
-        </div>
-      </section>
+        </section>
+      </SpotlightCard>
     </div>
   );
 };

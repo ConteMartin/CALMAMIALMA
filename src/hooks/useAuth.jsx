@@ -1,78 +1,74 @@
-// hooks/useAuth.js
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import apiService from '../services/api'; // ¡Asegúrate de que esta ruta sea correcta y apunte al apiService real!
+// src/hooks/useAuth.jsx
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import apiService from '../services/api'; // Asegúrate de que la ruta sea correcta
 
-// 1. Crear el contexto de autenticación
 const AuthContext = createContext(null);
 
-// 2. Hook personalizado para usar la autenticación
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
-
-// 3. Proveedor de autenticación
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Función para cargar el usuario actual al inicio
-  const fetchCurrentUser = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      // apiService ya carga el token desde localStorage en su constructor
-      // y lo usa para la petición getCurrentUser
-      const currentUser = await apiService.getCurrentUser();
-      setUser(currentUser);
-    } catch (err) {
-      console.error('Error al obtener el usuario actual:', err);
-      setError('No se pudo cargar la sesión. Por favor, inicia sesión de nuevo.');
-      setUser(null);
-      // Limpiar el token si la sesión no es válida
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('user');
-      // No lanzar el error aquí para no romper el renderizado inicial
-    } finally {
-      setLoading(false);
-    }
+  // Cargar usuario al inicio de la aplicación si hay un token
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        setLoading(true);
+        const storedToken = localStorage.getItem('access_token'); // Usa localStorage directamente
+        if (storedToken) {
+          const currentUser = await apiService.getCurrentUser();
+          setUser(currentUser);
+        }
+      } catch (err) {
+        console.error("Failed to load user from token:", err);
+        localStorage.removeItem('access_token'); // Limpiar token inválido
+        localStorage.removeItem('user'); // Limpiar info de usuario
+        setUser(null);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadUser();
   }, []);
 
-  useEffect(() => {
-    fetchCurrentUser();
-  }, [fetchCurrentUser]);
-
-  // Funciones de autenticación
   const login = async (email, password) => {
     setLoading(true);
     setError(null);
     try {
       const response = await apiService.login(email, password);
-      setUser(response.user);
-      // apiService ya guarda el token y el usuario en localStorage
-      return response.user; // Devuelve el usuario para que el componente pueda reaccionar
+      // apiService.login ya guarda el token y el user en localStorage
+      // Ahora, recupera el user de localStorage para asegurarte de que el estado esté sincronizado
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      } else {
+        // Fallback si por alguna razón no se guardó en localStorage (aunque apiService.login debería hacerlo)
+        const currentUser = await apiService.getCurrentUser();
+        setUser(currentUser);
+      }
     } catch (err) {
-      setError(err.message || 'Error al iniciar sesión. Verifica tus credenciales.');
-      throw err; // Propagar el error para que el componente de login lo maneje
+      setError(err.message);
+      throw err; // Re-lanza el error para que el componente que llama lo maneje
     } finally {
       setLoading(false);
     }
   };
 
-  const loginWithGoogle = async (token) => {
+  const loginWithGoogle = async (googleToken) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiService.loginWithGoogle(token);
-      setUser(response.user);
-      // apiService ya guarda el token y el usuario en localStorage
-      return response.user;
+      const response = await apiService.loginWithGoogle(googleToken);
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      } else {
+        const currentUser = await apiService.getCurrentUser();
+        setUser(currentUser);
+      }
     } catch (err) {
-      setError(err.message || 'Error al iniciar sesión con Google.');
+      setError(err.message);
       throw err;
     } finally {
       setLoading(false);
@@ -80,40 +76,44 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    apiService.logout(); // Esto limpia el token y el usuario de localStorage y del servicio
+    apiService.logout(); // Esto ya limpia localStorage
     setUser(null);
+    setError(null);
   };
 
-  const isLoggedIn = useCallback(() => {
-    return !!user;
-  }, [user]);
+  const isLoggedIn = () => !!user;
+  const isPremium = () => user?.is_premium || false;
+  const isAdmin = () => user?.is_admin || false; // Asegúrate de que user.is_admin se esté leyendo
 
-  const isPremium = useCallback(() => {
-    // Asegúrate de que user exista y tenga la propiedad is_premium
-    return user?.is_premium; 
-  }, [user]);
-
-  const isAdmin = useCallback(() => {
-    // Asegúrate de que user exista y tenga la propiedad is_admin
-    return user?.is_admin; 
-  }, [user]);
+  // Función para actualizar el objeto de usuario si es necesario (ej. después de una actualización premium)
+  const updateUser = (newUserData) => {
+    setUser(prevUser => {
+      const updatedUser = { ...prevUser, ...newUserData };
+      localStorage.setItem('user', JSON.stringify(updatedUser)); // Actualiza también en localStorage
+      return updatedUser;
+    });
+  };
 
   const value = {
     user,
-    loading,
-    error,
     login,
     loginWithGoogle,
     logout,
     isLoggedIn,
     isPremium,
     isAdmin,
-    fetchCurrentUser // Para recargar el estado del usuario si es necesario (ej. después de una actualización premium)
+    loading,
+    error,
+    updateUser, // Permite actualizar el estado del usuario desde otros componentes
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };
